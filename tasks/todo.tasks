@@ -1,0 +1,20 @@
+Tasks:
+    ☐ في حالة الاوفلاين لا يتم حذف صور الايتم الذي تم حذفه لذلك يجب ايجاد طريقة لحذفه,
+     احد الافكار هي خزن هذه اللنكات في قاعدة بيانات و تجييك عند فتح البرنامج اذا كان هنالك اي لنك يتم حذفه مثلا
+
+After Finish:
+    ☐ read about the reaons for using the global error capture and print in main.dart
+
+Instructions:
+    ✘ new task @cancelled (7/28/2024, 6:59:29 PM)
+    ✔ anther task @done (7/28/2024, 6:59:34 PM)
+
+CMD:
+    flutter run -d chrome --web-port 57372
+    https://tablets-519a0.web.app/home
+
+    
+
+  
+    
+    

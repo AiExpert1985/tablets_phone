@@ -1,0 +1,15 @@
+[
+    {
+        "origin": [
+            "http://localhost:57372",
+            "https://tablets-519a0.web.app"
+        ],
+        "method": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+        ],
+        "maxAgeSeconds": 3600
+    }
+]

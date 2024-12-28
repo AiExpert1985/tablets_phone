@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "10059288829",
+    "project_id": "tablets-519a0",
+    "storage_bucket": "tablets-519a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10059288829:android:f506eeb70767f3cb4fae94",
+        "android_client_info": {
+          "package_name": "com.tablets.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdFNl04r8FF0-LyHBUhip_n_AIABKmoxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

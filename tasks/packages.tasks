@@ -1,0 +1,126 @@
+Images:
+    image:
+        ☐ The Dart Image Library provides the ability to load, save, and manipulate images in a variety of image file formats.
+        ☐ https://pub.dev/packages/image
+    flutter_image_compress:
+        ☐ easy way to compress images & reduce its size before uploading to server
+        ☐ https://pub.dev/packages/flutter_image_compress
+
+    carousel_slider:
+        ☐ slide show images
+        ☐ https://pub.dev/packages/carousel_slider
+
+    transparent_image:
+        ☐ A simple transparent image. Represented as a Uint8List, which was originally extracted from the Flutter codebase (was private in the test package).
+        ☐ https://pub.dev/packages/transparent_image
+
+
+Popups & Pickers:
+    flutter_material_color_picker:
+        ☐ show a color picker for the user
+        ☐ https://pub.dev/packages/flutter_material_color_picker
+
+Widgets:
+    modular_ui:
+        ☐ create better (animated) Widgets
+        ☐ https://pub.dev/packages/modular_ui
+
+
+imports:
+    single_import_generator:
+        ☐ simplifies the import of packages (when there are too much)
+        ☐ https://pub.dev/packages/single_import_generator/license
+
+Local Storage:
+    flutter_secure_storage:
+        ☐ store secure data on the device (encrypted)
+        ☐ https://pub.dev/packages/flutter_secure_storage
+
+    shared_preferences:
+        ☐ https://pub.dev/packages/shared_preferences
+
+    sqflite :
+        ☐ https://pub.dev/packages/sqflite
+
+    get_storage:
+        ☐ A fast, extra light and synchronous key-value in memory
+        ☐ https://pub.dev/packages/get_storage
+
+Sidebar:
+    sidebarx 0.17.1:
+        ☐ created nice sidebars
+        ☐ https://pub.dev/packages/sidebarx
+
+Search:
+    material_floating_search_bar:
+        ☐ Search bar similar to google
+        ☐ https://pub.dev/packages/material_floating_search_bar_2
+
+    multiple_search_selection:
+        ☐ A highly customizable multiple selection widget with fuzzy search functionality
+        ☐ https://pub.dev/packages/multiple_search_selection
+
+Place holder (before page reload):
+    redacted:
+        ☐ create a page similar to your design before it is loaded
+        ☐ https://pub.dev/packages/redacted
+
+Video & Audio:
+    media_kit:
+        ☐ plays video & audio
+        ☐ https://pub.dev/packages/media_kit
+
+loading Ui:
+    shimmer:
+        ☐ A package provides an easy way to add shimmer effect in Flutter project
+        ☐ https://pub.dev/packages/shimmer
+
+
+Splash:
+    flutter_native_splash:
+        ☐ customizing this native splash screen background color and splash image.
+        ☐ https://pub.dev/packages/flutter_native_splash
+
+
+Form:
+    searchfield:
+        ☐ https://pub.dev/packages/searchfield
+        ☐ Think of this widget like a dropdownButton field with the following capabilities
+
+    flutter_form_builder:
+        ☐ Creation of data collection forms in Flutter by removing the boilerplate needed to build a form, validate fields,react to changes and collect final user input.
+        ☐ https://pub.dev/packages/flutter_form_builder
+        
+    dropdown_search:
+        ☐ searchable drop down selection
+        ☐ https://pub.dev/packages/dropdown_search/example
+
+    form_builder_extra_fields:
+        ☐ FormBuilder Extra Fields provides common ready-made form input fields for flutter_form_builder package
+        ☐ https://pub.dev/packages/form_builder_extra_fields
+
+Buttons:
+    flutter_speed_dial:
+        ☐ implement a beautiful and dynamic Material Design Speed Dial with labels, animated icons, multi-directional children and much more.
+        ☐ https://pub.dev/packages/flutter_speed_dial
+    
+File system:
+    path_provider:
+        ☐ A Flutter plugin for finding commonly used locations on the filesystem.
+        ☐ https://pub.dev/packages/path_provider
+
+
+http:
+    dio:
+        ☐ A powerful HTTP networking package for Dart/Flutter, supports Global configuration, Interceptors,
+           FormData, Request cancellation, File uploading/downloading, Timeout, Custom adapters, Transformers, etc.
+        ☐ https://pub.dev/packages/dio
+
+printing:
+    flutter_thermal_printer:
+        ☐ Package for all services for thermal printer in android, ios, macos, windows.
+        ☐ https://pub.dev/packages/flutter_thermal_printer
+
+    invoiceninja:
+        ☐ invoiceninja is a popular package that allows you to create PDF invoices and accept payments within your app
+        ☐ https://pub.dev/packages/invoiceninja
