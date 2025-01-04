@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         return windows;
       case TargetPlatform.linux:
@@ -43,14 +40,6 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDdFNl04r8FF0-LyHBUhip_n_AIABKmoxw',
-    appId: '1:10059288829:android:f506eeb70767f3cb4fae94',
-    messagingSenderId: '10059288829',
-    projectId: 'tablets-519a0',
-    storageBucket: 'tablets-519a0.appspot.com',
-  );
-
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyD0mLO4QjR10H92fO0ZnbWJBQEpqC8Z-wU',
     appId: '1:10059288829:web:34f0585f74ee57574fae94',
@@ -60,13 +49,30 @@ class DefaultFirebaseOptions {
     storageBucket: 'tablets-519a0.appspot.com',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD0s6M7BvhRMLieDAiB0a6I9jTHegEFTz0',
-    appId: '1:10059288829:ios:88f2193af4b470f44fae94',
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyDdFNl04r8FF0-LyHBUhip_n_AIABKmoxw',
+    appId: '1:10059288829:android:f506eeb70767f3cb4fae94',
     messagingSenderId: '10059288829',
     projectId: 'tablets-519a0',
     storageBucket: 'tablets-519a0.appspot.com',
-    iosBundleId: 'com.tablets.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyD0s6M7BvhRMLieDAiB0a6I9jTHegEFTz0',
+    appId: '1:10059288829:ios:e659f56637bbe26a4fae94',
+    messagingSenderId: '10059288829',
+    projectId: 'tablets-519a0',
+    storageBucket: 'tablets-519a0.appspot.com',
+    iosBundleId: 'com.example.tablets',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyD0s6M7BvhRMLieDAiB0a6I9jTHegEFTz0',
+    appId: '1:10059288829:ios:e659f56637bbe26a4fae94',
+    messagingSenderId: '10059288829',
+    projectId: 'tablets-519a0',
+    storageBucket: 'tablets-519a0.appspot.com',
+    iosBundleId: 'com.example.tablets',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -77,5 +83,4 @@ class DefaultFirebaseOptions {
     authDomain: 'tablets-519a0.firebaseapp.com',
     storageBucket: 'tablets-519a0.appspot.com',
   );
-
 }
