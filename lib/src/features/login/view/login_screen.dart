@@ -1,11 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/debug_print.dart';
-import 'package:tablets/src/features/login/controllers/salesman_dbref_provider.dart';
-import 'package:tablets/src/features/login/repository/accounts_repository.dart';
 import 'package:tablets/src/features/login/repository/auth_repository';
 import 'package:toastification/toastification.dart';
 
@@ -50,33 +46,6 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
         alignment: Alignment.topCenter,
         showProgressBar: false,
       );
-    } else {
-      tempPrint('hi');
-      saveSalesmanDbRef(ref, _userEmail);
-    }
-  }
-
-  Future<void> saveSalesmanDbRef(WidgetRef ref, String email) async {
-    final repository = ref.read(accountsRepositoryProvider);
-    tempPrint(1);
-    final accounts = await repository.fetchItemListAsMaps();
-    tempPrint(2);
-    tempPrint(accounts);
-    var matchingAccounts = accounts.where((account) => account['email'] == email);
-    String? salesmanDbRef;
-    if (matchingAccounts.isNotEmpty) {
-      salesmanDbRef = matchingAccounts.first['dbRef'];
-    } else {
-      salesmanDbRef = null; // or some default value
-    }
-    tempPrint(salesmanDbRef);
-    final dbRefProvider = ref.read(salesmanDbRefProvider.notifier);
-    if (salesmanDbRef != null) {
-      dbRefProvider.state = salesmanDbRef;
-    } else {
-      errorPrint(
-          'dbRef of salesman is not found, please add it to firebase account collection, salesman will be signedout');
-      FirebaseAuth.instance.signOut();
     }
   }
 

@@ -5,8 +5,10 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/custom_icons.dart';
 import 'package:tablets/src/common/debug_print.dart';
 import 'package:tablets/src/common/dialog_delete_confirmation.dart';
-import 'package:tablets/src/features/login/controllers/salesman_dbref_provider.dart';
+import 'package:tablets/src/features/login/repository/accounts_repository.dart';
+import 'package:tablets/src/features/transactions/controllers/customers_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
+import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -41,8 +43,7 @@ class HomeScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ButtonContainer(S.of(context).transaction_type_customer_receipt, () {
-              final salesmanDbRef = ref.read(salesmanDbRefProvider);
-              setSalesmanCustomers(ref, salesmanDbRef);
+              setSalesmanCustomers(ref);
               final transaction = getTestTransaction();
               saveTestTransaction(ref, transaction);
             }),
@@ -55,8 +56,16 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-Future<void> setSalesmanCustomers(WidgetRef ref, String customerDbRef) async {
-  tempPrint('hi I am inside setSalesmanCustomers');
+Future<void> setSalesmanCustomers(WidgetRef ref) async {
+  String? salesmanDbRef = await saveSalesmanDbRef(ref);
+  final customersRepository = ref.read(customerRepositoryProvider);
+  final customers = await customersRepository.fetchItemListAsMaps();
+  final salesmanCustomers = customers.where((customer) {
+    return customer['salesmanDbRef'] == salesmanDbRef;
+  }).toList();
+  tempPrint(salesmanCustomers.length);
+  final salesmanCustomersProvider = ref.read(salesmanCustomersProviderController.notifier);
+  salesmanCustomersProvider.state = salesmanCustomers;
 }
 
 class ButtonContainer extends StatelessWidget {
@@ -105,4 +114,19 @@ Transaction getTestTransaction() {
 void saveTestTransaction(WidgetRef ref, Transaction transaction) {
   final repository = ref.read(transactionRepositoryProvider);
   repository.addItem(transaction);
+}
+
+Future<String?> saveSalesmanDbRef(WidgetRef ref) async {
+  final email = FirebaseAuth.instance.currentUser!.email;
+  tempPrint(email);
+  final repository = ref.read(accountsRepositoryProvider);
+  final accounts = await repository.fetchItemListAsMaps();
+  var matchingAccounts = accounts.where((account) => account['email'] == email);
+  String? salesmanDbRef;
+  if (matchingAccounts.isNotEmpty) {
+    salesmanDbRef = matchingAccounts.first['dbRef'];
+  } else {
+    salesmanDbRef = null; // or some default value
+  }
+  return salesmanDbRef;
 }
