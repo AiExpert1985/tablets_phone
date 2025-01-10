@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/custom_icons.dart';
+import 'package:tablets/src/common/debug_print.dart';
+import 'package:tablets/src/common/dialog_delete_confirmation.dart';
+import 'package:tablets/src/features/login/controllers/salesman_dbref_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
@@ -12,12 +17,32 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
+        actions: [
+          TextButton.icon(
+            onPressed: () async {
+              final confiramtion = await showDeleteConfirmationDialog(
+                  context: context,
+                  messagePart1: "",
+                  messagePart2: S.of(context).alert_before_signout);
+              if (confiramtion != null) {
+                FirebaseAuth.instance.signOut();
+              }
+            }, //signout(ref),
+            icon: const LocaleAwareLogoutIcon(),
+            label: Text(
+              S.of(context).logout,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ButtonContainer(S.of(context).transaction_type_customer_receipt, () {
+              final salesmanDbRef = ref.read(salesmanDbRefProvider);
+              setSalesmanCustomers(ref, salesmanDbRef);
               final transaction = getTestTransaction();
               saveTestTransaction(ref, transaction);
             }),
@@ -28,6 +53,10 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<void> setSalesmanCustomers(WidgetRef ref, String customerDbRef) async {
+  tempPrint('hi I am inside setSalesmanCustomers');
 }
 
 class ButtonContainer extends StatelessWidget {
