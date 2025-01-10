@@ -67,8 +67,6 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
     if (matchingAccounts.isNotEmpty) {
       salesmanDbRef = matchingAccounts.first['dbRef'];
     } else {
-      // Handle the case where no matching account is found
-
       salesmanDbRef = null; // or some default value
     }
     tempPrint(salesmanDbRef);
