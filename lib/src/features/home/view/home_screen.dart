@@ -1,15 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/custom_icons.dart';
-import 'package:tablets/src/common/debug_print.dart';
 import 'package:tablets/src/common/dialog_delete_confirmation.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
-import 'package:tablets/src/features/transactions/controllers/customers_provider.dart';
-import 'package:tablets/src/features/transactions/model/transaction.dart';
+import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -44,8 +43,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             ButtonContainer(S.of(context).transaction_type_customer_receipt, () {
               setSalesmanCustomers(ref);
-              final transaction = getTestTransaction();
-              saveTestTransaction(ref, transaction);
+              GoRouter.of(context).pushNamed(AppRoute.receipt.name);
             }),
             const SizedBox(height: 40),
             ButtonContainer(S.of(context).transaction_type_customer_invoice, () {}),
@@ -63,9 +61,8 @@ Future<void> setSalesmanCustomers(WidgetRef ref) async {
   final salesmanCustomers = customers.where((customer) {
     return customer['salesmanDbRef'] == salesmanDbRef;
   }).toList();
-  tempPrint(salesmanCustomers.length);
-  final salesmanCustomersProvider = ref.read(salesmanCustomersProviderController.notifier);
-  salesmanCustomersProvider.state = salesmanCustomers;
+  final salesmanCustomersDb = ref.read(salesmanCustomerDbCacheProvider.notifier);
+  salesmanCustomersDb.set(salesmanCustomers);
 }
 
 class ButtonContainer extends StatelessWidget {
@@ -97,28 +94,8 @@ class ButtonContainer extends StatelessWidget {
   }
 }
 
-Transaction getTestTransaction() {
-  return Transaction(
-      dbRef: 'sdfsd',
-      name: 'test pending transaction',
-      imageUrls: ['xfdsfsdf'],
-      number: 3243456,
-      date: DateTime.now(),
-      currency: 'sdfasdf',
-      transactionType: 'sfsdfs',
-      totalAmount: 34534534,
-      transactionTotalProfit: 354,
-      isPrinted: false);
-}
-
-void saveTestTransaction(WidgetRef ref, Transaction transaction) {
-  final repository = ref.read(transactionRepositoryProvider);
-  repository.addItem(transaction);
-}
-
 Future<String?> saveSalesmanDbRef(WidgetRef ref) async {
   final email = FirebaseAuth.instance.currentUser!.email;
-  tempPrint(email);
   final repository = ref.read(accountsRepositoryProvider);
   final accounts = await repository.fetchItemListAsMaps();
   var matchingAccounts = accounts.where((account) => account['email'] == email);

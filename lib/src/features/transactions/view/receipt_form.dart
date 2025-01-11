@@ -1,81 +1,49 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:search_choices/search_choices.dart';
-// import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/drop_down_with_search.dart';
+import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/model/transaction.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
-// class ReceiptForm extends ConsumerWidget {
-//   const ReceiptForm({super.key});
+class ReceiptForm extends ConsumerWidget {
+  const ReceiptForm({super.key});
 
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return Container(
-//       padding: const EdgeInsets.all(10),
-//       child: const Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [],
-//       ),
-//     );
-//   }
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [buildCustomerNameSelection(context, ref)],
+    ));
+  }
+}
+
+Widget buildCustomerNameSelection(BuildContext context, WidgetRef ref) {
+  final salesmanCustomersDb = ref.read(salesmanCustomerDbCacheProvider.notifier);
+
+  return SizedBox(
+    width: 300,
+    child: DropDownWithSearch(
+        onChangedFn: (customer) {}, dbCache: salesmanCustomersDb, label: S.of(context).customer),
+  );
+}
+
+// Transaction getTestTransaction() {
+//   return Transaction(
+//       dbRef: 'sdfsd',
+//       name: 'test pending transaction',
+//       imageUrls: ['xfdsfsdf'],
+//       number: 3243456,
+//       date: DateTime.now(),
+//       currency: 'sdfasdf',
+//       transactionType: 'sfsdfs',
+//       totalAmount: 34534534,
+//       transactionTotalProfit: 354,
+//       isPrinted: false);
 // }
 
-// class CustomerNameSelection extends StatelessWidget {
-//   const CustomerNameSelection({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: SearchChoices.single(
-//         fieldDecoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(4), // Rounded corners
-//             border: Border.all(color: Colors.grey)),
-//         items: selectionValues
-//             .map(
-//               (item) => DropdownMenuItem(
-//                 value: item,
-//                 child: Text(item['name']),
-//               ),
-//             )
-//             .toList(),
-//         value: selectedValue,
-//         hint: Text(
-//           selectionLabel ?? '',
-//           style: const TextStyle(color: Colors.red),
-//           textAlign: TextAlign.center,
-//         ),
-//         searchHint: Text(
-//           selectionLabel ?? '',
-//           style: const TextStyle(color: Colors.red),
-//           textAlign: TextAlign.center,
-//         ),
-//         onChanged: (value) {
-//           selectedValue = value;
-//         },
-
-//         isExpanded: true,
-//         // padding is the only way I found to reduce the width of the search dialog
-//         dropDownDialogPadding: const EdgeInsets.symmetric(
-//           vertical: 120,
-//           horizontal: 700,
-//         ),
-//         closeButton: const SizedBox.shrink(),
-//       ),
-//     );
-//   }
-// }
-
-// List<Map<String, dynamic>> getSalesmanCustomers(
-//     List<Map<String, dynamic>> customers, String salesmanDbRef) {
-//   List<Map<String, dynamic>> salesmanCustomers = [];
-//   for (var customer in customers) {
-//     if (customer['salesmanDbRef']) {
-//       salesmanCustomers.add(customer);
-//     }
-//   }
-//   return salesmanCustomers;
-// }
-
-// Future<List<Map<String, dynamic>>> customers(WidgetRef ref) async {
-//   final customerRepo = ref.read(customerRepositoryProvider);
-
-//   return customerRepo.fetchItemListAsMaps();
-// }
+void saveTransaction(WidgetRef ref, Transaction transaction) {
+  final repository = ref.read(transactionRepositoryProvider);
+  repository.addItem(transaction);
+}
