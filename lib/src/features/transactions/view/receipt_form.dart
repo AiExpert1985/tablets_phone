@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/constants.dart';
+import 'package:tablets/src/common/debug_print.dart';
 import 'package:tablets/src/common/drop_down_with_search.dart';
+import 'package:tablets/src/common/edit_box.dart';
+import 'package:tablets/src/common/gaps.dart';
 import 'package:tablets/src/common/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -13,27 +17,47 @@ class ReceiptForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MainFrame(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [buildCustomerNameSelection(context, ref)],
-    ));
+        child: Center(
+            child: Container(
+                padding: const EdgeInsets.all(12.0),
+                width: 300,
+                child: Column(
+                  children: [
+                    _buildScreenTitle(context, ref),
+                    _buildCustomerNameSelection(context, ref),
+                    VerticalGap.xl,
+                    _buildCustomerReceiptAmount(context, ref)
+                  ],
+                ))));
   }
-}
 
-Widget buildCustomerNameSelection(BuildContext context, WidgetRef ref) {
-  final salesmanCustomersDb = ref.read(salesmanCustomerDbCacheProvider.notifier);
+  Widget _buildScreenTitle(BuildContext context, WidgetRef ref) {
+    return Container(
+        padding: const EdgeInsets.all(40),
+        child: const Text(
+          'قبض زبون',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+        ));
+  }
 
-  return Center(
-    child: Container(
-      padding: const EdgeInsets.all(12.0),
-      width: 300,
-      child: DropDownWithSearch(
-        onChangedFn: (customer) {},
-        dbCache: salesmanCustomersDb,
-        label: S.of(context).customer,
-      ),
-    ),
-  );
+  Widget _buildCustomerNameSelection(BuildContext context, WidgetRef ref) {
+    final salesmanCustomersDb = ref.read(salesmanCustomerDbCacheProvider.notifier);
+
+    return DropDownWithSearch(
+      onChangedFn: (customer) {},
+      dbCache: salesmanCustomersDb,
+      label: S.of(context).customer,
+    );
+  }
+
+  Widget _buildCustomerReceiptAmount(BuildContext context, WidgetRef ref) {
+    return FormInputField(
+        onChangedFn: (value) {
+          tempPrint(value);
+        },
+        dataType: FieldDataType.num,
+        name: 'amount');
+  }
 }
 
 void addTransactionToDb(WidgetRef ref, Transaction transaction) {
