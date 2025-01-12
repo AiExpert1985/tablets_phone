@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/custom_icons.dart';
-import 'package:tablets/src/common/dialog_delete_confirmation.dart';
+import 'package:tablets/src/common/main_frame.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
@@ -15,35 +14,19 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        actions: [
-          TextButton.icon(
-            onPressed: () async {
-              final confiramtion = await showDeleteConfirmationDialog(
-                  context: context,
-                  messagePart1: "",
-                  messagePart2: S.of(context).alert_before_signout);
-              if (confiramtion != null) {
-                FirebaseAuth.instance.signOut();
-              }
-            }, //signout(ref),
-            icon: const LocaleAwareLogoutIcon(),
-            label: Text(
-              S.of(context).logout,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-      body: Center(
+    return MainFrame(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ButtonContainer(S.of(context).transaction_type_customer_receipt, () {
-              setSalesmanCustomers(ref);
-              GoRouter.of(context).pushNamed(AppRoute.receipt.name);
+            ButtonContainer(S.of(context).transaction_type_customer_receipt, () async {
+              final customersRepository = ref.read(salesmanCustomerDbCacheProvider.notifier);
+              if (customersRepository.data.isEmpty) {
+                await setSalesmanCustomers(ref);
+              }
+              if (context.mounted) {
+                GoRouter.of(context).pushNamed(AppRoute.receipt.name);
+              }
             }),
             const SizedBox(height: 40),
             ButtonContainer(S.of(context).transaction_type_customer_invoice, () {}),
@@ -55,7 +38,7 @@ class HomeScreen extends ConsumerWidget {
 }
 
 Future<void> setSalesmanCustomers(WidgetRef ref) async {
-  String? salesmanDbRef = await saveSalesmanDbRef(ref);
+  String? salesmanDbRef = await getSalesmanDbRef(ref);
   final customersRepository = ref.read(customerRepositoryProvider);
   final customers = await customersRepository.fetchItemListAsMaps();
   final salesmanCustomers = customers.where((customer) {
@@ -94,7 +77,7 @@ class ButtonContainer extends StatelessWidget {
   }
 }
 
-Future<String?> saveSalesmanDbRef(WidgetRef ref) async {
+Future<String?> getSalesmanDbRef(WidgetRef ref) async {
   final email = FirebaseAuth.instance.currentUser!.email;
   final repository = ref.read(accountsRepositoryProvider);
   final accounts = await repository.fetchItemListAsMaps();

@@ -55,10 +55,10 @@ class NavigationBackButton extends StatelessWidget {
     return Row(children: [
       Text(
         S.of(context).back,
-        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
       ),
       HorizontalGap.s,
-      const Icon(Icons.arrow_forward_ios_outlined, color: Colors.black, size: 30)
+      const Icon(Icons.arrow_forward_ios_outlined, color: Colors.white, size: 20)
     ]);
   }
 }
