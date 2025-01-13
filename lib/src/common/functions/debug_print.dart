@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/src/common/error_logger.dart';
+import 'package:tablets/src/common/functions/error_logger.dart';
 
 void errorPrint(dynamic message, {stackTrace, bool logError = true}) {
   // Sometime the stack trace is shorter than 225, so I need to have protection against that

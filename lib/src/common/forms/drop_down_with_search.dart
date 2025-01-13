@@ -2,7 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/db_cache.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/forms/form_filed_decoration.dart';
 
 /// same as DropDownWithSearchForm but without expanded
 class DropDownWithSearch extends ConsumerWidget {
@@ -96,29 +97,5 @@ Widget popUpItem(
         ),
       ),
     ),
-  );
-}
-
-InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
-  return InputDecoration(
-    // floatingLabelAlignment: FloatingLabelAlignment.center,
-    label: label == null
-        ? null
-        : Text(
-            label,
-            // textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.black87,
-            ),
-          ),
-    alignLabelWithHint: true,
-    contentPadding: const EdgeInsets.all(12),
-    isDense: true, // Add this line to remove the default padding
-    border: hideBorders
-        ? InputBorder.none
-        : const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
   );
 }

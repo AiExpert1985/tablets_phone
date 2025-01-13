@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/debug_print.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 
 enum DbCacheOperationTypes { add, edit, delete }
 

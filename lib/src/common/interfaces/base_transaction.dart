@@ -1,4 +1,4 @@
-import 'package:tablets/src/common/base_item.dart';
+import 'package:tablets/src/common/interfaces/base_item.dart';
 
 abstract class BaseTransaction implements BaseItem {
   int get number;

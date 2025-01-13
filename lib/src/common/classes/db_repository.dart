@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:tablets/src/common/base_item.dart';
-import 'package:tablets/src/common/debug_print.dart';
+import 'package:tablets/src/common/interfaces/base_item.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 
 class DbRepository {
   DbRepository(this._collectionName);

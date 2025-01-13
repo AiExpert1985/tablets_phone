@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/constants.dart';
-import 'package:tablets/src/common/debug_print.dart';
-import 'package:tablets/src/common/drop_down_with_search.dart';
-import 'package:tablets/src/common/edit_box.dart';
-import 'package:tablets/src/common/gaps.dart';
-import 'package:tablets/src/common/main_frame.dart';
+import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/forms/drop_down_with_search.dart';
+import 'package:tablets/src/common/forms/edit_box.dart';
+import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
@@ -64,8 +64,6 @@ void addTransactionToDb(WidgetRef ref, Transaction transaction) {
   final repository = ref.read(transactionRepositoryProvider);
   repository.addItem(transaction);
 }
-
-
 
 // Transaction getTestTransaction() {
 //   return Transaction(

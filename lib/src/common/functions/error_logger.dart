@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:tablets/src/common/debug_print.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 
 class Logger {
   static Future<File> _getLogFile() async {

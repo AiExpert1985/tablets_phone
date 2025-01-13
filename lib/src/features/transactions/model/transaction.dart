@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tablets/src/common/base_item.dart';
+import 'package:tablets/src/common/interfaces/base_item.dart';
 
 // used to represent below types of transactions:
 // (1) Expenditures: Salaries, Electricity, Rent, ... etc.
