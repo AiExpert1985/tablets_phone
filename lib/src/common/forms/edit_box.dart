@@ -40,20 +40,18 @@ class FormInputField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Expanded(
-      child: FormBuilderTextField(
-        // if controller is used, initialValue should be neglected
-        initialValue: _getInitialValue(),
-        readOnly: isReadOnly,
-        controller: controller,
-        // enabled: !isReadOnly,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: textColor, fontSize: fontSize),
-        name: name,
-        decoration: formFieldDecoration(label: label, hideBorders: hideBorders),
-        onChanged: _onChanged,
-        validator: isRequired ? _validator(context) : null,
-      ),
+    return FormBuilderTextField(
+      // if controller is used, initialValue should be neglected
+      initialValue: _getInitialValue(),
+      readOnly: isReadOnly,
+      controller: controller,
+      // enabled: !isReadOnly,
+      textAlign: TextAlign.center,
+      style: TextStyle(color: textColor, fontSize: fontSize),
+      name: name,
+      decoration: formFieldDecoration(label: label, hideBorders: hideBorders),
+      onChanged: _onChanged,
+      validator: isRequired ? _validator(context) : null,
     );
   }
 

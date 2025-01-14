@@ -25,19 +25,17 @@ class FormDatePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: FormBuilderDateTimePicker(
-        enabled: !isReadOnly,
-        decoration: formFieldDecoration(label: label, hideBorders: hideBorders),
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        name: name,
-        initialValue: initialValue,
-        fieldHintText: S.of(context).date_picker_hint,
-        inputType: InputType.date,
-        onChanged: onChangedFn,
-        validator: (value) => _validateDate(value, context),
-      ),
+    return FormBuilderDateTimePicker(
+      enabled: !isReadOnly,
+      decoration: formFieldDecoration(label: label, hideBorders: hideBorders),
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      name: name,
+      initialValue: initialValue,
+      fieldHintText: S.of(context).date_picker_hint,
+      inputType: InputType.date,
+      onChanged: onChangedFn,
+      validator: (value) => _validateDate(value, context),
     );
   }
 
