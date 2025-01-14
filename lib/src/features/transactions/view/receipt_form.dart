@@ -152,13 +152,14 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
   }
 
   Widget _buildReceiptTotalAmount(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const FormFieldLabel('المجموع'),
-        HorizontalGap.xl,
-        Text(total.toString()),
-      ],
+    return Container(
+      padding: const EdgeInsets.all(5),
+      decoration: const BoxDecoration(
+          color: Colors.blueGrey, borderRadius: BorderRadius.all(Radius.circular(6))),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+        const StyledTotalText('المجموع'),
+        StyledTotalText(total.toString()),
+      ]),
     );
   }
 
@@ -221,6 +222,23 @@ class FormFieldLabel extends StatelessWidget {
         label,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18, color: Colors.black),
+      ),
+    );
+  }
+}
+
+class StyledTotalText extends StatelessWidget {
+  const StyledTotalText(this.text, {super.key});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
