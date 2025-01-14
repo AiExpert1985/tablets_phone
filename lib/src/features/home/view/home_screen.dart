@@ -82,11 +82,13 @@ Future<String?> getSalesmanDbRef(WidgetRef ref) async {
   final repository = ref.read(accountsRepositoryProvider);
   final accounts = await repository.fetchItemListAsMaps();
   var matchingAccounts = accounts.where((account) => account['email'] == email);
-  String? salesmanDbRef;
+  String? dbRef;
+  String? name;
   if (matchingAccounts.isNotEmpty) {
-    salesmanDbRef = matchingAccounts.first['dbRef'];
+    dbRef = matchingAccounts.first['dbRef'];
+    name = matchingAccounts.first['name'];
   } else {
-    salesmanDbRef = null; // or some default value
+    dbRef = null; // or some default value
   }
-  return salesmanDbRef;
+  return dbRef;
 }

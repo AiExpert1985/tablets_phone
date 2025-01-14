@@ -29,7 +29,7 @@ class Transaction implements BaseItem {
   String? notes;
   String transactionType; // name of customer
   String? paymentType; // cash, debt
-  String? salesman; // dbRef of salesman
+  String? salesman;
   List<Map<String, dynamic>>? items;
   double? discount;
   String? totalAsText;

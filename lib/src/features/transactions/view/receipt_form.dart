@@ -8,6 +8,7 @@ import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -80,6 +81,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           child: DropDownWithSearch(
             onChangedFn: (customer) {
               formDataNotifier.addProperty('name', customer['name']);
+              formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
             },
             dbCache: salesmanCustomersDb,
           ),
@@ -191,6 +193,10 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           IconButton(
             icon: const ApproveIcon(),
             onPressed: () {
+              _addSupportProperties(ref, formDataNotifier);
+              final formData = formDataNotifier.data;
+              final transaction = Transaction.fromMap(formData);
+              addTransactionToDb(ref, transaction);
               tempPrint(formDataNotifier.data);
             },
           ),
@@ -201,6 +207,18 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
         ],
       ),
     );
+  }
+
+  void _addSupportProperties(WidgetRef ref, MapStateNotifier formDataNotifier) {
+    final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
+    final salesmanDbRef = salesmanInfoNotifier.data['dbRef'];
+    final salesmanName = salesmanInfoNotifier.data['name'];
+    formDataNotifier.addProperty('salesmanDbRef', salesmanDbRef);
+    formDataNotifier.addProperty('salesman', salesmanName);
+    formDataNotifier.addProperty('imageUrls', []);
+    formDataNotifier.addProperty('currency', 'دينار');
+    formDataNotifier.addProperty('transactionTotalProfit', 0);
+    formDataNotifier.addProperty('isPrinted', false);
   }
 }
 
