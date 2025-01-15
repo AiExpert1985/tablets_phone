@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
@@ -38,7 +39,9 @@ class HomeScreen extends ConsumerWidget {
 }
 
 Future<void> setSalesmanCustomers(WidgetRef ref) async {
-  String? salesmanDbRef = await getSalesmanDbRef(ref);
+  await getSalesmanDbRef(ref);
+  final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
+  final salesmanDbRef = salesmanInfoNotifier.dbRef;
   final customersRepository = ref.read(customerRepositoryProvider);
   final customers = await customersRepository.fetchItemListAsMaps();
   final salesmanCustomers = customers.where((customer) {
@@ -77,18 +80,16 @@ class ButtonContainer extends StatelessWidget {
   }
 }
 
-Future<String?> getSalesmanDbRef(WidgetRef ref) async {
+Future<void> getSalesmanDbRef(WidgetRef ref) async {
+  final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
   final email = FirebaseAuth.instance.currentUser!.email;
   final repository = ref.read(accountsRepositoryProvider);
   final accounts = await repository.fetchItemListAsMaps();
   var matchingAccounts = accounts.where((account) => account['email'] == email);
-  String? dbRef;
-  String? name;
   if (matchingAccounts.isNotEmpty) {
-    dbRef = matchingAccounts.first['dbRef'];
-    name = matchingAccounts.first['name'];
-  } else {
-    dbRef = null; // or some default value
+    final dbRef = matchingAccounts.first['dbRef'];
+    salesmanInfoNotifier.setDbRef(dbRef);
+    final name = matchingAccounts.first['name'];
+    salesmanInfoNotifier.setName(name);
   }
-  return dbRef;
 }

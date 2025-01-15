@@ -3,20 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SalesmanInfo extends StateNotifier<Map<String, dynamic>> {
   SalesmanInfo() : super({}); // Initialize with an empty map
 
-  // Function to add a property to the map
-  void addProperty(String key, dynamic value) {
+  void setDbRef(dynamic value) {
+    const key = 'dbRef';
     state = {
       ...state, // Spread the current state
       key: value, // Add the new key-value pair
     };
   }
 
-  // Function to reset the map to an empty state
-  void reset() {
-    state = {}; // Reset to an empty map
+  void setName(dynamic value) {
+    const key = 'name';
+    state = {
+      ...state, // Spread the current state
+      key: value, // Add the new key-value pair
+    };
   }
 
-  Map<String, dynamic> get data => state;
+  String? get name => state['name'];
+  String? get dbRef => state['dbRef'];
+
+  void reset() => state = {};
 }
 
 // Create a provider for the MapStateNotifier

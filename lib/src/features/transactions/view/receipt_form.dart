@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/forms/date_picker.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
@@ -173,7 +174,6 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
         HorizontalGap.xl,
         Expanded(
           child: FormDatePickerField(
-            initialValue: DateTime.now(),
             onChangedFn: (date) {
               formDataNotifier.addProperty('date', date);
             },
@@ -211,14 +211,17 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
 
   void _addSupportProperties(WidgetRef ref, MapStateNotifier formDataNotifier) {
     final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
-    final salesmanDbRef = salesmanInfoNotifier.data['dbRef'];
-    final salesmanName = salesmanInfoNotifier.data['name'];
+    final salesmanDbRef = salesmanInfoNotifier.dbRef;
+    final salesmanName = salesmanInfoNotifier.name;
+    formDataNotifier.addProperty('dbRef', generateRandomString(len: 8));
     formDataNotifier.addProperty('salesmanDbRef', salesmanDbRef);
     formDataNotifier.addProperty('salesman', salesmanName);
     formDataNotifier.addProperty('imageUrls', []);
     formDataNotifier.addProperty('currency', 'دينار');
+    formDataNotifier.addProperty('currency', 'دينار');
     formDataNotifier.addProperty('transactionTotalProfit', 0);
     formDataNotifier.addProperty('isPrinted', false);
+    formDataNotifier.addProperty('transactionType', TransactionType.customerReceipt.name);
   }
 }
 
