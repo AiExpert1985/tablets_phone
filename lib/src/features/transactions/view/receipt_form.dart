@@ -193,7 +193,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           IconButton(
             icon: const ApproveIcon(),
             onPressed: () {
-              _addSupportProperties(ref, formDataNotifier);
+              _addRequiredProperties(ref, formDataNotifier);
               final formData = formDataNotifier.data;
               final transaction = Transaction.fromMap(formData);
               addTransactionToDb(ref, transaction);
@@ -209,7 +209,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     );
   }
 
-  void _addSupportProperties(WidgetRef ref, MapStateNotifier formDataNotifier) {
+  void _addRequiredProperties(WidgetRef ref, MapStateNotifier formDataNotifier) {
     final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
     final salesmanDbRef = salesmanInfoNotifier.dbRef;
     final salesmanName = salesmanInfoNotifier.name;
@@ -217,10 +217,13 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     formDataNotifier.addProperty('salesmanDbRef', salesmanDbRef);
     formDataNotifier.addProperty('salesman', salesmanName);
     formDataNotifier.addProperty('imageUrls', []);
-    formDataNotifier.addProperty('currency', 'دينار');
+    formDataNotifier.addProperty('paymentType', 'نقدي');
     formDataNotifier.addProperty('currency', 'دينار');
     formDataNotifier.addProperty('transactionTotalProfit', 0);
     formDataNotifier.addProperty('isPrinted', false);
+    formDataNotifier.addProperty('transactionType', TransactionType.customerReceipt.name);
+    formDataNotifier.addProperty('itemsTotalProfit', 0);
+    formDataNotifier.addProperty('salesmanTransactionComssion', 0);
     formDataNotifier.addProperty('transactionType', TransactionType.customerReceipt.name);
   }
 }
