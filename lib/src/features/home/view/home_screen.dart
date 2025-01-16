@@ -21,9 +21,9 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ButtonContainer(S.of(context).transaction_type_customer_receipt, AppRoute.receipt.name),
+            ButtonContainer('وصل قبض', AppRoute.receipt.name),
             const SizedBox(height: 40),
-            ButtonContainer(S.of(context).transaction_type_customer_invoice, AppRoute.invoice.name),
+            ButtonContainer('قائمة زبون', AppRoute.invoice.name),
           ],
         ),
       ),

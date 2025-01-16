@@ -65,7 +65,7 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
     return Container(
       padding: const EdgeInsets.all(10),
       child: const Text(
-        'قبض زبون',
+        'قائمة زبون',
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
       ),
     );
