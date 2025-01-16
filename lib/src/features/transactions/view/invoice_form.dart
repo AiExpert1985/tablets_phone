@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/forms/date_picker.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
+import 'package:tablets/src/features/transactions/common/common_functions.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 
 class InvoiceForm extends ConsumerStatefulWidget {
@@ -199,15 +199,15 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
               try {
                 final transaction = Transaction.fromMap(formData);
                 addTransactionToDb(ref, transaction);
-              } catch (e) {}
+              } catch (e) {
+                failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
+              }
             },
           ),
           IconButton(
             icon: const CancelIcon(),
             onPressed: () {
-              tempPrint('hi');
               formDataNotifier.reset();
-              tempPrint(formDataNotifier.data);
               Navigator.pop(context);
             },
           ),
@@ -233,9 +233,4 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
     formDataNotifier.addProperty('salesmanTransactionComssion', 0);
     formDataNotifier.addProperty('transactionType', TransactionType.customerReceipt.name);
   }
-}
-
-void addTransactionToDb(WidgetRef ref, Transaction transaction) {
-  final repository = ref.read(transactionRepositoryProvider);
-  repository.addItem(transaction);
 }
