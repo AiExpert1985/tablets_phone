@@ -4,12 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/features/login/view/login_screen.dart';
+import 'package:tablets/src/features/transactions/view/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/receipt_form.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 
 import 'package:tablets/src/routers/not_found_screen.dart';
 
-enum AppRoute { home, login, receipt }
+enum AppRoute { home, login, receipt, invoice }
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
 
@@ -51,6 +52,11 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/receipt',
           name: AppRoute.receipt.name,
           builder: (BuildContext context, GoRouterState state) => const ReceiptForm(),
+        ),
+        GoRoute(
+          path: '/invoice',
+          name: AppRoute.invoice.name,
+          builder: (BuildContext context, GoRouterState state) => const InvoiceForm(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

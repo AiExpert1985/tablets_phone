@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/forms/date_picker.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
@@ -13,7 +14,8 @@ import 'package:tablets/src/features/home/controller/salesman_info_provider.dart
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
+import 'package:tablets/src/features/transactions/common/common_widgets.dart';
+import 'package:tablets/src/features/transactions/view/invoice_form.dart';
 
 class ReceiptForm extends ConsumerStatefulWidget {
   const ReceiptForm({super.key});
@@ -195,14 +197,20 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
             onPressed: () {
               _addRequiredProperties(ref, formDataNotifier);
               final formData = formDataNotifier.data;
-              final transaction = Transaction.fromMap(formData);
-              addTransactionToDb(ref, transaction);
-              tempPrint(formDataNotifier.data);
+              try {
+                final transaction = Transaction.fromMap(formData);
+                addTransactionToDb(ref, transaction);
+              } catch (e) {
+                failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
+              }
             },
           ),
           IconButton(
             icon: const CancelIcon(),
-            onPressed: () => {},
+            onPressed: () {
+              formDataNotifier.reset();
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
@@ -225,45 +233,5 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     formDataNotifier.addProperty('itemsTotalProfit', 0);
     formDataNotifier.addProperty('salesmanTransactionComssion', 0);
     formDataNotifier.addProperty('transactionType', TransactionType.customerReceipt.name);
-  }
-}
-
-void addTransactionToDb(WidgetRef ref, Transaction transaction) {
-  final repository = ref.read(transactionRepositoryProvider);
-  repository.addItem(transaction);
-}
-
-class FormFieldLabel extends StatelessWidget {
-  const FormFieldLabel(this.label, {super.key});
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 90,
-      padding: const EdgeInsets.all(2),
-      child: Text(
-        label,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 18, color: Colors.black),
-      ),
-    );
-  }
-}
-
-class StyledTotalText extends StatelessWidget {
-  const StyledTotalText(this.text, {super.key});
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    );
   }
 }
