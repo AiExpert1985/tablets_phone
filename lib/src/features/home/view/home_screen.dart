@@ -7,7 +7,9 @@ import 'package:tablets/src/features/home/controller/salesman_info_provider.dart
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/controllers/product_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/transactions/repository/products_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -40,9 +42,13 @@ class ButtonContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () async {
-        final customersRepository = ref.read(salesmanCustomerDbCacheProvider.notifier);
-        if (customersRepository.data.isEmpty) {
+        final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
+        if (customerDbCache.data.isEmpty) {
           await setSalesmanCustomers(ref);
+        }
+        final productDbCache = ref.read(productDbCacheProvider.notifier);
+        if (productDbCache.data.isEmpty) {
+          await setProductsDbCache(ref);
         }
         final formDataNotifier = ref.read(formDataContainerProvider.notifier);
         formDataNotifier.reset();
@@ -89,4 +95,11 @@ Future<void> setSalesmanCustomers(WidgetRef ref) async {
   }).toList();
   final salesmanCustomersDb = ref.read(salesmanCustomerDbCacheProvider.notifier);
   salesmanCustomersDb.set(salesmanCustomers);
+}
+
+Future<void> setProductsDbCache(WidgetRef ref) async {
+  final productsRepository = ref.read(productsRepositoryProvider);
+  final products = await productsRepository.fetchItemListAsMaps();
+  final productsDbCacheNotifier = ref.read(productDbCacheProvider.notifier);
+  productsDbCacheNotifier.set(products);
 }
