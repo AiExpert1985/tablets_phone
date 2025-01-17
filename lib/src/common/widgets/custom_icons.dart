@@ -15,6 +15,19 @@ class ApproveIcon extends StatelessWidget {
   }
 }
 
+class AddItems extends StatelessWidget {
+  const AddItems({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(children: [
+      Icon(Icons.add, color: Colors.green),
+      VerticalGap.s,
+      Text('اضافة مواد'),
+    ]);
+  }
+}
+
 class MainMenuIcon extends StatelessWidget {
   const MainMenuIcon({super.key});
 

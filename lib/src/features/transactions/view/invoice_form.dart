@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/forms/date_picker.dart';
-import 'package:tablets/src/common/functions/user_messages.dart';
-import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
-import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
-import 'package:tablets/src/features/transactions/common/common_functions.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
-import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 
 class InvoiceForm extends ConsumerStatefulWidget {
@@ -43,15 +36,7 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
               VerticalGap.xl,
               _buildNameSelection(context, formDataNotifier),
               VerticalGap.xl,
-              _buildReceiptNumber(context, formDataNotifier),
-              VerticalGap.xl,
               _buildDate(context, formDataNotifier),
-              VerticalGap.xl,
-              _buildReceivedAmount(context, formDataNotifier),
-              VerticalGap.xl,
-              _buildDiscountAmount(context, formDataNotifier),
-              VerticalGap.xl,
-              _buildReceiptTotalAmount(context),
               const Spacer(),
               _buildButtons(context, formDataNotifier),
             ],
@@ -92,81 +77,6 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
     );
   }
 
-  Widget _buildReceivedAmount(BuildContext context, MapStateNotifier formDataNotifier) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const FormFieldLabel('التسديد'),
-        HorizontalGap.xl,
-        Expanded(
-          child: FormInputField(
-            onChangedFn: (value) {
-              formDataNotifier.addProperty('subTotalAmount', value);
-              final discount = formDataNotifier.data['discount'] ?? 0;
-              total = value + discount; // Update total
-              formDataNotifier.addProperty('totalAmount', total);
-            },
-            dataType: FieldDataType.num,
-            name: 'subtotal',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDiscountAmount(BuildContext context, MapStateNotifier formDataNotifier) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const FormFieldLabel('الخصم'),
-        HorizontalGap.xl,
-        Expanded(
-          child: FormInputField(
-            onChangedFn: (value) {
-              formDataNotifier.addProperty('discount', value);
-              final subtotal = formDataNotifier.data['subTotalAmount'] ?? 0;
-              total = value + subtotal; // Update total
-              formDataNotifier.addProperty('totalAmount', total);
-            },
-            dataType: FieldDataType.num,
-            name: 'discount',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildReceiptNumber(BuildContext context, MapStateNotifier formDataNotifier) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const FormFieldLabel('رقم الوصل'),
-        HorizontalGap.xl,
-        Expanded(
-          child: FormInputField(
-            onChangedFn: (value) {
-              formDataNotifier.addProperty('number', value);
-            },
-            dataType: FieldDataType.num,
-            name: 'number',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildReceiptTotalAmount(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: const BoxDecoration(
-          color: Colors.blueGrey, borderRadius: BorderRadius.all(Radius.circular(6))),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        const StyledTotalText('المجموع'),
-        StyledTotalText(total.toString()),
-      ]),
-    );
-  }
-
   Widget _buildDate(BuildContext context, MapStateNotifier formDataNotifier) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -192,17 +102,8 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: const ApproveIcon(),
-            onPressed: () {
-              _addRequiredProperties(ref, formDataNotifier);
-              final formData = formDataNotifier.data;
-              try {
-                final transaction = Transaction.fromMap(formData);
-                addTransactionToDb(ref, transaction);
-              } catch (e) {
-                failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
-              }
-            },
+            icon: const AddItems(),
+            onPressed: () {},
           ),
           IconButton(
             icon: const CancelIcon(),
@@ -214,23 +115,5 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
         ],
       ),
     );
-  }
-
-  void _addRequiredProperties(WidgetRef ref, MapStateNotifier formDataNotifier) {
-    final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
-    final salesmanDbRef = salesmanInfoNotifier.dbRef;
-    final salesmanName = salesmanInfoNotifier.name;
-    formDataNotifier.addProperty('dbRef', generateRandomString(len: 8));
-    formDataNotifier.addProperty('salesmanDbRef', salesmanDbRef);
-    formDataNotifier.addProperty('salesman', salesmanName);
-    formDataNotifier.addProperty('imageUrls', []);
-    formDataNotifier.addProperty('paymentType', 'نقدي');
-    formDataNotifier.addProperty('currency', 'دينار');
-    formDataNotifier.addProperty('transactionTotalProfit', 0);
-    formDataNotifier.addProperty('isPrinted', false);
-    formDataNotifier.addProperty('transactionType', TransactionType.customerReceipt.name);
-    formDataNotifier.addProperty('itemsTotalProfit', 0);
-    formDataNotifier.addProperty('salesmanTransactionComssion', 0);
-    formDataNotifier.addProperty('transactionType', TransactionType.customerReceipt.name);
   }
 }
