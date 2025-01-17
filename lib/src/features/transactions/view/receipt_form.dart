@@ -199,6 +199,8 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
               try {
                 final transaction = Transaction.fromMap(formData);
                 addTransactionToDb(ref, transaction);
+                formDataNotifier.reset();
+                Navigator.pop(context);
               } catch (e) {
                 failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
               }

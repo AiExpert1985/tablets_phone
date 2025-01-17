@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
-import 'package:tablets/src/features/transactions/controllers/filtered_items_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/filtered_products_provider.dart';
 
 class ItemsGrid extends ConsumerWidget {
   const ItemsGrid({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(filteredItemsProvider);
-    final filteredItemsNotifier = ref.read(filteredItemsProvider.notifier);
+    ref.watch(filteredProductsProvider);
+    final filteredItemsNotifier = ref.read(filteredProductsProvider.notifier);
     final filteredItems = filteredItemsNotifier.data;
     return GridView.builder(
       itemCount: filteredItems.length,
