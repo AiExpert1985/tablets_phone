@@ -87,13 +87,13 @@ Future<void> setSalesmanCustomers(WidgetRef ref) async {
   }
   final salesmanDbRef = salesmanInfoNotifier.dbRef;
   final customersRepository = ref.read(customerRepositoryProvider);
-  // directly get only salesman customers, which reduces the number of documents fetched from firestore
-  final salesmanCustomers = await customersRepository.fetchItemListAsMaps(
-      filterKey: 'salesmanDbRef ', filterValue: salesmanDbRef);
-  // final customers = await customersRepository.fetchItemListAsMaps();
-  // final salesmanCustomers = customers.where((customer) {
-  //   return customer['salesmanDbRef'] == salesmanDbRef;
-  // }).toList();
+  // // directly get only salesman customers, which reduces the number of documents fetched from firestore
+  // final salesmanCustomers = await customersRepository.fetchItemListAsMaps(
+  //     filterKey: 'salesmanDbRef ', filterValue: salesmanDbRef);
+  final customers = await customersRepository.fetchItemListAsMaps();
+  final salesmanCustomers = customers.where((customer) {
+    return customer['salesmanDbRef'] == salesmanDbRef;
+  }).toList();
   final salesmanCustomersDb = ref.read(salesmanCustomerDbCacheProvider.notifier);
   salesmanCustomersDb.set(salesmanCustomers);
 }

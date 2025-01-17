@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/date_picker.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 
 class InvoiceForm extends ConsumerStatefulWidget {
   const InvoiceForm({super.key});
@@ -103,7 +106,15 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
         children: [
           IconButton(
             icon: const AddItems(),
-            onPressed: () {},
+            onPressed: () {
+              if (formDataNotifier.data.containsKey('date') &
+                  formDataNotifier.data.containsKey('name') &
+                  formDataNotifier.data.containsKey('nameDbRef')) {
+                GoRouter.of(context).pushNamed(AppRoute.items.name);
+              } else {
+                failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
+              }
+            },
           ),
           IconButton(
             icon: const CancelIcon(),
