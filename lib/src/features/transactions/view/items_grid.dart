@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/widgets/image_titled.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/filtered_products_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/model/product.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 
 class ItemsGrid extends ConsumerStatefulWidget {
   const ItemsGrid({super.key});
@@ -28,7 +34,9 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
         : filteredProducts.where((product) {
             return product['name'].toLowerCase().contains(_searchQuery.toLowerCase());
           }).toList();
-
+    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+    final sellingPriceType = formDataNotifier.data['sellingPriceType'];
+    tempPrint(sellingPriceType);
     return MainFrame(
       child: Container(
         padding: const EdgeInsets.all(25),
@@ -36,26 +44,36 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             VerticalGap.xl,
-            Expanded(
-              child: FormInputField(
-                onChangedFn: (value) {
-                  setState(() {
-                    _searchQuery = value; // Update the search query
-                  });
-                },
-                dataType: FieldDataType.text,
-                name: 'product-name',
-              ),
+            FormInputField(
+              onChangedFn: (value) {
+                setState(() {
+                  _searchQuery = value; // Update the search query
+                });
+              },
+              label: 'بحث',
+              dataType: FieldDataType.text,
+              name: 'product-name',
             ),
             VerticalGap.xl,
             Expanded(
-              child: ListView.builder(
+              child: GridView.builder(
                 itemCount: displayedProducts.length,
-                itemBuilder: (context, index) {
-                  final product = displayedProducts[index];
-                  return ListTile(
-                    title: Text(product['name']),
-                    // Add other product details as needed
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                ),
+                itemBuilder: (ctx, index) {
+                  final product = Product.fromMap(displayedProducts[index]);
+                  // price depends on customer
+                  final price = sellingPriceType == 'retail'
+                      ? product.sellRetailPrice
+                      : product.sellWholePrice;
+                  return InkWell(
+                    onTap: () => GoRouter.of(context).pushNamed(AppRoute.add.name, extra: product),
+                    hoverColor: const Color.fromARGB(255, 173, 170, 170),
+                    child: TitledImage(
+                        imageUrl: product.coverImageUrl, title: product.name, price: price),
                   );
                 },
               ),

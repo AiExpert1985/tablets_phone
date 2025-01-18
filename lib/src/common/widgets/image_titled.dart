@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 // import 'package:transparent_image/transparent_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class TitledImage extends StatelessWidget {
-  const TitledImage({required this.imageUrl, required this.title, super.key});
+  const TitledImage({required this.imageUrl, required this.title, required this.price, super.key});
 
   final String imageUrl;
   final String title;
+  final double price;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -34,17 +36,29 @@ class TitledImage extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-                height: MediaQuery.of(context).size.height * 0.05,
+                height: 80,
                 color: Colors.black45,
                 padding: const EdgeInsets.all(5),
-                child: Text(
-                  title,
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    Text(
+                      doubleToStringWithComma(price),
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ],
                 )),
           ),
         ],

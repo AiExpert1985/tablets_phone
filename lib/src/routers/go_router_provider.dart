@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/features/login/view/login_screen.dart';
+import 'package:tablets/src/features/transactions/model/product.dart';
+import 'package:tablets/src/features/transactions/view/add_item.dart';
 import 'package:tablets/src/features/transactions/view/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/items_grid.dart';
 import 'package:tablets/src/features/transactions/view/receipt_form.dart';
@@ -11,7 +13,7 @@ import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 
 import 'package:tablets/src/routers/not_found_screen.dart';
 
-enum AppRoute { home, login, receipt, invoice, items }
+enum AppRoute { home, login, receipt, invoice, items, add }
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
 
@@ -63,6 +65,14 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/items',
           name: AppRoute.items.name,
           builder: (BuildContext context, GoRouterState state) => const ItemsGrid(),
+        ),
+        GoRoute(
+          path: '/add',
+          name: AppRoute.add.name,
+          builder: (BuildContext context, GoRouterState state) {
+            final Product product = state.extra as Product;
+            return AddItem(product);
+          },
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

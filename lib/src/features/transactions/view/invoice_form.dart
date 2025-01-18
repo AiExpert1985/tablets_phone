@@ -72,6 +72,7 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
             onChangedFn: (customer) {
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
+              formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
             },
             dbCache: salesmanCustomersDb,
           ),
