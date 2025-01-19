@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
@@ -37,7 +36,6 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
           }).toList();
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final sellingPriceType = formDataNotifier.data['sellingPriceType'];
-    tempPrint(sellingPriceType);
     return MainFrame(
       includeBottomNavigation: true,
       child: Container(

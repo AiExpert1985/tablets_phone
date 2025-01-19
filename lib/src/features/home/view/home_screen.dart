@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
@@ -93,7 +92,6 @@ Future<void> setSalesmanCustomers(WidgetRef ref) async {
   // final salesmanCustomers = await customersRepository.fetchItemListAsMaps(
   //     filterKey: 'salesmanDbRef ', filterValue: salesmanDbRef);
   final customers = await customersRepository.fetchItemListAsMaps();
-  tempPrint('fresh copy of customers');
   final salesmanCustomers = customers.where((customer) {
     return customer['salesmanDbRef'] == salesmanDbRef;
   }).toList();

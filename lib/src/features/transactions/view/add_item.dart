@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -162,7 +161,6 @@ class _AddItemState extends ConsumerState<AddItem> {
           IconButton(
             icon: const ApproveIcon(),
             onPressed: () {
-              tempPrint(itemData);
               cartNotifier.addItem(itemData);
               Navigator.pop(context);
             },

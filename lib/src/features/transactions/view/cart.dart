@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
@@ -17,6 +17,8 @@ class ShoppingCart extends ConsumerWidget {
     ref.watch(cartProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
     final itemsData = cartNotifier.data;
+    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+    final formData = formDataNotifier.data;
     return MainFrame(
       includeBottomNavigation: true,
       child: Center(
@@ -26,6 +28,7 @@ class ShoppingCart extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: itemsData.isEmpty
                   ? [
+                      if (formData.isNotEmpty) _buildTransactionInfo(formData),
                       SizedBox(
                         width: double.infinity,
                         height: 250,
@@ -34,7 +37,13 @@ class ShoppingCart extends ConsumerWidget {
                       VerticalGap.xl,
                       _builAddButton(context, ref)
                     ]
-                  : [..._buildItemList(itemsData), VerticalGap.xl, _builAddButton(context, ref)],
+                  : [
+                      if (formData.isNotEmpty) _buildTransactionInfo(formData),
+                      VerticalGap.xl,
+                      ..._buildItemList(itemsData),
+                      VerticalGap.xl,
+                      _builAddButton(context, ref)
+                    ],
             )),
       ),
     );
@@ -67,14 +76,32 @@ class ShoppingCart extends ConsumerWidget {
               icon: const AddItem(),
               onPressed: () {
                 final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-                tempPrint(formDataNotifier.data);
                 if (formDataNotifier.data.isEmpty) {
-                  tempPrint('hi');
                   GoRouter.of(context).goNamed(AppRoute.invoice.name);
                 } else {
                   GoRouter.of(context).goNamed(AppRoute.items.name);
                 }
               }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTransactionInfo(Map<String, dynamic> formData) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            formData['name'],
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          VerticalGap.l,
+          Text(
+            formatDate(formData['date']),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          )
         ],
       ),
     );

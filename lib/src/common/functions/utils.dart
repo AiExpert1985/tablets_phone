@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
+
 String generateRandomString({int len = 5}) {
   var r = Random();
   return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89)).toString();
@@ -34,3 +36,5 @@ String doubleToStringWithComma(dynamic value,
   // Combine the whole part and the decimal part
   return formattedWholePart + decimalPart;
 }
+
+String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
