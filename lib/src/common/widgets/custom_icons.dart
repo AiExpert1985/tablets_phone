@@ -15,15 +15,15 @@ class ApproveIcon extends StatelessWidget {
   }
 }
 
-class AddItems extends StatelessWidget {
-  const AddItems({super.key});
+class AddItem extends StatelessWidget {
+  const AddItem({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Column(children: [
       Icon(Icons.add, color: Colors.green),
       VerticalGap.s,
-      Text('اضافة مواد'),
+      Text('اضافة مادة'),
     ]);
   }
 }

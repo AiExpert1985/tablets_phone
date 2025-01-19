@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/date_picker.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -15,6 +16,7 @@ import 'package:tablets/src/features/transactions/controllers/customer_db_cache_
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 
 class ReceiptForm extends ConsumerStatefulWidget {
   const ReceiptForm({super.key});
@@ -42,17 +44,17 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
               _buildScreenTitle(context),
               VerticalGap.xl,
               _buildNameSelection(context, formDataNotifier),
-              VerticalGap.xl,
+              VerticalGap.l,
               _buildDate(context, formDataNotifier),
-              VerticalGap.xl,
+              VerticalGap.l,
               _buildReceiptNumber(context, formDataNotifier),
-              VerticalGap.xl,
+              VerticalGap.l,
               _buildReceivedAmount(context, formDataNotifier),
-              VerticalGap.xl,
+              VerticalGap.l,
               _buildDiscountAmount(context, formDataNotifier),
               VerticalGap.xl,
               _buildReceiptTotalAmount(context),
-              const Spacer(),
+              VerticalGap.xl,
               _buildButtons(context, formDataNotifier),
             ],
           ),
@@ -200,17 +202,10 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                 final transaction = Transaction.fromMap(formData);
                 addTransactionToDb(ref, transaction);
                 formDataNotifier.reset();
-                Navigator.pop(context);
+                GoRouter.of(context).goNamed(AppRoute.home.name);
               } catch (e) {
                 failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
               }
-            },
-          ),
-          IconButton(
-            icon: const CancelIcon(),
-            onPressed: () {
-              formDataNotifier.reset();
-              Navigator.pop(context);
             },
           ),
         ],

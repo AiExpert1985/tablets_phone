@@ -19,6 +19,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MainFrame(
+      includeBottomNavigation: true,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +52,7 @@ class ButtonContainer extends ConsumerWidget {
         final formDataNotifier = ref.read(formDataContainerProvider.notifier);
         formDataNotifier.reset();
         if (context.mounted) {
-          GoRouter.of(context).pushNamed(routeName);
+          GoRouter.of(context).goNamed(routeName);
         }
       },
       child: Container(

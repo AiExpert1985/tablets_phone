@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainFrame extends ConsumerWidget {
-  const MainFrame({required this.child, this.includeBottomNavigation = false, super.key});
+  const MainFrame({required this.child, this.includeBottomNavigation = true, super.key});
 
   final Widget child;
   final bool includeBottomNavigation;
@@ -24,10 +25,12 @@ class MainFrame extends ConsumerWidget {
   Widget _buildBottomNavigation(BuildContext context) {
     return BottomNavigationBar(
       onTap: (index) {
-        if (index == 0) {
-          GoRouter.of(context).pushNamed(AppRoute.cart.name);
+        if (index == 0 && GoRouter.of(context).state!.path != '/cart') {
+          GoRouter.of(context).goNamed(AppRoute.cart.name);
+        } else if (index == 1 && GoRouter.of(context).state!.path != '/home') {
+          GoRouter.of(context).goNamed(AppRoute.home.name);
         } else {
-          GoRouter.of(context).pushNamed(AppRoute.home.name);
+          errorPrint('Error or repeated URI');
         }
       },
       items: const [
