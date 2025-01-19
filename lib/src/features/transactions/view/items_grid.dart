@@ -16,6 +16,7 @@ class ItemsGrid extends ConsumerStatefulWidget {
   const ItemsGrid({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ItemsGridState createState() => _ItemsGridState();
 }
 
@@ -38,6 +39,7 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
     final sellingPriceType = formDataNotifier.data['sellingPriceType'];
     tempPrint(sellingPriceType);
     return MainFrame(
+      includeBottomNavigation: true,
       child: Container(
         padding: const EdgeInsets.all(25),
         child: Column(

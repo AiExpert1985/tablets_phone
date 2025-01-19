@@ -6,6 +6,7 @@ import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/features/login/view/login_screen.dart';
 import 'package:tablets/src/features/transactions/model/product.dart';
 import 'package:tablets/src/features/transactions/view/add_item.dart';
+import 'package:tablets/src/features/transactions/view/cart.dart';
 import 'package:tablets/src/features/transactions/view/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/items_grid.dart';
 import 'package:tablets/src/features/transactions/view/receipt_form.dart';
@@ -13,7 +14,7 @@ import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 
 import 'package:tablets/src/routers/not_found_screen.dart';
 
-enum AppRoute { home, login, receipt, invoice, items, add }
+enum AppRoute { home, login, receipt, invoice, items, add, cart }
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
 
@@ -73,6 +74,11 @@ final goRouterProvider = Provider<GoRouter>(
             final Product product = state.extra as Product;
             return AddItem(product);
           },
+        ),
+        GoRoute(
+          path: '/cart',
+          name: AppRoute.cart.name,
+          builder: (BuildContext context, GoRouterState state) => const ShoppingCart(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

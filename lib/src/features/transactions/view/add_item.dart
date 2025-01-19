@@ -8,6 +8,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
+import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/product.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -17,6 +18,7 @@ class AddItem extends ConsumerStatefulWidget {
   final Product product;
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddItemState createState() => _AddItemState();
 }
 
@@ -38,6 +40,7 @@ class _AddItemState extends ConsumerState<AddItem> {
   @override
   Widget build(BuildContext context) {
     return MainFrame(
+      includeBottomNavigation: true,
       child: Container(
         padding: const EdgeInsets.all(30),
         child: Column(
@@ -53,7 +56,7 @@ class _AddItemState extends ConsumerState<AddItem> {
             VerticalGap.l,
             _buildGift(),
             const Spacer(),
-            _buildButtons(context),
+            _buildButtons(context, ref),
           ],
         ),
       ),
@@ -63,7 +66,7 @@ class _AddItemState extends ConsumerState<AddItem> {
   Widget _buildImage() {
     return CachedNetworkImage(
       fit: BoxFit.cover,
-      height: 200,
+      height: 150,
       width: 200,
       imageUrl: widget.product.coverImageUrl,
       progressIndicatorBuilder: (context, url, downloadProgress) => Image.memory(kTransparentImage),
@@ -149,7 +152,8 @@ class _AddItemState extends ConsumerState<AddItem> {
     );
   }
 
-  Widget _buildButtons(BuildContext context) {
+  Widget _buildButtons(BuildContext context, WidgetRef ref) {
+    final cartNotifier = ref.read(cartProvider.notifier);
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -159,6 +163,8 @@ class _AddItemState extends ConsumerState<AddItem> {
             icon: const ApproveIcon(),
             onPressed: () {
               tempPrint(itemData);
+              cartNotifier.addItem(itemData);
+              Navigator.pop(context);
             },
           ),
           IconButton(
