@@ -47,6 +47,7 @@ class FormInputField extends ConsumerWidget {
     return FormBuilderTextField(
       // if controller is used, initialValue should be neglected
       initialValue: _getInitialValue(),
+
       // only use input formatter if type is number, this is used for thousand separator
       inputFormatters: dataType == FieldDataType.num && useThousandSeparator
           ? [
@@ -66,6 +67,7 @@ class FormInputField extends ConsumerWidget {
       name: name,
       decoration: formFieldDecoration(label: label, hideBorders: hideBorders),
       onChanged: _onChanged,
+
       validator: isRequired ? _validator(context) : null,
       keyboardType: dataType == FieldDataType.num ? TextInputType.number : TextInputType.text,
     );

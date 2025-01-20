@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:toastification/toastification.dart';
 
 void successUserMessage(BuildContext context, String message) =>
@@ -12,6 +13,8 @@ void infoUserMessage(BuildContext context, String message) =>
 
 void _message(BuildContext context, String message, type) {
   toastification.show(
+    backgroundColor: itemsColor,
+    // foregroundColor: Colors.white,
     context: context, // optional if you use ToastificationWrapper
     title: Text(message),
     autoCloseDuration: const Duration(seconds: 5),
