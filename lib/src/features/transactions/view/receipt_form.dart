@@ -146,6 +146,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
         HorizontalGap.xl,
         Expanded(
           child: FormInputField(
+            useThousandSeparator: false,
             onChangedFn: (value) {
               formDataNotifier.addProperty('number', value);
             },
@@ -164,7 +165,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           color: itemsColor, borderRadius: BorderRadius.all(Radius.circular(6))),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
         const StyledTotalText('المجموع'),
-        StyledTotalText(total.toString()),
+        StyledTotalText(doubleToStringWithComma(total)),
       ]),
     );
   }

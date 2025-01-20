@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_multi_formatter/formatters/currency_input_formatter.dart';
+import 'package:flutter_multi_formatter/formatters/money_input_enums.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -18,8 +20,9 @@ class FormInputField extends ConsumerWidget {
     this.controller,
     required this.name,
     super.key,
-    this.textColor = Colors.black,
+    this.textColor = Colors.white,
     this.fontSize = 14,
+    this.useThousandSeparator = true,
   });
 
   final double fontSize;
@@ -37,12 +40,24 @@ class FormInputField extends ConsumerWidget {
   // for example when an adjacent dropdown is select, this field is changed
   final TextEditingController? controller;
   final String name; // used by the widget, not used by me
+  final bool useThousandSeparator;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FormBuilderTextField(
       // if controller is used, initialValue should be neglected
       initialValue: _getInitialValue(),
+      // only use input formatter if type is number, this is used for thousand separator
+      inputFormatters: dataType == FieldDataType.num && useThousandSeparator
+          ? [
+              CurrencyInputFormatter(
+                  thousandSeparator: ThousandSeparator.Comma,
+                  useSymbolPadding: true,
+                  mantissaLength: 0 // the length of the fractional side
+
+                  ),
+            ]
+          : null,
       readOnly: isReadOnly,
       controller: controller,
       // enabled: !isReadOnly,
@@ -68,6 +83,8 @@ class FormInputField extends ConsumerWidget {
       if (value == null) return;
       if (dataType == FieldDataType.num) {
         if (value.toString().trim().isEmpty) return;
+        // if number contains thousand separator, we remove it
+        value = value.replaceAll(',', '');
         final parsedValue = double.parse(value);
         onChangedFn(parsedValue);
         return;
