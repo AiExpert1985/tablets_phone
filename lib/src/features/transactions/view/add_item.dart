@@ -77,7 +77,7 @@ class _AddItemState extends ConsumerState<AddItem> {
     return Text(
       itemData['name'],
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
     );
   }
 

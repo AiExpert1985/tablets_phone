@@ -59,10 +59,10 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
               child: GridView.builder(
                 itemCount: displayedProducts.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                ),
+                    crossAxisCount: 1,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 1.25),
                 itemBuilder: (ctx, index) {
                   final product = Product.fromMap(displayedProducts[index]);
                   // price depends on customer

@@ -29,7 +29,7 @@ class ShoppingCart extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: itemsData.isEmpty
                   ? [
-                      if (formData.isNotEmpty) _buildTransactionInfo(context, formData),
+                      _buildTransactionInfo(context, formData),
                       SizedBox(
                         width: double.infinity,
                         height: 250,
@@ -39,7 +39,7 @@ class ShoppingCart extends ConsumerWidget {
                       _builAddButton(context, ref)
                     ]
                   : [
-                      if (formData.isNotEmpty) _buildTransactionInfo(context, formData),
+                      _buildTransactionInfo(context, formData),
                       VerticalGap.xl,
                       ..._buildItemList(itemsData),
                       VerticalGap.xl,
@@ -97,17 +97,19 @@ class ShoppingCart extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              formData['name'],
-              style:
-                  const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            VerticalGap.l,
-            Text(
-              formatDate(formData['date']),
-              style:
-                  const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
+            if (formData['name'] != null)
+              Text(
+                formData['name'],
+                style:
+                    const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            if (formData['date'] != null) VerticalGap.l,
+            if (formData['date'] != null)
+              Text(
+                formatDate(formData['date']),
+                style:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
           ],
         ),
       ),

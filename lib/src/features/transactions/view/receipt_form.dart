@@ -161,7 +161,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: const BoxDecoration(
-          color: Colors.blueGrey, borderRadius: BorderRadius.all(Radius.circular(6))),
+          color: itemsColor, borderRadius: BorderRadius.all(Radius.circular(6))),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
         const StyledTotalText('المجموع'),
         StyledTotalText(total.toString()),

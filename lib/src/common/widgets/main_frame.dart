@@ -7,8 +7,9 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
-const bgColor = Color.fromARGB(255, 82, 45, 3);
-const itemsColor = Color.fromARGB(255, 116, 66, 2);
+// these colors are taken from Omar caffee mobile web app, given by Mahmood
+const bgColor = Color(0xFF573419);
+const itemsColor = Color(0xFF9C551F);
 
 class MainFrame extends ConsumerWidget {
   const MainFrame({required this.child, this.includeBottomNavigation = true, super.key});
@@ -44,6 +45,8 @@ class MainFrame extends ConsumerWidget {
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'الرئيسية'),
       ],
       backgroundColor: itemsColor,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white,
     );
   }
 }

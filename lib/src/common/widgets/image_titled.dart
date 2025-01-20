@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:transparent_image/transparent_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class TitledImage extends StatelessWidget {
@@ -37,7 +38,7 @@ class TitledImage extends StatelessWidget {
             right: 0,
             child: Container(
                 height: 80,
-                color: Colors.black45,
+                color: itemsColor.withOpacity(0.75),
                 padding: const EdgeInsets.all(5),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

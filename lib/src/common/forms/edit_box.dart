@@ -52,6 +52,7 @@ class FormInputField extends ConsumerWidget {
       decoration: formFieldDecoration(label: label, hideBorders: hideBorders),
       onChanged: _onChanged,
       validator: isRequired ? _validator(context) : null,
+      keyboardType: dataType == FieldDataType.num ? TextInputType.number : TextInputType.text,
     );
   }
 
