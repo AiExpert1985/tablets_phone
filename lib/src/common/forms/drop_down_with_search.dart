@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/forms/form_filed_decoration.dart';
+import 'package:tablets/src/common/widgets/main_frame.dart';
 
 /// same as DropDownWithSearchForm but without expanded
 class DropDownWithSearch extends ConsumerWidget {
@@ -31,7 +32,7 @@ class DropDownWithSearch extends ConsumerWidget {
       mode: Mode.form,
       enabled: !isReadOnly,
       decoratorProps: DropDownDecoratorProps(
-        baseStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        baseStyle: const TextStyle(fontSize: 14, color: Colors.white),
         textAlign: TextAlign.center,
         decoration: formFieldDecoration(label: label, hideBorders: hideBorders),
       ),
@@ -45,11 +46,12 @@ class DropDownWithSearch extends ConsumerWidget {
                 child: Text(
                   label!,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
                 ),
               )
             : null,
         dialogProps: DialogProps(
+          backgroundColor: itemsColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
         fit: FlexFit.tight,
@@ -87,7 +89,7 @@ Widget popUpItem(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
       child: ListTile(
         selected: isSelected,
-        title: Text(item['name']),
+        title: Text(item['name'], style: const TextStyle(fontSize: 14, color: Colors.white)),
         // subtitle: Text(item.code.toString()),
         leading: CircleAvatar(
           // radius: 70,

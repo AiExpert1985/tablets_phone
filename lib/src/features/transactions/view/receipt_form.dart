@@ -68,7 +68,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
       padding: const EdgeInsets.all(10),
       child: const Text(
         'وصل قبض',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: itemsColor),
       ),
     );
   }
