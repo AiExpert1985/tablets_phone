@@ -10,7 +10,7 @@ class ApproveIcon extends StatelessWidget {
     return Column(children: [
       const Icon(Icons.check, color: Colors.green),
       VerticalGap.s,
-      Text(S.of(context).approve)
+      Text(S.of(context).approve, style: const TextStyle(color: Colors.white))
     ]);
   }
 }
@@ -21,9 +21,13 @@ class AddItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(children: [
-      Icon(Icons.add, color: Colors.green),
+      Icon(
+        Icons.add,
+        color: Colors.green,
+        size: 30,
+      ),
       VerticalGap.s,
-      Text('اضافة مادة'),
+      Text('اضافة مادة', style: TextStyle(color: Colors.white)),
     ]);
   }
 }
@@ -54,7 +58,7 @@ class HomeReturnIcon extends StatelessWidget {
       HorizontalGap.s,
       Text(
         S.of(context).home_page,
-        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
       )
     ]);
   }

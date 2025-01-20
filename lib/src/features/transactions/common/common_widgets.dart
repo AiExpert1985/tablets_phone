@@ -24,7 +24,7 @@ class FormFieldLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 90,
+      width: 60,
       padding: const EdgeInsets.all(2),
       child: Text(
         label,

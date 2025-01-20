@@ -67,9 +67,10 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const FormFieldLabel('الزبون'),
-        HorizontalGap.xl,
+        HorizontalGap.l,
         Expanded(
           child: DropDownWithSearch(
+            initialValue: formDataNotifier.data['name'],
             onChangedFn: (customer) {
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
@@ -87,9 +88,10 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const FormFieldLabel('التاريخ'),
-        HorizontalGap.xl,
+        HorizontalGap.l,
         Expanded(
           child: FormDatePickerField(
+            initialValue: formDataNotifier.data['date'],
             onChangedFn: (date) {
               formDataNotifier.addProperty('date', date);
             },

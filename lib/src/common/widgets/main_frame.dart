@@ -7,6 +7,9 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
+const bgColor = Color.fromARGB(255, 82, 45, 3);
+const itemsColor = Color.fromARGB(255, 116, 66, 2);
+
 class MainFrame extends ConsumerWidget {
   const MainFrame({required this.child, this.includeBottomNavigation = true, super.key});
 
@@ -17,7 +20,7 @@ class MainFrame extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: customAppBar(context),
-      body: child,
+      body: Container(color: bgColor, child: child),
       bottomNavigationBar: includeBottomNavigation ? _buildBottomNavigation(context) : null,
     );
   }
@@ -34,16 +37,20 @@ class MainFrame extends ConsumerWidget {
         }
       },
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'المشتريات'), // Cart Icon
+        BottomNavigationBarItem(
+          icon: Icon(Icons.shopping_cart),
+          label: 'المشتريات',
+        ), // Cart Icon
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'الرئيسية'),
       ],
+      backgroundColor: itemsColor,
     );
   }
 }
 
 PreferredSizeWidget customAppBar(BuildContext context) {
   return AppBar(
-    backgroundColor: Theme.of(context).colorScheme.primary,
+    backgroundColor: itemsColor,
     actions: [
       TextButton.icon(
         onPressed: () async {

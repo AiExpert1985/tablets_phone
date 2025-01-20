@@ -60,12 +60,13 @@ class ButtonContainer extends ConsumerWidget {
         decoration: BoxDecoration(
           border: Border.all(),
           borderRadius: const BorderRadius.all(Radius.circular(6)),
+          color: itemsColor,
         ),
         padding: const EdgeInsets.all(20),
         child: Center(
           child: Text(
             label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
       ),

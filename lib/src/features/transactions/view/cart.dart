@@ -15,6 +15,7 @@ class ShoppingCart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(cartProvider);
+    ref.watch(formDataContainerProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
     final itemsData = cartNotifier.data;
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
@@ -28,7 +29,7 @@ class ShoppingCart extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: itemsData.isEmpty
                   ? [
-                      if (formData.isNotEmpty) _buildTransactionInfo(formData),
+                      if (formData.isNotEmpty) _buildTransactionInfo(context, formData),
                       SizedBox(
                         width: double.infinity,
                         height: 250,
@@ -38,7 +39,7 @@ class ShoppingCart extends ConsumerWidget {
                       _builAddButton(context, ref)
                     ]
                   : [
-                      if (formData.isNotEmpty) _buildTransactionInfo(formData),
+                      if (formData.isNotEmpty) _buildTransactionInfo(context, formData),
                       VerticalGap.xl,
                       ..._buildItemList(itemsData),
                       VerticalGap.xl,
@@ -58,7 +59,7 @@ class ShoppingCart extends ConsumerWidget {
           child: Text(
             itemData['name'],
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 14, color: Colors.white),
           ),
         ),
       );
@@ -87,22 +88,28 @@ class ShoppingCart extends ConsumerWidget {
     );
   }
 
-  Widget _buildTransactionInfo(Map<String, dynamic> formData) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            formData['name'],
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          VerticalGap.l,
-          Text(
-            formatDate(formData['date']),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          )
-        ],
+  Widget _buildTransactionInfo(BuildContext context, Map<String, dynamic> formData) {
+    return InkWell(
+      onTap: () => GoRouter.of(context).goNamed(AppRoute.invoice.name),
+      child: Container(
+        width: 250,
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              formData['name'],
+              style:
+                  const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            VerticalGap.l,
+            Text(
+              formatDate(formData['date']),
+              style:
+                  const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+          ],
+        ),
       ),
     );
   }

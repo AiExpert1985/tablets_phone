@@ -165,12 +165,6 @@ class _AddItemState extends ConsumerState<AddItem> {
               Navigator.pop(context);
             },
           ),
-          IconButton(
-            icon: const CancelIcon(),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
         ],
       ),
     );
