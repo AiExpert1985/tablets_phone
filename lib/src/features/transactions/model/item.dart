@@ -4,6 +4,7 @@ class CartItem {
   int code;
   String name;
   String dbRef;
+  String productDbRef;
   double weight;
   List<String> imageUrls;
   double? sellingPrice;
@@ -16,6 +17,7 @@ class CartItem {
     required this.code,
     required this.name,
     required this.dbRef,
+    required this.productDbRef,
     required this.weight,
     required this.imageUrls,
     this.sellingPrice,
@@ -32,6 +34,7 @@ class CartItem {
       'code': code,
       'name': name,
       'dbRef': dbRef,
+      'productDbRef': productDbRef,
       'weight': weight,
       'imageUrls': imageUrls,
       'sellingPrice': sellingPrice,
@@ -47,6 +50,7 @@ class CartItem {
       code: map['code'] ?? 0,
       name: map['name'] ?? 'unnamed',
       dbRef: map['dbRef'] ?? 'xxxx',
+      productDbRef: map['productDbRef'] ?? 'yyyy',
       weight: map['weight'] ?? 0,
       imageUrls: map['imageUrls'] ?? [defaultImageUrl],
       sellingPrice: map['sellingPrice'],

@@ -4,7 +4,21 @@ import 'package:tablets/src/features/transactions/model/item.dart';
 class CartNotifier extends StateNotifier<List<CartItem>> {
   CartNotifier() : super([]);
 
-  void addItem(CartItem item) => state = [...state, item];
+  void addItem(CartItem item) {
+    List<CartItem> stateCopy = state;
+    bool itemExists = false;
+    for (var i = 0; i < state.length; i++) {
+      if (state[i].dbRef == item.dbRef) {
+        stateCopy[i] == item;
+        itemExists = true;
+      }
+    }
+    if (itemExists) {
+      state = [...stateCopy];
+    } else {
+      state = [...state, item];
+    }
+  }
 
   void removeItem(int index) {
     if (index >= 0 && index < state.length) {

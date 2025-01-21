@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
@@ -75,7 +76,8 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                       final item = CartItem(
                         code: product.code,
                         name: product.name,
-                        dbRef: product.dbRef,
+                        dbRef: generateRandomString(len: 4),
+                        productDbRef: product.dbRef,
                         weight: product.packageWeight,
                         imageUrls: product.imageUrls,
                       );
