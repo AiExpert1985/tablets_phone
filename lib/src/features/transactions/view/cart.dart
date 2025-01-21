@@ -61,6 +61,8 @@ class ShoppingCart extends ConsumerWidget {
                       _buildTransactionInfo(context, formData),
                       Expanded(
                         child: ListView(
+                          shrinkWrap:
+                              true, // This allows the ListView to take only the space it needs
                           children: _buildItemList(context, ref, cartItems),
                         ),
                       ),
@@ -90,6 +92,7 @@ class ShoppingCart extends ConsumerWidget {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final formData = formDataNotifier.data;
     return Container(
+      width: 300,
       padding: const EdgeInsets.all(5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -203,43 +206,45 @@ class ShoppingCart extends ConsumerWidget {
         cartNotifier.removeItem(sequence); // Call the method to remove the item
         successUserMessage(context, 'تم ازالة ${cartItem.name}');
       },
-      child: InkWell(
-        onTap: () {
-          GoRouter.of(context).pushNamed(AppRoute.add.name, extra: cartItem);
-        },
-        child: Card(
-          color: itemsColor,
-          child: Container(
-            width: 300,
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircledContainer(child: Text((sequence + 1).toString())),
-                    Expanded(
-                      child: Text(
-                        cartItem.name,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 15, color: Colors.yellow),
-                        overflow: TextOverflow.visible, // Optional: Control overflow behavior
+      child: Center(
+        child: InkWell(
+          onTap: () {
+            GoRouter.of(context).pushNamed(AppRoute.add.name, extra: cartItem);
+          },
+          child: Card(
+            color: itemsColor,
+            child: Container(
+              width: 300,
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircledContainer(child: Text((sequence + 1).toString())),
+                      Expanded(
+                        child: Text(
+                          cartItem.name,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15, color: Colors.yellow),
+                          overflow: TextOverflow.visible, // Optional: Control overflow behavior
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                VerticalGap.s,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildCell('السعر', cartItem.sellingPrice!),
-                    _buildCell('العدد', cartItem.soldQuantity!),
-                    _buildCell('الهدية', cartItem.giftQuantity!),
-                    _buildCell('المبلغ الكلي', cartItem.totalAmount!),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  VerticalGap.s,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildCell('السعر', cartItem.sellingPrice!),
+                      _buildCell('العدد', cartItem.soldQuantity!),
+                      _buildCell('الهدية', cartItem.giftQuantity!),
+                      _buildCell('المبلغ الكلي', cartItem.totalAmount!),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
