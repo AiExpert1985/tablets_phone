@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circle.dart';
@@ -8,6 +9,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class ShoppingCart extends ConsumerWidget {
@@ -18,7 +20,7 @@ class ShoppingCart extends ConsumerWidget {
     ref.watch(cartProvider);
     ref.watch(formDataContainerProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
-    final itemsData = cartNotifier.data;
+    final cartItems = cartNotifier.data;
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final formData = formDataNotifier.data;
     return MainFrame(
@@ -27,8 +29,8 @@ class ShoppingCart extends ConsumerWidget {
         child: Container(
             padding: const EdgeInsets.all(20),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: itemsData.isEmpty
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: cartItems.isEmpty
                   ? [
                       _buildTransactionInfo(context, formData),
                       SizedBox(
@@ -44,7 +46,7 @@ class ShoppingCart extends ConsumerWidget {
                       VerticalGap.xl,
                       Expanded(
                         child: ListView(
-                          children: _buildItemList(itemsData),
+                          children: _buildItemList(context, ref, cartItems),
                         ),
                       ),
                       VerticalGap.xl,
@@ -55,10 +57,10 @@ class ShoppingCart extends ConsumerWidget {
     );
   }
 
-  List<Widget> _buildItemList(List<Map<String, dynamic>> itemsData) {
+  List<Widget> _buildItemList(BuildContext context, WidgetRef ref, List<CartItem> cartItems) {
     List<Widget> items = [];
-    for (int i = 0; i < itemsData.length; i++) {
-      items.add(_buildItemCard(i + 1, itemsData[i]));
+    for (int i = 0; i < cartItems.length; i++) {
+      items.add(_buildItemCard(context, ref, i, cartItems[i]));
     }
     return items;
   }
@@ -112,37 +114,58 @@ class ShoppingCart extends ConsumerWidget {
     );
   }
 
-  Widget _buildItemCard(int sequence, Map<String, dynamic> itemData) {
-    return Card(
-      color: itemsColor,
-      child: Container(
-        width: 300,
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildItemCard(BuildContext context, WidgetRef ref, int sequence, CartItem cartItem) {
+    final cartNotifier = ref.read(cartProvider.notifier);
+    return Dismissible(
+      key: Key(generateRandomString(len: 4)), // Use a unique key for each item
+      background: Container(
+        color: Colors.red, // Background color when swiping
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      onDismissed: (direction) {
+        cartNotifier.removeItem(sequence); // Call the method to remove the item
+        successUserMessage(context, '${cartItem.name}تم ازالة ');
+      },
+      child: InkWell(
+        onTap: () {
+          GoRouter.of(context).pushNamed(AppRoute.add.name, extra: cartItem);
+        },
+        child: Card(
+          color: itemsColor,
+          child: Container(
+            width: 300,
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
               children: [
-                CircledContainer(child: Text(sequence.toString())),
-                HorizontalGap.l,
-                Text(
-                  itemData['name'],
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 15, color: Colors.yellow),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircledContainer(child: Text((sequence + 1).toString())),
+                    Expanded(
+                      child: Text(
+                        cartItem.name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 15, color: Colors.yellow),
+                        overflow: TextOverflow.visible, // Optional: Control overflow behavior
+                      ),
+                    ),
+                  ],
+                ),
+                VerticalGap.l,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildCell('السعر', cartItem.sellingPrice!),
+                    _buildCell('العدد', cartItem.soldQuantity!),
+                    _buildCell('الهدية', cartItem.giftQuantity!),
+                    _buildCell('المبلغ الكلي', cartItem.totalAmount!),
+                  ],
                 ),
               ],
             ),
-            VerticalGap.l,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildCell('السعر', itemData['sellingPrice']),
-                _buildCell('العدد', itemData['soldQuantity']),
-                _buildCell('الهدية', itemData['giftQuantity']),
-                _buildCell('المبلغ الكلي', itemData['sellingPrice'] * itemData['soldQuantity']),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );

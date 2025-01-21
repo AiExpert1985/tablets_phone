@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/features/login/view/login_screen.dart';
-import 'package:tablets/src/features/transactions/model/product.dart';
+import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/view/add_item.dart';
 import 'package:tablets/src/features/transactions/view/cart.dart';
 import 'package:tablets/src/features/transactions/view/invoice_form.dart';
@@ -71,8 +71,8 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/add',
           name: AppRoute.add.name,
           builder: (BuildContext context, GoRouterState state) {
-            final Product product = state.extra as Product;
-            return AddItem(product);
+            final CartItem item = state.extra as CartItem;
+            return AddItem(item);
           },
         ),
         GoRoute(

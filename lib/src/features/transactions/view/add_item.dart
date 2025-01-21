@@ -2,19 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
-import 'package:tablets/src/features/transactions/model/product.dart';
+import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class AddItem extends ConsumerStatefulWidget {
-  const AddItem(this.product, {super.key});
-  final Product product;
+  const AddItem(this.item, {super.key});
+  final CartItem item;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -22,18 +22,12 @@ class AddItem extends ConsumerStatefulWidget {
 }
 
 class _AddItemState extends ConsumerState<AddItem> {
-  late Map<String, dynamic> itemData;
+  late CartItem cartItem;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the product data map with the product's properties
-    itemData = {
-      'code': widget.product.code,
-      'name': widget.product.name,
-      'dbRef': widget.product.dbRef,
-      'weight': widget.product.packageWeight,
-    };
+    cartItem = widget.item;
   }
 
   @override
@@ -67,7 +61,7 @@ class _AddItemState extends ConsumerState<AddItem> {
       fit: BoxFit.cover,
       height: 150,
       width: 200,
-      imageUrl: widget.product.coverImageUrl,
+      imageUrl: cartItem.coverImageUrl,
       progressIndicatorBuilder: (context, url, downloadProgress) => Image.memory(kTransparentImage),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );
@@ -75,19 +69,13 @@ class _AddItemState extends ConsumerState<AddItem> {
 
   Widget _buildTitle() {
     return Text(
-      itemData['name'],
+      cartItem.name,
       textAlign: TextAlign.center,
       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
     );
   }
 
   Widget _buildPrice() {
-    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-    final sellingPriceType = formDataNotifier.data['sellingPriceType'];
-    final price = sellingPriceType == 'retail'
-        ? widget.product.sellRetailPrice
-        : widget.product.sellWholePrice;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -95,12 +83,13 @@ class _AddItemState extends ConsumerState<AddItem> {
         HorizontalGap.xl,
         Expanded(
           child: FormInputField(
+            initialValue: cartItem.sellingPrice,
             onChangedFn: (value) {
               setState(() {
-                itemData['sellingPrice'] = value; // Update price in the map
+                cartItem.sellingPrice = value;
+                cartItem.totalAmount = value * cartItem.soldQuantity ?? 0;
               });
             },
-            initialValue: price,
             dataType: FieldDataType.num,
             name: 'price',
           ),
@@ -117,9 +106,11 @@ class _AddItemState extends ConsumerState<AddItem> {
         HorizontalGap.xl,
         Expanded(
           child: FormInputField(
+            initialValue: cartItem.soldQuantity,
             onChangedFn: (value) {
               setState(() {
-                itemData['soldQuantity'] = value; // Update quantity in the map
+                cartItem.soldQuantity = value;
+                cartItem.totalAmount = value * cartItem.sellingPrice ?? 0;
               });
             },
             dataType: FieldDataType.num,
@@ -138,9 +129,10 @@ class _AddItemState extends ConsumerState<AddItem> {
         HorizontalGap.xl,
         Expanded(
           child: FormInputField(
+            initialValue: cartItem.giftQuantity,
             onChangedFn: (value) {
               setState(() {
-                itemData['giftQuantity'] = value; // Update gift in the map
+                cartItem.giftQuantity = value; // Update gift in the map
               });
             },
             dataType: FieldDataType.num,
@@ -161,7 +153,14 @@ class _AddItemState extends ConsumerState<AddItem> {
           IconButton(
             icon: const ApproveIcon(),
             onPressed: () {
-              cartNotifier.addItem(itemData);
+              // all fields must be filled
+              if (cartItem.sellingPrice == null ||
+                  cartItem.soldQuantity == null ||
+                  cartItem.giftQuantity == null) {
+                failureUserMessage(context, 'يجب ملئ جميع الحقول');
+                return;
+              }
+              cartNotifier.addItem(cartItem);
               Navigator.pop(context);
             },
           ),

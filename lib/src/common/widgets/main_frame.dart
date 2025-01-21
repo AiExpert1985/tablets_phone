@@ -32,10 +32,10 @@ class MainFrame extends ConsumerWidget {
     final formData = ref.read(formDataContainerProvider);
     return BottomNavigationBar(
       onTap: (index) {
-        if (index == 0 && GoRouter.of(context).state!.path != '/cart') {
+        if (index == 0 && (formData['name'] == null || formData['date'] == null)) {
+          failureUserMessage(context, 'تأكد من ملى حقول القائمة اولا');
+        } else if (index == 0 && GoRouter.of(context).state!.path != '/cart') {
           GoRouter.of(context).goNamed(AppRoute.cart.name);
-        } else if (index == 0 && GoRouter.of(context).state!.path != '/home' && formData.isEmpty) {
-          failureUserMessage(context, 'يجب فتح قائمة اولا');
         } else if (index == 1 && GoRouter.of(context).state!.path != '/home') {
           GoRouter.of(context).goNamed(AppRoute.home.name);
         } else {
@@ -50,8 +50,8 @@ class MainFrame extends ConsumerWidget {
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'الرئيسية'),
       ],
       backgroundColor: itemsColor,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white,
+      selectedItemColor: Colors.yellow,
+      unselectedItemColor: Colors.yellow,
     );
   }
 }
@@ -70,11 +70,11 @@ PreferredSizeWidget customAppBar(BuildContext context) {
         }, //signout(ref),
         icon: const Icon(
           Icons.do_disturb_on_outlined,
-          color: Colors.red,
+          color: Colors.yellow,
         ),
         label: Text(
           S.of(context).logout,
-          style: const TextStyle(color: Colors.red),
+          style: const TextStyle(color: Colors.yellow),
         ),
       ),
     ],

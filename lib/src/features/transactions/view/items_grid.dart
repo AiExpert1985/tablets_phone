@@ -8,6 +8,7 @@ import 'package:tablets/src/common/widgets/image_titled.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/filtered_products_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/model/product.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
@@ -70,7 +71,16 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                       ? product.sellRetailPrice
                       : product.sellWholePrice;
                   return InkWell(
-                    onTap: () => GoRouter.of(context).pushNamed(AppRoute.add.name, extra: product),
+                    onTap: () {
+                      final item = CartItem(
+                        code: product.code,
+                        name: product.name,
+                        dbRef: product.dbRef,
+                        weight: product.packageWeight,
+                        imageUrls: product.imageUrls,
+                      );
+                      GoRouter.of(context).pushNamed(AppRoute.add.name, extra: item);
+                    },
                     hoverColor: const Color.fromARGB(255, 173, 170, 170),
                     child: TitledImage(
                         imageUrl: product.coverImageUrl, title: product.name, price: price),

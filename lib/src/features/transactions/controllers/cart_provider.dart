@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/features/transactions/model/item.dart';
 
-class CartNotifier extends StateNotifier<List<Map<String, dynamic>>> {
+class CartNotifier extends StateNotifier<List<CartItem>> {
   CartNotifier() : super([]);
 
-  void addItem(Map<String, dynamic> newMap) => state = [...state, newMap];
+  void addItem(CartItem item) => state = [...state, item];
 
   void removeItem(int index) {
     if (index >= 0 && index < state.length) {
@@ -14,12 +15,12 @@ class CartNotifier extends StateNotifier<List<Map<String, dynamic>>> {
     }
   }
 
-  List<Map<String, dynamic>> get data => state;
+  List<CartItem> get data => state;
 
   void reset() => state = [];
 }
 
-// Create a provider for the MapListNotifier
-final cartProvider = StateNotifierProvider<CartNotifier, List<Map<String, dynamic>>>((ref) {
+// Create a provider for the CartNotifier
+final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
   return CartNotifier();
 });
