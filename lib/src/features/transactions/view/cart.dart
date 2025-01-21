@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/widgets/circle.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
@@ -53,16 +54,7 @@ class ShoppingCart extends ConsumerWidget {
   List<Widget> _buildItemList(List<Map<String, dynamic>> itemsData) {
     List<Widget> items = [];
     for (var itemData in itemsData) {
-      items.add(
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Text(
-            itemData['name'],
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, color: Colors.white),
-          ),
-        ),
-      );
+      items.add(_buildItemCard(itemData));
     }
     return items;
   }
@@ -113,6 +105,54 @@ class ShoppingCart extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildItemCard(Map<String, dynamic> itemData) {
+    return Card(
+      color: itemsColor,
+      child: Container(
+        width: 300,
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircledContainer(child: Text('1')),
+                HorizontalGap.l,
+                Text(
+                  itemData['name'],
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 15, color: Colors.yellow),
+                ),
+              ],
+            ),
+            VerticalGap.l,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildCell('السعر', itemData['soldQuantity']),
+                _buildCell('العدد', itemData['soldQuantity']),
+                _buildCell('الهدية', itemData['soldQuantity']),
+                _buildCell('المبلغ الكلي', itemData['soldQuantity']),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCell(String columnName, double columnValue) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(columnName, style: const TextStyle(color: Colors.white, fontSize: 12)),
+        VerticalGap.xs,
+        Text(doubleToStringWithComma(columnValue),
+            style: const TextStyle(color: Colors.white, fontSize: 12))
+      ],
     );
   }
 }

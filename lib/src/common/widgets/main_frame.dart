@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 // these colors are taken from Omar caffee mobile web app, given by Mahmood
@@ -22,15 +24,18 @@ class MainFrame extends ConsumerWidget {
     return Scaffold(
       appBar: customAppBar(context),
       body: Container(color: bgColor, child: child),
-      bottomNavigationBar: includeBottomNavigation ? _buildBottomNavigation(context) : null,
+      bottomNavigationBar: includeBottomNavigation ? _buildBottomNavigation(context, ref) : null,
     );
   }
 
-  Widget _buildBottomNavigation(BuildContext context) {
+  Widget _buildBottomNavigation(BuildContext context, WidgetRef ref) {
+    final formData = ref.read(formDataContainerProvider);
     return BottomNavigationBar(
       onTap: (index) {
         if (index == 0 && GoRouter.of(context).state!.path != '/cart') {
           GoRouter.of(context).goNamed(AppRoute.cart.name);
+        } else if (index == 0 && GoRouter.of(context).state!.path != '/home' && formData.isEmpty) {
+          failureUserMessage(context, 'يجب فتح قائمة اولا');
         } else if (index == 1 && GoRouter.of(context).state!.path != '/home') {
           GoRouter.of(context).goNamed(AppRoute.home.name);
         } else {

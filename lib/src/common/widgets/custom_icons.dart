@@ -104,7 +104,7 @@ class CancelIcon extends StatelessWidget {
         color: Colors.red,
       ),
       VerticalGap.s,
-      Text(S.of(context).cancel),
+      Text(S.of(context).cancel, style: const TextStyle(color: Colors.white)),
     ]);
   }
 }
