@@ -7,6 +7,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circle.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
@@ -23,6 +24,10 @@ class ShoppingCart extends ConsumerWidget {
     final cartItems = cartNotifier.data;
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final formData = formDataNotifier.data;
+    double transactionTotalAmount = 0;
+    for (var item in cartItems) {
+      transactionTotalAmount += item.totalAmount ?? 0;
+    }
     return MainFrame(
       includeBottomNavigation: true,
       child: Center(
@@ -49,6 +54,8 @@ class ShoppingCart extends ConsumerWidget {
                           children: _buildItemList(context, ref, cartItems),
                         ),
                       ),
+                      VerticalGap.m,
+                      _buildReceiptTotalAmount(context, transactionTotalAmount),
                       VerticalGap.m,
                       _builAddButton(context, ref)
                     ],
@@ -138,6 +145,7 @@ class ShoppingCart extends ConsumerWidget {
             width: 300,
             padding: const EdgeInsets.all(12.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -168,6 +176,19 @@ class ShoppingCart extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildReceiptTotalAmount(BuildContext context, double transactionTotalAmount) {
+    return Container(
+      width: 300,
+      padding: const EdgeInsets.all(5),
+      decoration: const BoxDecoration(
+          color: itemsColor, borderRadius: BorderRadius.all(Radius.circular(6))),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+        const StyledTotalText('المجموع'),
+        StyledTotalText(doubleToStringWithComma(transactionTotalAmount)),
+      ]),
     );
   }
 

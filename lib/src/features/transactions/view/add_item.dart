@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -83,7 +84,7 @@ class _AddItemState extends ConsumerState<AddItem> {
         HorizontalGap.xl,
         Expanded(
           child: FormInputField(
-            initialValue: cartItem.sellingPrice,
+            initialValue: doubleToStringWithComma(cartItem.sellingPrice),
             onChangedFn: (value) {
               setState(() {
                 cartItem.sellingPrice = value;

@@ -80,6 +80,8 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                         productDbRef: product.dbRef,
                         weight: product.packageWeight,
                         imageUrls: product.imageUrls,
+                        sellingPrice: price,
+                        giftQuantity: 0,
                       );
                       GoRouter.of(context).pushNamed(AppRoute.add.name, extra: item);
                     },
