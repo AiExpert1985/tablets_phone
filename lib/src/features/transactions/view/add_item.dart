@@ -161,6 +161,13 @@ class _AddItemState extends ConsumerState<AddItem> {
                 failureUserMessage(context, 'يجب ملئ جميع الحقول');
                 return;
               }
+              cartItem.totalWeight = cartItem.weight * cartItem.soldQuantity!;
+              final giftLoss = cartItem.giftQuantity! * cartItem.buyingPrice;
+              final sellingProfit =
+                  (cartItem.sellingPrice! - cartItem.buyingPrice) * cartItem.soldQuantity!;
+              cartItem.itemTotalProfit = sellingProfit - giftLoss;
+              cartItem.salesmanTotalCommission =
+                  cartItem.salesmanCommission * cartItem.soldQuantity!;
               cartNotifier.addItem(cartItem);
               Navigator.pop(context);
             },

@@ -80,6 +80,8 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                         productDbRef: product.dbRef,
                         weight: product.packageWeight,
                         imageUrls: product.imageUrls,
+                        buyingPrice: product.buyingPrice,
+                        salesmanCommission: product.salesmanCommission,
                         sellingPrice: price,
                         giftQuantity: 0,
                       );

@@ -7,10 +7,15 @@ class CartItem {
   String productDbRef;
   double weight;
   List<String> imageUrls;
+  double buyingPrice;
+  double salesmanCommission;
   double? sellingPrice;
   double? soldQuantity;
   double? giftQuantity;
   double? totalAmount;
+  double? totalWeight;
+  double? itemTotalProfit;
+  double? salesmanTotalCommission;
 
   // Constructor
   CartItem({
@@ -20,10 +25,15 @@ class CartItem {
     required this.productDbRef,
     required this.weight,
     required this.imageUrls,
+    required this.buyingPrice,
+    required this.salesmanCommission,
     this.sellingPrice,
     this.soldQuantity,
     this.giftQuantity,
     this.totalAmount,
+    this.totalWeight,
+    this.itemTotalProfit,
+    this.salesmanTotalCommission,
   });
 
   String get coverImageUrl => imageUrls[imageUrls.length - 1];
@@ -37,10 +47,15 @@ class CartItem {
       'productDbRef': productDbRef,
       'weight': weight,
       'imageUrls': imageUrls,
+      'buyingPrice': buyingPrice,
+      'salesmanCommission': salesmanCommission,
       'sellingPrice': sellingPrice,
       'soldQuantity': soldQuantity,
       'giftQuantity': giftQuantity,
       'totalAmount': totalAmount,
+      'totalWeigt': totalWeight,
+      'itemTotalProfit': itemTotalProfit,
+      'salesmanTotalProfit': salesmanTotalCommission,
     };
   }
 
@@ -53,10 +68,15 @@ class CartItem {
       productDbRef: map['productDbRef'] ?? 'yyyy',
       weight: map['weight'] ?? 0,
       imageUrls: map['imageUrls'] ?? [defaultImageUrl],
+      buyingPrice: map['buyingPrice'] ?? 0,
+      salesmanCommission: map['salesmanCommission'] ?? 0,
       sellingPrice: map['sellingPrice'],
       soldQuantity: map['soldQuantity'],
       giftQuantity: map['giftQuantity'],
       totalAmount: map['totalAmount'],
+      totalWeight: map['totalWeigt'],
+      itemTotalProfit: map['itemTotalProfit'],
+      salesmanTotalCommission: map['salesmanTotalProfit'],
     );
   }
 }

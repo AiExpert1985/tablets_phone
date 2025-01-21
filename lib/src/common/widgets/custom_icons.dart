@@ -15,6 +15,19 @@ class ApproveIcon extends StatelessWidget {
   }
 }
 
+class SaveInvoice extends StatelessWidget {
+  const SaveInvoice({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(children: [
+      Icon(Icons.check, color: Colors.green),
+      VerticalGap.s,
+      Text('حفظ القائمة', style: TextStyle(color: Colors.white))
+    ]);
+  }
+}
+
 class AddItem extends StatelessWidget {
   const AddItem({super.key});
 

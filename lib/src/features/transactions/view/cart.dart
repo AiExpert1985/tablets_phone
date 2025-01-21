@@ -3,14 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circle.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
+import 'package:tablets/src/features/transactions/common/common_functions.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
+import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class ShoppingCart extends ConsumerWidget {
@@ -24,15 +28,21 @@ class ShoppingCart extends ConsumerWidget {
     final cartItems = cartNotifier.data;
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final formData = formDataNotifier.data;
-    double transactionTotalAmount = 0;
+    double totalAmount = 0;
+    double totalCommission = 0;
+    double totalProfit = 0;
+    double totalWeight = 0;
     for (var item in cartItems) {
-      transactionTotalAmount += item.totalAmount ?? 0;
+      totalAmount += item.totalAmount ?? 0;
+      totalCommission += item.salesmanTotalCommission!;
+      totalProfit += item.itemTotalProfit!;
+      totalWeight += item.totalWeight!;
     }
     return MainFrame(
       includeBottomNavigation: true,
       child: Center(
         child: Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: cartItems.isEmpty
@@ -44,20 +54,20 @@ class ShoppingCart extends ConsumerWidget {
                         child: Image.asset('assets/images/empty.png', fit: BoxFit.scaleDown),
                       ),
                       VerticalGap.xl,
-                      _builAddButton(context, ref)
+                      _buildButtons(
+                          context, ref, totalAmount, totalCommission, totalProfit, totalWeight)
                     ]
                   : [
                       _buildTransactionInfo(context, formData),
-                      VerticalGap.m,
                       Expanded(
                         child: ListView(
                           children: _buildItemList(context, ref, cartItems),
                         ),
                       ),
-                      VerticalGap.m,
-                      _buildReceiptTotalAmount(context, transactionTotalAmount),
-                      VerticalGap.m,
-                      _builAddButton(context, ref)
+                      VerticalGap.s,
+                      _buildReceiptTotalAmount(context, totalAmount),
+                      _buildButtons(
+                          context, ref, totalAmount, totalCommission, totalProfit, totalWeight)
                     ],
             )),
       ),
@@ -72,11 +82,17 @@ class ShoppingCart extends ConsumerWidget {
     return items;
   }
 
-  Widget _builAddButton(BuildContext context, WidgetRef ref) {
+  Widget _buildButtons(BuildContext context, WidgetRef ref, double totalAmount, double totalProfit,
+      double totalCommission, double totalWeight) {
+    final cartNotifier = ref.read(cartProvider.notifier);
+    final cartItems = cartNotifier.data;
+    final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
+    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+    final formData = formDataNotifier.data;
     return Container(
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           IconButton(
               icon: const AddItem(),
@@ -88,6 +104,36 @@ class ShoppingCart extends ConsumerWidget {
                   GoRouter.of(context).goNamed(AppRoute.items.name);
                 }
               }),
+          if (cartItems.isNotEmpty && formData.isNotEmpty)
+            IconButton(
+              onPressed: () {
+                final transaction = Transaction(
+                  dbRef: generateRandomString(len: 8),
+                  name: formData['name'],
+                  imageUrls: [defaultImageUrl],
+                  number: 0,
+                  date: formData['date'],
+                  currency: 'دينار',
+                  transactionType: TransactionType.customerInvoice.name,
+                  subTotalAmount: totalAmount,
+                  totalAmount: totalAmount,
+                  itemsTotalProfit: totalProfit,
+                  transactionTotalProfit: totalProfit,
+                  salesmanTransactionComssion: totalCommission,
+                  discount: 0,
+                  items: [],
+                  paymentType: 'اجل',
+                  totalWeight: totalWeight,
+                  nameDbRef: formData['nameDbRef'],
+                  salesman: salesmanInfoNotifier.name,
+                  salesmanDbRef: salesmanInfoNotifier.dbRef,
+                  sellingPriceType: formData['sellingPriceType'],
+                  isPrinted: false,
+                );
+                addTransactionToDb(ref, transaction);
+              },
+              icon: const SaveInvoice(),
+            ),
         ],
       ),
     );
@@ -133,7 +179,7 @@ class ShoppingCart extends ConsumerWidget {
       ),
       onDismissed: (direction) {
         cartNotifier.removeItem(sequence); // Call the method to remove the item
-        successUserMessage(context, '${cartItem.name}تم ازالة ');
+        successUserMessage(context, 'تم ازالة ${cartItem.name}');
       },
       child: InkWell(
         onTap: () {
@@ -143,7 +189,7 @@ class ShoppingCart extends ConsumerWidget {
           color: itemsColor,
           child: Container(
             width: 300,
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -161,7 +207,7 @@ class ShoppingCart extends ConsumerWidget {
                     ),
                   ],
                 ),
-                VerticalGap.l,
+                VerticalGap.s,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -182,7 +228,7 @@ class ShoppingCart extends ConsumerWidget {
   Widget _buildReceiptTotalAmount(BuildContext context, double transactionTotalAmount) {
     return Container(
       width: 300,
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       decoration: const BoxDecoration(
           color: itemsColor, borderRadius: BorderRadius.all(Radius.circular(6))),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
