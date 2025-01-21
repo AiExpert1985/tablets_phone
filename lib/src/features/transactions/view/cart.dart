@@ -42,7 +42,11 @@ class ShoppingCart extends ConsumerWidget {
                   : [
                       _buildTransactionInfo(context, formData),
                       VerticalGap.xl,
-                      ..._buildItemList(itemsData),
+                      Expanded(
+                        child: ListView(
+                          children: _buildItemList(itemsData),
+                        ),
+                      ),
                       VerticalGap.xl,
                       _builAddButton(context, ref)
                     ],
@@ -53,8 +57,8 @@ class ShoppingCart extends ConsumerWidget {
 
   List<Widget> _buildItemList(List<Map<String, dynamic>> itemsData) {
     List<Widget> items = [];
-    for (var itemData in itemsData) {
-      items.add(_buildItemCard(itemData));
+    for (int i = 0; i < itemsData.length; i++) {
+      items.add(_buildItemCard(i + 1, itemsData[i]));
     }
     return items;
   }
@@ -108,7 +112,7 @@ class ShoppingCart extends ConsumerWidget {
     );
   }
 
-  Widget _buildItemCard(Map<String, dynamic> itemData) {
+  Widget _buildItemCard(int sequence, Map<String, dynamic> itemData) {
     return Card(
       color: itemsColor,
       child: Container(
@@ -119,7 +123,7 @@ class ShoppingCart extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CircledContainer(child: Text('1')),
+                CircledContainer(child: Text(sequence.toString())),
                 HorizontalGap.l,
                 Text(
                   itemData['name'],
@@ -132,10 +136,10 @@ class ShoppingCart extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildCell('السعر', itemData['soldQuantity']),
+                _buildCell('السعر', itemData['sellingPrice']),
                 _buildCell('العدد', itemData['soldQuantity']),
-                _buildCell('الهدية', itemData['soldQuantity']),
-                _buildCell('المبلغ الكلي', itemData['soldQuantity']),
+                _buildCell('الهدية', itemData['giftQuantity']),
+                _buildCell('المبلغ الكلي', itemData['sellingPrice'] * itemData['soldQuantity']),
               ],
             ),
           ],
@@ -149,7 +153,7 @@ class ShoppingCart extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(columnName, style: const TextStyle(color: Colors.white, fontSize: 12)),
-        VerticalGap.xs,
+        VerticalGap.s,
         Text(doubleToStringWithComma(columnValue),
             style: const TextStyle(color: Colors.white, fontSize: 12))
       ],
