@@ -34,9 +34,9 @@ class ShoppingCart extends ConsumerWidget {
     double totalWeight = 0;
     for (var item in cartItems) {
       totalAmount += item.totalAmount ?? 0;
-      totalCommission += item.salesmanTotalCommission!;
-      totalProfit += item.itemTotalProfit!;
-      totalWeight += item.totalWeight!;
+      totalCommission += item.salesmanTotalCommission ?? 0;
+      totalProfit += item.itemTotalProfit ?? 0;
+      totalWeight += item.totalWeight ?? 0;
     }
     return MainFrame(
       includeBottomNavigation: true,
@@ -55,7 +55,7 @@ class ShoppingCart extends ConsumerWidget {
                       ),
                       VerticalGap.xl,
                       _buildButtons(
-                          context, ref, totalAmount, totalCommission, totalProfit, totalWeight)
+                          context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
                     ]
                   : [
                       _buildTransactionInfo(context, formData),
@@ -67,7 +67,7 @@ class ShoppingCart extends ConsumerWidget {
                       VerticalGap.s,
                       _buildReceiptTotalAmount(context, totalAmount),
                       _buildButtons(
-                          context, ref, totalAmount, totalCommission, totalProfit, totalWeight)
+                          context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
                     ],
             )),
       ),
