@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
+import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/filtered_products_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
@@ -53,6 +54,9 @@ class ButtonContainer extends ConsumerWidget {
         if (context.mounted) {
           GoRouter.of(context).goNamed(routeName);
         }
+        // when receipt or invoice is pressed, all cart items are deleted
+        final cartNotifier = ref.read(cartProvider.notifier);
+        cartNotifier.reset();
       },
       child: Container(
         width: 200,
