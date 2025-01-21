@@ -27,9 +27,9 @@ class ShoppingCart extends ConsumerWidget {
       includeBottomNavigation: true,
       child: Center(
         child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(8),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: cartItems.isEmpty
                   ? [
                       _buildTransactionInfo(context, formData),
@@ -43,13 +43,13 @@ class ShoppingCart extends ConsumerWidget {
                     ]
                   : [
                       _buildTransactionInfo(context, formData),
-                      VerticalGap.xl,
+                      VerticalGap.m,
                       Expanded(
                         child: ListView(
                           children: _buildItemList(context, ref, cartItems),
                         ),
                       ),
-                      VerticalGap.xl,
+                      VerticalGap.m,
                       _builAddButton(context, ref)
                     ],
             )),
@@ -67,7 +67,7 @@ class ShoppingCart extends ConsumerWidget {
 
   Widget _builAddButton(BuildContext context, WidgetRef ref) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
