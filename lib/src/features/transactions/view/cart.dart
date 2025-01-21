@@ -121,7 +121,7 @@ class ShoppingCart extends ConsumerWidget {
                   transactionTotalProfit: totalProfit,
                   salesmanTransactionComssion: totalCommission,
                   discount: 0,
-                  items: [],
+                  items: _getItemsList(cartItems),
                   paymentType: 'اجل',
                   totalWeight: totalWeight,
                   nameDbRef: formData['nameDbRef'],
@@ -137,6 +137,28 @@ class ShoppingCart extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  List<Map<String, dynamic>> _getItemsList(List<CartItem> cartItems) {
+    List<Map<String, dynamic>> itemsList = [];
+    for (var i = 0; i < cartItems.length; i++) {
+      itemsList.add({
+        'buyingPrice': cartItems[i].buyingPrice,
+        'code': cartItems[i].code,
+        'dbRef': cartItems[i].dbRef,
+        'giftQuantity': cartItems[i].giftQuantity,
+        'itemTotalAmount': cartItems[i].totalAmount,
+        'itemTotalProfit': cartItems[i].itemTotalProfit,
+        'itemTotalWeight': cartItems[i].totalWeight,
+        'name': cartItems[i].name,
+        'salesmanCommission': cartItems[i].salesmanCommission,
+        'salesmanTotalCommission': cartItems[i].salesmanTotalCommission,
+        'sellingPrice': cartItems[i].sellingPrice,
+        'soldQuantity': cartItems[i].soldQuantity,
+        'weight': cartItems[i].weight,
+      });
+    }
+    return itemsList;
   }
 
   Widget _buildTransactionInfo(BuildContext context, Map<String, dynamic> formData) {
