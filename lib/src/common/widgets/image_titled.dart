@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 // import 'package:transparent_image/transparent_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class TitledImage extends StatelessWidget {
