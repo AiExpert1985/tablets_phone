@@ -38,7 +38,7 @@ class TitledImage extends StatelessWidget {
             right: 0,
             child: Container(
                 height: 80,
-                color: const Color.fromARGB(255, 150, 143, 79),
+                color: const Color.fromARGB(167, 150, 143, 79),
                 padding: const EdgeInsets.all(5),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
