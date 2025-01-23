@@ -134,6 +134,11 @@ class ShoppingCart extends ConsumerWidget {
                   isPrinted: false,
                 );
                 addTransactionToDb(ref, transaction);
+                // after adding the transaction, we reset data and go to main menu
+                formDataNotifier.reset();
+                cartNotifier.reset();
+                successUserMessage(context, 'تم اضافة القائمة بنجاح');
+                GoRouter.of(context).goNamed(AppRoute.home.name);
               },
               icon: const SaveInvoice(),
             ),

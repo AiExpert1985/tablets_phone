@@ -13,8 +13,8 @@ void infoUserMessage(BuildContext context, String message) =>
 
 void _message(BuildContext context, String message, type) {
   toastification.show(
-    backgroundColor: itemsColor,
-    foregroundColor: Colors.yellow,
+    // backgroundColor: itemsColor,
+    // foregroundColor: Colors.yellow,
     context: context, // optional if you use ToastificationWrapper
     title: Text(message),
     autoCloseDuration: const Duration(seconds: 5),
