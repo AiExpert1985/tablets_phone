@@ -198,25 +198,21 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
             icon: const ApproveIcon(),
             onPressed: () {
               final formData = formDataNotifier.data;
-              if (!(formData.containsKey('date') ||
-                  formData.containsKey('name') ||
-                  formData.containsKey('number') ||
-                  formData.containsKey('nameDbRef') ||
-                  formData.containsKey('discount') ||
+              if (!(formData.containsKey('date') &&
+                  formData.containsKey('name') &&
+                  formData.containsKey('number') &&
+                  formData.containsKey('nameDbRef') &&
+                  formData.containsKey('discount') &&
                   formData.containsKey('totalAmount'))) {
                 failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
                 return;
               }
               _addRequiredProperties(ref, formDataNotifier);
-              try {
-                final transaction = Transaction.fromMap(formData);
-                addTransactionToDb(ref, transaction);
-                formDataNotifier.reset();
-                GoRouter.of(context).goNamed(AppRoute.home.name);
-                successUserMessage(context, 'تم اضافة الوصل بنجاح');
-              } catch (e) {
-                failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
-              }
+              final transaction = Transaction.fromMap(formDataNotifier.data);
+              addTransactionToDb(ref, transaction);
+              formDataNotifier.reset();
+              GoRouter.of(context).goNamed(AppRoute.home.name);
+              successUserMessage(context, 'تم اضافة الوصل بنجاح');
             },
           ),
         ],
