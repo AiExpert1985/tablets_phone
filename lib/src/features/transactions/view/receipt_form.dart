@@ -204,6 +204,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                 addTransactionToDb(ref, transaction);
                 formDataNotifier.reset();
                 GoRouter.of(context).goNamed(AppRoute.home.name);
+                successUserMessage(context, 'تم اضافة الوصل بنجاح');
               } catch (e) {
                 failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
               }
