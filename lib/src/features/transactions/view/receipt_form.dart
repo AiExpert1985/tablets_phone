@@ -124,7 +124,6 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
         HorizontalGap.xl,
         Expanded(
           child: FormInputField(
-            initialValue: 0,
             onChangedFn: (value) {
               formDataNotifier.addProperty('discount', value);
               final subtotal = formDataNotifier.data['subTotalAmount'] ?? 0;
