@@ -4,10 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/date_picker.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/common/common_functions.dart';
+import 'package:tablets/src/features/transactions/common/customer_debt_info.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
@@ -22,7 +24,7 @@ class InvoiceForm extends ConsumerStatefulWidget {
 }
 
 class _ReceiptFormState extends ConsumerState<InvoiceForm> {
-  double total = 0.0; // Initialize total to 0
+  double? totalDebt;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,8 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
+              final customerDebt = getCustomerDbetInfo(ref, customer['dbRef']);
+              successUserMessage(context, doubleToStringWithComma(customerDebt));
             },
             dbCache: salesmanCustomersDb,
           ),

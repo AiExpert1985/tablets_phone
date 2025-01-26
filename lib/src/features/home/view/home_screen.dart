@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
@@ -50,13 +50,13 @@ class ButtonContainer extends ConsumerWidget {
         await setProductsProvider(ref);
         final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
         final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
-        if (context.mounted) {
-          successUserMessage(context, customerDbCache.data.length.toString());
-        }
-        if (customerDbCache.data.isEmpty) {
+        // I update customers and transactions once perday for salesman, to avoid firebase expenses of loading
+        // the data with each transaction
+        final oneDayPassed = await checkIfOneDayPassed();
+        if (customerDbCache.data.isEmpty || oneDayPassed) {
           await setSalesmanCustomers(ref);
         }
-        if (transactionDbCache.data.isEmpty) {
+        if (transactionDbCache.data.isEmpty || oneDayPassed) {
           await setTranasctionsProvider(ref);
         }
         final formDataNotifier = ref.read(formDataContainerProvider.notifier);

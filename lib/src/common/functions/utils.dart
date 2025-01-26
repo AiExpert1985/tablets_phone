@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 
 String generateRandomString({int len = 5}) {
   var r = Random();
@@ -38,3 +40,24 @@ String doubleToStringWithComma(dynamic value,
 }
 
 String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
+
+/// this function uses package SharedPreferences to store last update
+Future<bool> checkIfOneDayPassed() async {
+  bool oneDayPassed = false;
+  final prefs = await SharedPreferences.getInstance();
+  final lastStoredDateString = prefs.getString('lastStoredDate');
+  DateTime? lastStoredDate;
+
+  if (lastStoredDateString != null) {
+    lastStoredDate = DateTime.parse(lastStoredDateString);
+  }
+
+  final currentDate = DateTime.now();
+
+  if (lastStoredDate == null || currentDate.difference(lastStoredDate).inDays >= 1) {
+    oneDayPassed = true;
+    tempPrint(oneDayPassed);
+  }
+  await prefs.setString('lastStoredDate', currentDate.toIso8601String());
+  return oneDayPassed;
+}
