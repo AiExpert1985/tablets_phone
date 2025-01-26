@@ -8,12 +8,12 @@ void addTransactionToDb(WidgetRef ref, Transaction transaction) {
   repository.addItem(transaction);
 }
 
-Widget buildScreenTitle(BuildContext context) {
+Widget buildScreenTitle(BuildContext context, String label) {
   return Container(
     padding: const EdgeInsets.all(10),
-    child: const Text(
-      'وصل قبض',
-      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.yellow),
+    child: Text(
+      label,
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.yellow),
     ),
   );
 }

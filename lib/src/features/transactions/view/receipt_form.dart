@@ -41,7 +41,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           child: Column(
             children: [
               VerticalGap.xl,
-              buildScreenTitle(context),
+              buildScreenTitle(context, 'وصل قبض'),
               VerticalGap.xl,
               _buildNameSelection(context, formDataNotifier),
               VerticalGap.l,
