@@ -26,7 +26,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             ButtonContainer('وصل قبض', AppRoute.receipt.name),
             const SizedBox(height: 50),
-            ButtonContainer('قائمة زبون', AppRoute.invoice.name),
+            ButtonContainer('قائمة بيع', AppRoute.invoice.name),
           ],
         ),
       ),
