@@ -7,6 +7,7 @@ import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/transactions/common/common_functions.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
@@ -36,7 +37,7 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
           child: Column(
             children: [
               VerticalGap.xl,
-              _buildScreenTitle(context),
+              buildScreenTitle(context),
               VerticalGap.xl,
               _buildNameSelection(context, formDataNotifier),
               VerticalGap.xl,
@@ -46,16 +47,6 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildScreenTitle(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      child: const Text(
-        'قائمة زبون',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: itemsColor),
       ),
     );
   }

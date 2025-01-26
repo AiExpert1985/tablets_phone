@@ -53,7 +53,7 @@ class FormDatePickerField extends StatelessWidget {
       enabled: !isReadOnly,
       decoration: formFieldDecoration(label: label, hideBorders: hideBorders),
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 14, color: Colors.white),
+      style: const TextStyle(fontSize: 18, color: Colors.white),
       name: name,
       initialValue: initialValue,
       // fieldHintText: S.of(context).date_picker_hint,

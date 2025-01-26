@@ -41,7 +41,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           child: Column(
             children: [
               VerticalGap.xl,
-              _buildScreenTitle(context),
+              buildScreenTitle(context),
               VerticalGap.xl,
               _buildNameSelection(context, formDataNotifier),
               VerticalGap.l,
@@ -59,16 +59,6 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildScreenTitle(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      child: const Text(
-        'وصل قبض',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: itemsColor),
       ),
     );
   }
@@ -160,6 +150,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
 
   Widget _buildReceiptTotalAmount(BuildContext context) {
     return Container(
+      height: 50,
       padding: const EdgeInsets.all(5),
       decoration: const BoxDecoration(
           color: itemsColor, borderRadius: BorderRadius.all(Radius.circular(6))),

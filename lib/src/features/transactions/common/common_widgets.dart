@@ -10,7 +10,7 @@ class StyledTotalText extends StatelessWidget {
       text,
       style: const TextStyle(
         color: Colors.yellow,
-        fontSize: 18,
+        fontSize: 20,
       ),
     );
   }
@@ -28,7 +28,7 @@ class FormFieldLabel extends StatelessWidget {
       child: Text(
         label,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 16, color: Colors.white),
+        style: const TextStyle(fontSize: 18, color: Colors.white),
       ),
     );
   }

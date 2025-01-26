@@ -25,7 +25,7 @@ class HomeScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ButtonContainer('وصل قبض', AppRoute.receipt.name),
-            const SizedBox(height: 40),
+            const SizedBox(height: 50),
             ButtonContainer('قائمة زبون', AppRoute.invoice.name),
           ],
         ),
@@ -59,18 +59,18 @@ class ButtonContainer extends ConsumerWidget {
         cartNotifier.reset();
       },
       child: Container(
-        width: 200,
-        height: 100,
+        width: 250,
+        height: 150,
         decoration: BoxDecoration(
           border: Border.all(),
           borderRadius: const BorderRadius.all(Radius.circular(6)),
           color: itemsColor,
         ),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Center(
           child: Text(
             label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
       ),
