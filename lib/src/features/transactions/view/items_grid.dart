@@ -27,7 +27,7 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
   @override
   Widget build(BuildContext context) {
     // Watch the filtered products provider
-    final filteredItemsNotifier = ref.read(filteredProductsProvider.notifier);
+    final filteredItemsNotifier = ref.read(productsProvider.notifier);
     List<Map<String, dynamic>> filteredProducts = filteredItemsNotifier.data;
 
     // Filter products based on the search query

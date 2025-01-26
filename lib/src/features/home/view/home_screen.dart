@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
@@ -44,8 +45,11 @@ class ButtonContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () async {
-        await setFilteredProductsProvider(ref);
+        await setProductsProvider(ref);
         final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
+        if (context.mounted) {
+          successUserMessage(context, customerDbCache.data.length.toString());
+        }
         if (customerDbCache.data.isEmpty) {
           await setSalesmanCustomers(ref);
         }
@@ -106,9 +110,9 @@ Future<void> setSalesmanCustomers(WidgetRef ref) async {
 
 // with each transaction, we get fresh copy of whole products, and set the filtered products to all
 // products, so that they can be filtered later
-Future<void> setFilteredProductsProvider(WidgetRef ref) async {
+Future<void> setProductsProvider(WidgetRef ref) async {
   final productsRepository = ref.read(productsRepositoryProvider);
   final products = await productsRepository.fetchItemListAsMaps();
-  final filteredItemsNotifier = ref.read(filteredProductsProvider.notifier);
-  filteredItemsNotifier.setItems(products);
+  final productsNotifier = ref.read(productsProvider.notifier);
+  productsNotifier.setItems(products);
 }
