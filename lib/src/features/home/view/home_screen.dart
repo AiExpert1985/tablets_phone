@@ -8,9 +8,11 @@ import 'package:tablets/src/features/home/controller/salesman_info_provider.dart
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/filtered_products_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/products_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/repository/products_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
@@ -47,11 +49,15 @@ class ButtonContainer extends ConsumerWidget {
       onTap: () async {
         await setProductsProvider(ref);
         final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
+        final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
         if (context.mounted) {
           successUserMessage(context, customerDbCache.data.length.toString());
         }
         if (customerDbCache.data.isEmpty) {
           await setSalesmanCustomers(ref);
+        }
+        if (transactionDbCache.data.isEmpty) {
+          await setTranasctionsProvider(ref);
         }
         final formDataNotifier = ref.read(formDataContainerProvider.notifier);
         formDataNotifier.reset();
@@ -115,4 +121,11 @@ Future<void> setProductsProvider(WidgetRef ref) async {
   final products = await productsRepository.fetchItemListAsMaps();
   final productsNotifier = ref.read(productsProvider.notifier);
   productsNotifier.setItems(products);
+}
+
+Future<void> setTranasctionsProvider(WidgetRef ref) async {
+  final transactionRepository = ref.read(transactionRepositoryProvider);
+  final transactions = await transactionRepository.fetchItemListAsMaps();
+  final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
+  transactionsDbCache.set(transactions);
 }

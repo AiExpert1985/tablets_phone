@@ -7,7 +7,7 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:tablets/src/features/transactions/controllers/filtered_products_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/products_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/model/product.dart';
