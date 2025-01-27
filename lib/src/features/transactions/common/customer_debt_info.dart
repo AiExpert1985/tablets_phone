@@ -11,18 +11,21 @@ Map<String, dynamic> getCustomerDbetInfo(WidgetRef ref, String customerDbRef) {
   final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
   final customerData = customerDbCache.getItemByDbRef(customerDbRef);
   final initialDebt = customerData['initialCredit'];
-  tempPrint('initialDebt = $initialDebt');
+  // tempPrint('initialDebt = $initialDebt');
+  // tempPrint('transactions number = ${transactions.length}');
   double totalDebt = initialDebt;
+  tempPrint('customerDbRef = $customerDbRef');
   for (var transaction in transactions) {
+    tempPrint(transaction);
+    tempPrint('');
+    tempPrint('');
     if (transaction['nameDbRef'] == null || transaction['nameDbRef'] != customerDbRef) continue;
+    // tempPrint(transaction['transactionType']);
+    // tempPrint(transaction['totalAmount']);
     if (transaction['transactionType'] == TransactionType.customerInvoice.name) {
-      tempPrint(transaction['name']);
-      tempPrint(transaction['totalAmount']);
       totalDebt += transaction['totalAmount'] ?? 0;
     } else if (transaction['transactionType'] == TransactionType.customerReceipt.name ||
         transaction['transactionType'] == TransactionType.customerReturn.name) {
-      tempPrint(TransactionType.customerReturn.name);
-      tempPrint(transaction['totalAmount']);
       totalDebt -= transaction['totalAmount'] ?? 0;
     }
   }

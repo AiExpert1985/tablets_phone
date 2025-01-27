@@ -2,8 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/home/controller/last_access_provider.dart';
 import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
@@ -50,9 +51,17 @@ class ButtonContainer extends ConsumerWidget {
         await setProductsProvider(ref);
         final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
         final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+        final lastAccessNotifier = ref.read(lastAccessProvider.notifier);
         // I update customers and transactions once perday for salesman, to avoid firebase expenses of loading
         // the data with each transaction
-        final oneDayPassed = await checkIfOneDayPassed();
+        final oneDayPassed = lastAccessNotifier.hasOneDayPassed();
+        if (context.mounted) {
+          if (oneDayPassed) {
+            successUserMessage(context, 'one day passed');
+          } else {
+            failureUserMessage(context, 'nooop');
+          }
+        }
         if (customerDbCache.data.isEmpty || oneDayPassed) {
           await setSalesmanCustomers(ref);
         }
@@ -67,6 +76,8 @@ class ButtonContainer extends ConsumerWidget {
         // when receipt or invoice is pressed, all cart items are deleted
         final cartNotifier = ref.read(cartProvider.notifier);
         cartNotifier.reset();
+        // set access date to now
+        lastAccessNotifier.setLastAccessDate();
       },
       child: Container(
         width: 250,
