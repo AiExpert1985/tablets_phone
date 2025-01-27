@@ -53,7 +53,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
               VerticalGap.l,
               _buildDiscountAmount(context, formDataNotifier),
               VerticalGap.xl,
-              _buildReceiptTotalAmount(context),
+              buildTotalAmount(context, total, 'المجموع'),
               VerticalGap.xl,
               _buildButtons(context, formDataNotifier),
             ],
@@ -145,19 +145,6 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildReceiptTotalAmount(BuildContext context) {
-    return Container(
-      height: 50,
-      padding: const EdgeInsets.all(5),
-      decoration: const BoxDecoration(
-          color: itemsColor, borderRadius: BorderRadius.all(Radius.circular(6))),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        const StyledTotalText('المجموع'),
-        StyledTotalText(doubleToStringWithComma(total)),
-      ]),
     );
   }
 

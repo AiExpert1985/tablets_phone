@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/date_picker.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
-import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
@@ -24,7 +23,9 @@ class InvoiceForm extends ConsumerStatefulWidget {
 }
 
 class _ReceiptFormState extends ConsumerState<InvoiceForm> {
-  double? totalDebt;
+  dynamic customerDebt;
+  dynamic latestCustomerReceiptDate;
+  dynamic latestCustomerInvoiceDate;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,14 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
               _buildNameSelection(context, formDataNotifier),
               VerticalGap.xl,
               _buildDate(context, formDataNotifier),
+              VerticalGap.xxl,
+              if (customerDebt != null) buildTotalAmount(context, customerDebt, 'الدين الكلي'),
+              VerticalGap.m,
+              if (latestCustomerReceiptDate != null)
+                buildTotalAmount(context, latestCustomerReceiptDate, 'اخر قائمة'),
+              VerticalGap.m,
+              if (latestCustomerInvoiceDate != null)
+                buildTotalAmount(context, latestCustomerInvoiceDate, 'اخر تسديد'),
               VerticalGap.xxl,
               _buildButtons(context, formDataNotifier),
             ],
@@ -68,8 +77,11 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
-              final customerDebt = getCustomerDbetInfo(ref, customer['dbRef']);
-              successUserMessage(context, doubleToStringWithComma(customerDebt));
+              final customerDebtInfo = getCustomerDbetInfo(ref, customer['dbRef']);
+              // set customer debt info
+              customerDebt = customerDebtInfo['totalDebt'];
+              latestCustomerReceiptDate = customerDebtInfo['lastReceiptDate'];
+              latestCustomerInvoiceDate = customerDebtInfo['latestInvoiceDate'];
             },
             dbCache: salesmanCustomersDb,
           ),

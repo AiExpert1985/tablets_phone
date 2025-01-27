@@ -13,8 +13,8 @@ import 'package:tablets/src/features/transactions/controllers/products_provider.
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/repository/products_repository_provider.dart';
+import 'package:tablets/src/features/transactions/repository/transactions_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class HomeScreen extends ConsumerWidget {

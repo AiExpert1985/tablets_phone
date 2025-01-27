@@ -4,7 +4,7 @@ import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 
 void addTransactionToDb(WidgetRef ref, Transaction transaction) {
-  final repository = ref.read(transactionRepositoryProvider);
+  final repository = ref.read(pendingTransactionRepositoryProvider);
   repository.addItem(transaction);
 }
 

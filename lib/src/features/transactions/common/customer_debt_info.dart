@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
@@ -11,24 +10,38 @@ Map<String, dynamic> getCustomerDbetInfo(WidgetRef ref, String customerDbRef) {
   final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
   final customerData = customerDbCache.getItemByDbRef(customerDbRef);
   final initialDebt = customerData['initialCredit'];
-  // tempPrint('initialDebt = $initialDebt');
-  // tempPrint('transactions number = ${transactions.length}');
   double totalDebt = initialDebt;
-  tempPrint('customerDbRef = $customerDbRef');
-  for (var transaction in transactions) {
-    tempPrint(transaction);
-    tempPrint('');
-    tempPrint('');
-    if (transaction['nameDbRef'] == null || transaction['nameDbRef'] != customerDbRef) continue;
-    // tempPrint(transaction['transactionType']);
-    // tempPrint(transaction['totalAmount']);
+  final customerTransactions =
+      transactions.where((transaction) => transaction['nameDbRef'] == customerDbRef);
+  final invoiceDates = [];
+  final receiptDates = [];
+  for (var transaction in customerTransactions) {
     if (transaction['transactionType'] == TransactionType.customerInvoice.name) {
       totalDebt += transaction['totalAmount'] ?? 0;
-    } else if (transaction['transactionType'] == TransactionType.customerReceipt.name ||
-        transaction['transactionType'] == TransactionType.customerReturn.name) {
+      invoiceDates.add(
+          transaction['date'] is DateTime ? transaction['date'] : transaction['date'].toDate());
+    } else if (transaction['transactionType'] == TransactionType.customerReceipt.name) {
+      totalDebt -= transaction['totalAmount'] ?? 0;
+      receiptDates.add(
+          transaction['date'] is DateTime ? transaction['date'] : transaction['date'].toDate());
+    } else if (transaction['transactionType'] == TransactionType.customerReturn.name) {
       totalDebt -= transaction['totalAmount'] ?? 0;
     }
   }
+  dynamic latestReceiptDate;
+  if (receiptDates.isNotEmpty) {
+    latestReceiptDate = receiptDates.reduce((a, b) => a.isAfter(b) ? a : b);
+  } else {
+    latestReceiptDate = 'لا يوجد تسديد سابق';
+  }
+  dynamic latestInvoiceDate;
+  if (invoiceDates.isNotEmpty) {
+    latestInvoiceDate = invoiceDates.reduce((a, b) => a.isAfter(b) ? a : b);
+  } else {
+    latestInvoiceDate = 'لا يوجد قائمة سابقة';
+  }
   customerDebtInfo['totalDebt'] = totalDebt;
+  customerDebtInfo['lastReceiptDate'] = latestReceiptDate;
+  customerDebtInfo['latestInvoiceDate'] = latestInvoiceDate;
   return customerDebtInfo;
 }

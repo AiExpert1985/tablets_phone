@@ -67,7 +67,7 @@ class ShoppingCart extends ConsumerWidget {
                         ),
                       ),
                       VerticalGap.s,
-                      _buildReceiptTotalAmount(context, totalAmount),
+                      buildTotalAmount(context, totalAmount, 'المجموع'),
                       _buildButtons(
                           context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
                     ],
@@ -254,19 +254,6 @@ class ShoppingCart extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildReceiptTotalAmount(BuildContext context, double transactionTotalAmount) {
-    return Container(
-      width: 350,
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      decoration: const BoxDecoration(
-          color: itemsColor, borderRadius: BorderRadius.all(Radius.circular(6))),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        const StyledTotalText('المجموع'),
-        StyledTotalText(doubleToStringWithComma(transactionTotalAmount)),
-      ]),
     );
   }
 
