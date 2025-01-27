@@ -32,13 +32,13 @@ Map<String, dynamic> getCustomerDbetInfo(WidgetRef ref, String customerDbRef) {
   if (receiptDates.isNotEmpty) {
     latestReceiptDate = receiptDates.reduce((a, b) => a.isAfter(b) ? a : b);
   } else {
-    latestReceiptDate = 'لا يوجد تسديد سابق';
+    latestReceiptDate = 'لا يوجد';
   }
   dynamic latestInvoiceDate;
   if (invoiceDates.isNotEmpty) {
     latestInvoiceDate = invoiceDates.reduce((a, b) => a.isAfter(b) ? a : b);
   } else {
-    latestInvoiceDate = 'لا يوجد قائمة سابقة';
+    latestInvoiceDate = 'لا يوجد';
   }
   customerDebtInfo['totalDebt'] = totalDebt;
   customerDebtInfo['lastReceiptDate'] = latestReceiptDate;

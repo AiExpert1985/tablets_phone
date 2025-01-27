@@ -39,6 +39,7 @@ class FormFieldLabel extends StatelessWidget {
 Widget buildTotalAmount(BuildContext context, dynamic amount, String label) {
   return Container(
     height: 50,
+    width: 350,
     padding: const EdgeInsets.all(5),
     decoration:
         const BoxDecoration(color: itemsColor, borderRadius: BorderRadius.all(Radius.circular(6))),
