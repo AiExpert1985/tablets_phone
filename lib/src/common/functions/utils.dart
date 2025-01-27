@@ -37,4 +37,4 @@ String doubleToStringWithComma(dynamic value,
   return formattedWholePart + decimalPart;
 }
 
-String formatDate(DateTime date) => DateFormat('yyyy/MM/dd', 'en_US').format(date);
+String formatDate(DateTime date) => DateFormat('dd/MM/yyyy', 'en_US').format(date);
