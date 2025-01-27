@@ -22,6 +22,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    loadData(context, ref);
     return MainFrame(
       includeBottomNavigation: true,
       child: Center(
@@ -48,26 +49,7 @@ class ButtonContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () async {
-        await setProductsProvider(ref);
-        final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
-        final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
         final lastAccessNotifier = ref.read(lastAccessProvider.notifier);
-        // I update customers and transactions once perday for salesman, to avoid firebase expenses of loading
-        // the data with each transaction
-        final oneDayPassed = lastAccessNotifier.hasOneDayPassed();
-        if (context.mounted) {
-          if (oneDayPassed) {
-            successUserMessage(context, 'one day passed');
-          } else {
-            failureUserMessage(context, 'nooop');
-          }
-        }
-        if (customerDbCache.data.isEmpty || oneDayPassed) {
-          await setSalesmanCustomers(ref);
-        }
-        if (transactionDbCache.data.isEmpty || oneDayPassed) {
-          await setTranasctionsProvider(ref);
-        }
         final formDataNotifier = ref.read(formDataContainerProvider.notifier);
         formDataNotifier.reset();
         if (context.mounted) {
@@ -139,4 +121,27 @@ Future<void> setTranasctionsProvider(WidgetRef ref) async {
   final transactions = await transactionRepository.fetchItemListAsMaps();
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
   transactionsDbCache.set(transactions);
+}
+
+Future<void> loadData(BuildContext context, WidgetRef ref) async {
+  final customerDbCache = ref.read(salesmanCustomerDbCacheProvider.notifier);
+  final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+  final lastAccessNotifier = ref.read(lastAccessProvider.notifier);
+  await setProductsProvider(ref);
+  // I update customers and transactions once perday for salesman, to avoid firebase expenses of loading
+  // the data with each transaction
+  final oneDayPassed = lastAccessNotifier.hasOneDayPassed();
+  if (context.mounted) {
+    if (oneDayPassed) {
+      successUserMessage(context, 'one day passed');
+    } else {
+      failureUserMessage(context, 'nooop');
+    }
+  }
+  if (customerDbCache.data.isEmpty || oneDayPassed) {
+    await setSalesmanCustomers(ref);
+  }
+  if (transactionDbCache.data.isEmpty || oneDayPassed) {
+    await setTranasctionsProvider(ref);
+  }
 }
