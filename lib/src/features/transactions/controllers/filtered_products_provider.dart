@@ -12,6 +12,7 @@
 // }
 
 // // Create a StateNotifierProvider for the ItemNotifier
-// final productsProvider = StateNotifierProvider<ItemNotifier, List<Map<String, dynamic>>>((ref) {
+// final filteredProductsProvider =
+//     StateNotifierProvider<ItemNotifier, List<Map<String, dynamic>>>((ref) {
 //   return ItemNotifier();
 // });
