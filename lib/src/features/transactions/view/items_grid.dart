@@ -73,6 +73,9 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                   final price = sellingPriceType == 'retail'
                       ? product.sellRetailPrice
                       : product.sellWholePrice;
+                  final productStock = _calculateProductStock(ref, product.dbRef);
+                  final textBgColor =
+                      productStock > 0 ? const Color.fromARGB(167, 150, 143, 79) : Colors.red;
                   return InkWell(
                     onTap: () {
                       final item = CartItem(
@@ -86,13 +89,16 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                         salesmanCommission: product.salesmanCommission,
                         sellingPrice: price,
                         giftQuantity: 0,
-                        stock: _calculateProductStock(ref, product.dbRef),
+                        stock: productStock,
                       );
                       GoRouter.of(context).pushNamed(AppRoute.add.name, extra: item);
                     },
                     hoverColor: const Color.fromARGB(255, 173, 170, 170),
                     child: TitledImage(
-                        imageUrl: product.coverImageUrl, title: product.name, price: price),
+                        imageUrl: product.coverImageUrl,
+                        title: product.name,
+                        price: price,
+                        textBgColor: textBgColor),
                   );
                 },
               ),

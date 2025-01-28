@@ -13,6 +13,7 @@ import 'package:tablets/src/routers/go_router_provider.dart';
 const bgColor = Color(0xFF573419);
 const itemsColor = Color(0xFF9C551F);
 const mainFrameIconsColor = Colors.white;
+const double mainIconSizes = 25;
 // const mainFrameIconsColor = Color.fromARGB(103, 255, 235, 59);
 
 class MainFrame extends ConsumerWidget {
@@ -56,7 +57,7 @@ class MainFrame extends ConsumerWidget {
       unselectedItemColor: mainFrameIconsColor,
       selectedFontSize: 20,
       unselectedFontSize: 20,
-      iconSize: 30,
+      iconSize: mainIconSizes,
     );
   }
 }
@@ -76,7 +77,7 @@ PreferredSizeWidget customAppBar(BuildContext context) {
         icon: const Icon(
           Icons.do_disturb_on_outlined,
           color: mainFrameIconsColor,
-          size: 30,
+          size: mainIconSizes,
         ),
         label: Text(
           S.of(context).logout,
