@@ -40,21 +40,21 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           width: 400,
           child: Column(
             children: [
-              VerticalGap.l,
+              VerticalGap.xl,
               buildScreenTitle(context, 'وصل قبض'),
-              VerticalGap.l,
+              VerticalGap.xl,
               _buildNameSelection(context, formDataNotifier),
-              VerticalGap.m,
+              VerticalGap.l,
               _buildDate(context, formDataNotifier),
-              VerticalGap.m,
+              VerticalGap.l,
               _buildReceiptNumber(context, formDataNotifier),
-              VerticalGap.m,
+              VerticalGap.l,
               _buildReceivedAmount(context, formDataNotifier),
-              VerticalGap.m,
-              _buildDiscountAmount(context, formDataNotifier),
-              VerticalGap.l,
+              // VerticalGap.l,
+              // _buildDiscountAmount(context, formDataNotifier),
+              VerticalGap.xl,
               buildTotalAmount(context, total, 'المجموع'),
-              VerticalGap.l,
+              VerticalGap.xl,
               _buildButtons(context, formDataNotifier),
             ],
           ),
@@ -106,27 +106,27 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     );
   }
 
-  Widget _buildDiscountAmount(BuildContext context, MapStateNotifier formDataNotifier) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const FormFieldLabel('الخصم'),
-        HorizontalGap.xl,
-        Expanded(
-          child: FormInputField(
-            onChangedFn: (value) {
-              formDataNotifier.addProperty('discount', value);
-              final subtotal = formDataNotifier.data['subTotalAmount'] ?? 0;
-              total = value + subtotal; // Update total
-              formDataNotifier.addProperty('totalAmount', total);
-            },
-            dataType: FieldDataType.num,
-            name: 'discount',
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _buildDiscountAmount(BuildContext context, MapStateNotifier formDataNotifier) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       const FormFieldLabel('الخصم'),
+  //       HorizontalGap.xl,
+  //       Expanded(
+  //         child: FormInputField(
+  //           onChangedFn: (value) {
+  //             formDataNotifier.addProperty('discount', value);
+  //             final subtotal = formDataNotifier.data['subTotalAmount'] ?? 0;
+  //             total = value + subtotal; // Update total
+  //             formDataNotifier.addProperty('totalAmount', total);
+  //           },
+  //           dataType: FieldDataType.num,
+  //           name: 'discount',
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildReceiptNumber(BuildContext context, MapStateNotifier formDataNotifier) {
     return Row(
@@ -180,7 +180,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                   formData.containsKey('name') &&
                   formData.containsKey('number') &&
                   formData.containsKey('nameDbRef') &&
-                  formData.containsKey('discount') &&
+                  // formData.containsKey('discount') &&
                   formData.containsKey('totalAmount'))) {
                 failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
                 return;
@@ -203,6 +203,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     final salesmanDbRef = salesmanInfoNotifier.dbRef;
     final salesmanName = salesmanInfoNotifier.name;
     formDataNotifier.addProperty('dbRef', generateRandomString(len: 8));
+    formDataNotifier.addProperty('discount', 0);
     formDataNotifier.addProperty('salesmanDbRef', salesmanDbRef);
     formDataNotifier.addProperty('salesman', salesmanName);
     formDataNotifier.addProperty('imageUrls', [defaultImageUrl]);
