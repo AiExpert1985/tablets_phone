@@ -74,8 +74,9 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                       ? product.sellRetailPrice
                       : product.sellWholePrice;
                   final productStock = _calculateProductStock(ref, product.dbRef);
-                  final textBgColor =
-                      productStock > 0 ? const Color.fromARGB(167, 150, 143, 79) : Colors.red;
+                  final textBgColor = productStock > 0
+                      ? const Color.fromARGB(181, 150, 143, 79)
+                      : const Color.fromARGB(190, 244, 67, 54);
                   return InkWell(
                     onTap: () {
                       final item = CartItem(
