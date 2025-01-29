@@ -149,14 +149,14 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
     }
     if (customerDebt >= creditLimit) {
       isValidUser = false;
-      failureUserMessage(context, 'زبون متجاوز لحدود الدين');
+      // failureUserMessage(context, 'زبون متجاوز لحدود الدين');
       return;
     }
     // if last invoice date exceeds the paymentDurationLimit, the the customer considered invalid
     Duration difference = DateTime.now().difference(latestCustomerInvoiceDate);
     if (difference.inDays >= paymentDurationLimit) {
       isValidUser = false;
-      failureUserMessage(context, 'زبون تجاوز مدة التسديد المسموحة');
+      // failureUserMessage(context, 'زبون تجاوز مدة التسديد المسموحة');
       return;
     }
   }
