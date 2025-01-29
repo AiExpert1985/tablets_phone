@@ -129,8 +129,9 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
           IconButton(
             icon: const AddItem(),
             onPressed: () {
-              if (formDataNotifier.data.containsKey('date') &
-                  formDataNotifier.data.containsKey('name') &
+              if (formDataNotifier.data.containsKey('name') &
+                  // formDataNotifier.data.containsKey('date') &
+
                   formDataNotifier.data.containsKey('nameDbRef')) {
                 cartNotifier.reset();
                 GoRouter.of(context).pushNamed(AppRoute.items.name);

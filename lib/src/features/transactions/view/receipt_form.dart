@@ -175,8 +175,8 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
             icon: const ApproveIcon(),
             onPressed: () {
               final formData = formDataNotifier.data;
-              if (!(formData.containsKey('date') &&
-                  formData.containsKey('name') &&
+              if (!(formData.containsKey('name') &&
+                  // formData.containsKey('date') &&
                   formData.containsKey('number') &&
                   formData.containsKey('nameDbRef') &&
                   // formData.containsKey('discount') &&
