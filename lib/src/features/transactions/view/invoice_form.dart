@@ -40,6 +40,7 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           width: 400,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               VerticalGap.xl,
               buildScreenTitle(context, 'قائمة بيع'),

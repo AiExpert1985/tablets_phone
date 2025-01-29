@@ -44,7 +44,7 @@ class ShoppingCart extends ConsumerWidget {
         child: Container(
             padding: const EdgeInsets.all(5),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: cartItems.isEmpty
                   ? [
                       _buildTransactionInfo(context, formData),
