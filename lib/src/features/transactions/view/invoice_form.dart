@@ -22,16 +22,17 @@ class InvoiceForm extends ConsumerStatefulWidget {
 }
 
 class _ReceiptFormState extends ConsumerState<InvoiceForm> {
-  dynamic customerDebt;
-  dynamic latestCustomerReceiptDate;
-  dynamic latestCustomerInvoiceDate;
+  num? totalDebt;
+  num? dueDebt;
+  dynamic latestReceiptDate;
+  dynamic latestInvoiceDate;
   bool isValidUser = true;
 
   @override
   Widget build(BuildContext context) {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     ref.watch(formDataContainerProvider);
-    Color customerInfoBgColor = isValidUser ? itemsColor : Colors.red;
+    Color infoBgColor = isValidUser ? itemsColor : Colors.red;
 
     return MainFrame(
       child: Center(
@@ -47,17 +48,17 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
               // VerticalGap.xl,
               // _buildDate(context, formDataNotifier),
               VerticalGap.xl,
-              if (customerDebt != null)
-                buildTotalAmount(context, customerDebt, 'الدين الكلي',
-                    bgColor: customerInfoBgColor),
+              if (totalDebt != null)
+                buildTotalAmount(context, dueDebt, 'الدين المستحق', bgColor: infoBgColor),
               VerticalGap.m,
-              if (latestCustomerReceiptDate != null)
-                buildTotalAmount(context, latestCustomerInvoiceDate, 'اخر قائمة',
-                    bgColor: customerInfoBgColor),
+              if (totalDebt != null)
+                buildTotalAmount(context, totalDebt, 'الدين الكلي', bgColor: infoBgColor),
               VerticalGap.m,
-              if (latestCustomerInvoiceDate != null)
-                buildTotalAmount(context, latestCustomerReceiptDate, 'اخر تسديد',
-                    bgColor: customerInfoBgColor),
+              if (latestReceiptDate != null)
+                buildTotalAmount(context, latestInvoiceDate, 'اخر قائمة', bgColor: infoBgColor),
+              VerticalGap.m,
+              if (latestInvoiceDate != null)
+                buildTotalAmount(context, latestReceiptDate, 'اخر تسديد', bgColor: infoBgColor),
               VerticalGap.xl,
               _buildButtons(context, formDataNotifier),
             ],
@@ -79,15 +80,18 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
           child: DropDownWithSearch(
             initialValue: formDataNotifier.data['name'],
             onChangedFn: (customer) {
+              num paymentDurationLimit = customer['paymentDurationLimit'];
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
-              final customerDebtInfo = getCustomerDbetInfo(ref, customer['dbRef']);
+              final customerDebtInfo =
+                  getCustomerDbetInfo(ref, customer['dbRef'], paymentDurationLimit);
               // set customer debt info
-              customerDebt = customerDebtInfo['totalDebt'];
-              latestCustomerReceiptDate = customerDebtInfo['lastReceiptDate'];
-              latestCustomerInvoiceDate = customerDebtInfo['latestInvoiceDate'];
-              _validateCustomer(customer['paymentDurationLimit'], customer['creditLimit']);
+              totalDebt = customerDebtInfo['totalDebt'];
+              dueDebt = customerDebtInfo['dueDebt'];
+              latestReceiptDate = customerDebtInfo['lastReceiptDate'] ?? 'لا يوجد';
+              latestInvoiceDate = customerDebtInfo['latestInvoiceDate'] ?? 'لا يوجد';
+              _validateCustomer(paymentDurationLimit, customer['creditLimit']);
             },
             dbCache: salesmanCustomersDb,
           ),
@@ -142,19 +146,18 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
 
 // customer is invalid, if he has debt, and exceeded max number of days (debt limit)
   void _validateCustomer(num paymentDurationLimit, num creditLimit) {
+    if (totalDebt == null || dueDebt == null) return;
     // if customer has zero debt, then he is a valid suer
-    if (customerDebt <= 0) {
+    if (totalDebt! <= 0) {
       isValidUser = true;
       return;
     }
-    if (customerDebt >= creditLimit) {
+    if (totalDebt! >= creditLimit) {
       isValidUser = false;
       // failureUserMessage(context, 'زبون متجاوز لحدود الدين');
       return;
     }
-    // if last invoice date exceeds the paymentDurationLimit, the the customer considered invalid
-    Duration difference = DateTime.now().difference(latestCustomerInvoiceDate);
-    if (difference.inDays >= paymentDurationLimit) {
+    if (dueDebt! > 0) {
       isValidUser = false;
       // failureUserMessage(context, 'زبون تجاوز مدة التسديد المسموحة');
       return;
