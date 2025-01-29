@@ -188,7 +188,7 @@ class _AddItemState extends ConsumerState<AddItem> {
             onPressed: () {
               if (_isInValidateQuantity()) {
                 failureUserMessage(context, 'المخزون اقل من العدد المطلوب');
-                return;
+                // return;
               }
               // all fields must be filled
               if (cartItem.sellingPrice == null ||
