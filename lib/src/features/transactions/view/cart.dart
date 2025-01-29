@@ -157,7 +157,7 @@ class ShoppingCart extends ConsumerWidget {
       itemsList.add({
         'buyingPrice': cartItems[i].buyingPrice,
         'code': cartItems[i].code,
-        'dbRef': cartItems[i].dbRef,
+        'dbRef': cartItems[i].productDbRef,
         'giftQuantity': cartItems[i].giftQuantity,
         'itemTotalAmount': cartItems[i].totalAmount,
         'itemTotalProfit': cartItems[i].itemTotalProfit,
