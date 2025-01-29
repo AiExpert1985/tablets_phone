@@ -47,6 +47,7 @@ class ShoppingCart extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: cartItems.isEmpty
                   ? [
+                      VerticalGap.xl,
                       _buildTransactionInfo(context, formData),
                       SizedBox(
                         width: double.infinity,
@@ -58,7 +59,9 @@ class ShoppingCart extends ConsumerWidget {
                           context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
                     ]
                   : [
+                      VerticalGap.xl,
                       _buildTransactionInfo(context, formData),
+                      VerticalGap.l,
                       Expanded(
                         child: ListView(
                           shrinkWrap:
@@ -66,8 +69,9 @@ class ShoppingCart extends ConsumerWidget {
                           children: _buildItemList(context, ref, cartItems),
                         ),
                       ),
-                      VerticalGap.s,
+                      VerticalGap.l,
                       buildTotalAmount(context, totalAmount, 'المجموع'),
+                      VerticalGap.l,
                       _buildButtons(
                           context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
                     ],
@@ -184,13 +188,13 @@ class ShoppingCart extends ConsumerWidget {
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
               ),
-            if (formData['date'] != null) VerticalGap.l,
-            if (formData['date'] != null)
-              Text(
-                formatDate(formData['date']),
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
+            // if (formData['date'] != null) VerticalGap.l,
+            // if (formData['date'] != null)
+            //   Text(
+            //     formatDate(formData['date']),
+            //     style:
+            //         const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            //   ),
           ],
         ),
       ),
