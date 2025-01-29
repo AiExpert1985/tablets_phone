@@ -119,6 +119,7 @@ class _AddItemState extends ConsumerState<AddItem> {
                 cartItem.totalAmount = value * cartItem.soldQuantity ?? 0;
               });
             },
+            isReadOnly: true,
             dataType: FieldDataType.num,
             name: 'price',
           ),

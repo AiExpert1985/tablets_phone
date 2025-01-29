@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/forms/date_picker.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -44,8 +43,8 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
               buildScreenTitle(context, 'وصل قبض'),
               VerticalGap.xl,
               _buildNameSelection(context, formDataNotifier),
-              VerticalGap.l,
-              _buildDate(context, formDataNotifier),
+              // VerticalGap.l,
+              // _buildDate(context, formDataNotifier),
               VerticalGap.l,
               _buildReceiptNumber(context, formDataNotifier),
               VerticalGap.l,
@@ -148,23 +147,23 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     );
   }
 
-  Widget _buildDate(BuildContext context, MapStateNotifier formDataNotifier) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const FormFieldLabel('التاريخ'),
-        HorizontalGap.xl,
-        Expanded(
-          child: FormDatePickerField(
-            onChangedFn: (date) {
-              formDataNotifier.addProperty('date', date);
-            },
-            name: 'date',
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _buildDate(BuildContext context, MapStateNotifier formDataNotifier) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       const FormFieldLabel('التاريخ'),
+  //       HorizontalGap.xl,
+  //       Expanded(
+  //         child: FormDatePickerField(
+  //           onChangedFn: (date) {
+  //             formDataNotifier.addProperty('date', date);
+  //           },
+  //           name: 'date',
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildButtons(BuildContext context, MapStateNotifier formDataNotifier) {
     return Container(
@@ -204,6 +203,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     final salesmanName = salesmanInfoNotifier.name;
     formDataNotifier.addProperty('dbRef', generateRandomString(len: 8));
     formDataNotifier.addProperty('discount', 0);
+    formDataNotifier.addProperty('date', DateTime.now());
     formDataNotifier.addProperty('salesmanDbRef', salesmanDbRef);
     formDataNotifier.addProperty('salesman', salesmanName);
     formDataNotifier.addProperty('imageUrls', [defaultImageUrl]);

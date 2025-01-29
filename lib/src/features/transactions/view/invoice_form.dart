@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/forms/date_picker.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -45,8 +44,8 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
               buildScreenTitle(context, 'قائمة بيع'),
               VerticalGap.xl,
               _buildNameSelection(context, formDataNotifier),
-              VerticalGap.xl,
-              _buildDate(context, formDataNotifier),
+              // VerticalGap.xl,
+              // _buildDate(context, formDataNotifier),
               VerticalGap.xl,
               if (customerDebt != null)
                 buildTotalAmount(context, customerDebt, 'الدين الكلي',
@@ -97,24 +96,24 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
     );
   }
 
-  Widget _buildDate(BuildContext context, MapStateNotifier formDataNotifier) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const FormFieldLabel('التاريخ'),
-        HorizontalGap.l,
-        Expanded(
-          child: FormDatePickerField(
-            initialValue: formDataNotifier.data['date'],
-            onChangedFn: (date) {
-              formDataNotifier.addProperty('date', date);
-            },
-            name: 'date',
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _buildDate(BuildContext context, MapStateNotifier formDataNotifier) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       const FormFieldLabel('التاريخ'),
+  //       HorizontalGap.l,
+  //       Expanded(
+  //         child: FormDatePickerField(
+  //           initialValue: formDataNotifier.data['date'],
+  //           onChangedFn: (date) {
+  //             formDataNotifier.addProperty('date', date);
+  //           },
+  //           name: 'date',
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildButtons(BuildContext context, MapStateNotifier formDataNotifier) {
     final cartNotifier = ref.read(cartProvider.notifier);

@@ -115,7 +115,7 @@ class ShoppingCart extends ConsumerWidget {
                   name: formData['name'],
                   imageUrls: [defaultImageUrl],
                   number: 0,
-                  date: formData['date'],
+                  date: DateTime.now(),
                   currency: 'دينار',
                   transactionType: TransactionType.customerInvoice.name,
                   subTotalAmount: totalAmount,
