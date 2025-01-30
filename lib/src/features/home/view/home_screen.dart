@@ -86,7 +86,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _buildTransactionSelectionButton(context, ref, 'وصل قبض', AppRoute.receipt.name),
         const SizedBox(width: 50),
         _buildTransactionSelectionButton(context, ref, 'قائمة بيع', AppRoute.items.name,
-            loadProducts: true),
+            loadAllTransactions: true),
       ],
     );
   }
@@ -116,7 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
               // load transactions of selected customer, to be used for calculating debt
               _setLoading(true);
-              await setTranasctionsProvider(ref, customer['dbRef']);
+              await setTranasctionsProvider(ref, customerDbRef: customer['dbRef']);
               _setLoading(false);
               // now calculating debt
               final customerDebtInfo =
@@ -176,14 +176,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildTransactionSelectionButton(
       BuildContext context, WidgetRef ref, String label, String routeName,
-      {bool loadProducts = false}) {
+      {bool loadAllTransactions = false}) {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
 
     return InkWell(
       onTap: () async {
-        // load products if the button pressed is invoice
-        if (loadProducts) {
-          await setProductsProvider(ref);
+        if (loadAllTransactions) {
+          // load all transaction if the button pressed is invoice, transactions used to calculate stock
+          await setTranasctionsProvider(ref);
         }
         if (formDataNotifier.data.containsKey('name') &
             formDataNotifier.data.containsKey('nameDbRef')) {

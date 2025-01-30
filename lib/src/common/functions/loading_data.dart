@@ -36,10 +36,21 @@ Future<void> setProductsProvider(WidgetRef ref) async {
   dbCache.set(products);
 }
 
-Future<void> setTranasctionsProvider(WidgetRef ref, String customerDbRef) async {
+// if customer dbRef is provided, we only load transactions for the customer
+// when we want to calculate product quantity, we need all transactions
+// I separated them, to make it easier to load at begining of the app
+// given the idea that we may need to just calculate the debt of customer
+// not creating new invoice, so in this case we don't need to load all transactions
+Future<void> setTranasctionsProvider(WidgetRef ref, {String? customerDbRef}) async {
   final transactionRepository = ref.read(transactionRepositoryProvider);
-  final transactions = await transactionRepository.fetchItemListAsMaps(
-      filterKey: 'nameDbRef', filterValue: customerDbRef);
+  final List<Map<String, dynamic>> transactions;
+  if (customerDbRef != null) {
+    transactions = await transactionRepository.fetchItemListAsMaps(
+        filterKey: 'nameDbRef', filterValue: customerDbRef);
+  } else {
+    transactions = await transactionRepository.fetchItemListAsMaps(
+        filterKey: 'nameDbRef', filterValue: customerDbRef);
+  }
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
   transactionsDbCache.set(transactions);
 }
