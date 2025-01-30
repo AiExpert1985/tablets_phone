@@ -36,33 +36,37 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
 
     return MainFrame(
       child: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          width: 400,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              VerticalGap.xl,
-              buildScreenTitle(context, 'قائمة بيع'),
-              VerticalGap.xl,
-              _buildNameSelection(context, formDataNotifier),
-              // VerticalGap.xl,
-              // _buildDate(context, formDataNotifier),
-              VerticalGap.xl,
-              if (totalDebt != null)
-                buildTotalAmount(context, dueDebt, 'الدين المستحق', bgColor: infoBgColor),
-              VerticalGap.m,
-              if (totalDebt != null)
-                buildTotalAmount(context, totalDebt, 'الدين الكلي', bgColor: infoBgColor),
-              VerticalGap.m,
-              if (latestReceiptDate != null)
-                buildTotalAmount(context, latestInvoiceDate, 'اخر قائمة', bgColor: infoBgColor),
-              VerticalGap.m,
-              if (latestInvoiceDate != null)
-                buildTotalAmount(context, latestReceiptDate, 'اخر تسديد', bgColor: infoBgColor),
-              VerticalGap.xl,
-              _buildButtons(context, formDataNotifier),
-            ],
+        child: SingleChildScrollView(
+          // Wrap the Column with SingleChildScrollView
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            width: 400,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                VerticalGap.xl,
+                buildScreenTitle(context, 'قائمة بيع'),
+                VerticalGap.xl,
+                _buildNameSelection(context, formDataNotifier),
+                VerticalGap.xl,
+
+                // _buildDate(context, formDataNotifier),
+                // VerticalGap.xl,
+                if (totalDebt != null)
+                  buildTotalAmount(context, dueDebt, 'الدين المستحق', bgColor: infoBgColor),
+                VerticalGap.l,
+                if (totalDebt != null)
+                  buildTotalAmount(context, totalDebt, 'الدين الكلي', bgColor: infoBgColor),
+                VerticalGap.l,
+                if (latestReceiptDate != null)
+                  buildTotalAmount(context, latestInvoiceDate, 'اخر قائمة', bgColor: infoBgColor),
+                VerticalGap.l,
+                if (latestInvoiceDate != null)
+                  buildTotalAmount(context, latestReceiptDate, 'اخر تسديد', bgColor: infoBgColor),
+                VerticalGap.xl,
+                _buildButtons(context, formDataNotifier),
+              ],
+            ),
           ),
         ),
       ),
@@ -137,7 +141,7 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
                 cartNotifier.reset();
                 GoRouter.of(context).pushNamed(AppRoute.items.name);
               } else {
-                failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
+                failureUserMessage(context, 'يرجى اختيار اسم الزبون');
               }
             },
           ),
