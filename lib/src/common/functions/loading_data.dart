@@ -25,7 +25,7 @@ Future<void> setCustomersProvider(WidgetRef ref) async {
   final customersRepository = ref.read(customerRepositoryProvider);
   final customers = await customersRepository.fetchItemListAsMaps(
       filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
-  final salesmanCustomersDb = ref.read(salesmanCustomerDbCacheProvider.notifier);
+  final salesmanCustomersDb = ref.read(customerDbCacheProvider.notifier);
   salesmanCustomersDb.set(customers);
 }
 

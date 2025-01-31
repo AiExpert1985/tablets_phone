@@ -29,9 +29,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isLoading = false; // Loading state
 
   @override
+  void initState() {
+    super.initState();
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+    if (customerDbCache.data.isEmpty) {
+      _setLoading(true); // Set loading to true
+      setCustomersProvider(ref);
+      _setLoading(false); // Set loading to false after data is loaded
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.watch(formDataContainerProvider);
+    ref.watch(customerDbCacheProvider);
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
 
     return MainFrame(
       child: Center(
@@ -41,10 +54,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNameSelection(context, formDataNotifier),
+              if (customerDbCache.data.isNotEmpty) _buildNameSelection(context, formDataNotifier),
               if (formDataNotifier.data.containsKey('name')) _buildDebtInfo(),
               if (formDataNotifier.data.containsKey('name')) _buildSelectionButtons(),
-              if (_isLoading) _buildLoadingIndicator()
+              if (_isLoading || customerDbCache.data.isEmpty) _buildLoadingIndicator()
             ],
           ),
         ),
@@ -83,16 +96,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _buildTransactionSelectionButton(context, ref, 'وصل قبض', AppRoute.receipt.name),
+        _buildTransactionSelectionButton(context, 'وصل قبض', AppRoute.receipt.name),
         const SizedBox(width: 50),
-        _buildTransactionSelectionButton(context, ref, 'قائمة بيع', AppRoute.items.name,
+        _buildTransactionSelectionButton(context, 'قائمة بيع', AppRoute.items.name,
             loadAllTransactions: true),
       ],
     );
   }
 
   Widget _buildNameSelection(BuildContext context, MapStateNotifier formDataNotifier) {
-    final salesmanCustomersDb = ref.read(salesmanCustomerDbCacheProvider.notifier);
+    final salesmanCustomersDb = ref.read(customerDbCacheProvider.notifier);
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final cartNotifier = ref.read(cartProvider.notifier);
 
@@ -132,7 +145,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
         HorizontalGap.l,
-        _buildLoadCustomersButton(ref),
+        _buildLoadCustomersButton(),
       ],
     );
   }
@@ -155,7 +168,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  Widget _buildLoadCustomersButton(WidgetRef ref) {
+  Widget _buildLoadCustomersButton() {
     return IconButton(
         onPressed: () async {
           _setLoading(true); // Set loading to true
@@ -174,8 +187,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
-  Widget _buildTransactionSelectionButton(
-      BuildContext context, WidgetRef ref, String label, String routeName,
+  Widget _buildTransactionSelectionButton(BuildContext context, String label, String routeName,
       {bool loadAllTransactions = false}) {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
 
