@@ -94,10 +94,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildSelectionButtons() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildTransactionSelectionButton(context, 'وصل قبض', AppRoute.receipt.name),
-        const SizedBox(width: 50),
         _buildTransactionSelectionButton(context, 'قائمة بيع', AppRoute.items.name,
             loadAllTransactions: true),
       ],
@@ -207,7 +206,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         }
       },
       child: Container(
-        width: 150,
+        width: 140,
         height: 100,
         decoration: BoxDecoration(
           border: Border.all(),
