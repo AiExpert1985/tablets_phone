@@ -48,7 +48,13 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
     final transactonDbCache = ref.read(transactionDbCacheProvider.notifier);
 
     Widget childWidget = productDbCache.data.isEmpty || transactonDbCache.data.isEmpty
-        ? const LoadingSpinner()
+        ? const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Center(child: LoadingSpinner()),
+            ],
+          )
         : _buildProductsGrid();
     return MainFrame(
       includeBottomNavigation: true,
