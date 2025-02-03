@@ -113,7 +113,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         // HorizontalGap.l,
         Expanded(
           child: DropDownWithSearch(
-            label: 'الزبون',
+            label: 'اختيار الزبون',
             initialValue: formDataNotifier.data['name'],
             onChangedFn: (customer) async {
               // we reset form data because customer has been changed
@@ -142,8 +142,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             dbCache: salesmanCustomersDb,
           ),
         ),
-        HorizontalGap.l,
-        _buildLoadCustomersButton(),
+        // HorizontalGap.l,
+        // _buildLoadCustomersButton(),
       ],
     );
   }
@@ -166,25 +166,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  Widget _buildLoadCustomersButton() {
-    return IconButton(
-        onPressed: () async {
-          // first reset both formData, and cart
-          final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-          final cartNotifier = ref.read(cartProvider.notifier);
-          formDataNotifier.reset();
-          cartNotifier.reset();
-          // then start loading data
-          _setLoading(true); // Set loading to true
-          // await setCustomersProvider(ref);
-          await setTranasctionsProvider(ref, loadFreshData: true); // load fresh copy of transations
-          _setLoading(false); // Set loading to false after data is loaded
-        },
-        icon: const Icon(
-          Icons.refresh,
-          color: Colors.white,
-        ));
-  }
+  // Widget _buildLoadCustomersButton() {
+  //   return IconButton(
+  //       onPressed: () async {
+  //         // first reset both formData, and cart
+  //         final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+  //         final cartNotifier = ref.read(cartProvider.notifier);
+  //         formDataNotifier.reset();
+  //         cartNotifier.reset();
+  //         // then start loading data
+  //         _setLoading(true); // Set loading to true
+  //         // await setCustomersProvider(ref);
+  //         await setTranasctionsProvider(ref, loadFreshData: true); // load fresh copy of transations
+  //         _setLoading(false); // Set loading to false after data is loaded
+  //       },
+  //       icon: const Icon(
+  //         Icons.refresh,
+  //         color: Colors.white,
+  //       ));
+  // }
 
   void _setLoading(bool loading) {
     setState(() {

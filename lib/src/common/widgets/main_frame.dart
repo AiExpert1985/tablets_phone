@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
-import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
@@ -28,43 +27,50 @@ class MainFrame extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: customAppBar(context),
-      body: Container(color: bgColor, child: child),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(25.0),
+              color: bgColor,
+              child: child,
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: includeBottomNavigation ? _buildBottomNavigation(context, ref) : null,
     );
   }
 
   Widget _buildBottomNavigation(BuildContext context, WidgetRef ref) {
-    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-    final cartNotifier = ref.read(cartProvider.notifier);
     return BottomNavigationBar(
       onTap: (index) async {
-        if (index == 0 && formDataNotifier.data['name'] == null) {
-          failureUserMessage(context, 'لا يوجد قائمة مبيعات');
-        } else if (index == 0 && GoRouter.of(context).state.path != '/cart') {
-          GoRouter.of(context).goNamed(AppRoute.cart.name);
-        } else if (index == 1 && GoRouter.of(context).state.path != '/home') {
-          // when back to home, all data is erased, user receives confirmation
-          final confiramtion = await showDeleteConfirmationDialog(
-              context: context,
-              messagePart1: "",
-              messagePart2: 'سوف يتم حذف القائمة عند العودة للواجهة الرئيسية');
-          if (confiramtion != null) {
-            formDataNotifier.reset();
-            cartNotifier.reset();
-            if (context.mounted) {
-              GoRouter.of(context).goNamed(AppRoute.home.name);
-            }
-          }
-        } else {
-          errorPrint('Error or repeated URI');
+        switch (index) {
+          case 0:
+            GoRouter.of(context).goNamed(AppRoute.home.name);
+            break;
+
+          case 1:
+            GoRouter.of(context).goNamed(AppRoute.cart.name);
+            break;
+
+          case 2:
+            GoRouter.of(context).pushNamed(AppRoute.settings.name);
+            break;
+
+          default:
+            errorPrint('Error or repeated URI');
+            break;
         }
       },
       items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'الرئيسية'),
         BottomNavigationBarItem(
           icon: Icon(Icons.shopping_cart),
           label: 'المشتريات',
         ), // Cart Icon
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'الرئيسية'),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'الاعدادات'),
       ],
       backgroundColor: itemsColor,
       selectedItemColor: mainFrameIconsColor,
@@ -100,4 +106,20 @@ PreferredSizeWidget customAppBar(BuildContext context) {
       ),
     ],
   );
+}
+
+void resetTransactions(BuildContext context, WidgetRef ref) async {
+  final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+  final cartNotifier = ref.read(cartProvider.notifier);
+  final formData = formDataNotifier.data;
+  // when back to home, all data is erased, user receives confirmation box
+  final confirmation = await showDeleteConfirmationDialog(
+    context: context,
+    messagePart1: "",
+    messagePart2: 'سوف يتم حذف قائمة ${formData['name']} عند العودة للواجهة الرئيسية',
+  );
+  if (confirmation != null) {
+    formDataNotifier.reset();
+    cartNotifier.reset();
+  }
 }

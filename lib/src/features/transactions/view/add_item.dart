@@ -36,27 +36,18 @@ class _AddItemState extends ConsumerState<AddItem> {
   Widget build(BuildContext context) {
     return MainFrame(
       includeBottomNavigation: true,
-      child: Container(
-        padding: const EdgeInsets.all(30),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              VerticalGap.m,
-              _buildTitle(),
-              VerticalGap.l,
-              _buildImageSlider(),
-              VerticalGap.l,
-              _buildPrice(),
-              VerticalGap.m,
-              _buildQuantity(),
-              VerticalGap.m,
-              _buildGift(),
-              VerticalGap.m,
-              _buildButtons(context, ref),
-              VerticalGap.m,
-            ],
-          ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            _buildTitle(),
+            _buildImageSlider(),
+            _buildPrice(),
+            _buildQuantity(),
+            _buildGift(),
+            _buildButtons(context, ref),
+          ],
         ),
       ),
     );
