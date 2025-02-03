@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/loading_data.dart';
+import 'package:tablets/src/common/functions/reset_transaction_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/loading_spinner.dart';
@@ -32,7 +32,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
-    tempPrint('initiated');
     super.initState();
     final customerDbCache = ref.read(customerDbCacheProvider.notifier);
     if (customerDbCache.data.isEmpty) {
@@ -122,13 +121,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         // HorizontalGap.l,
         Expanded(
           child: DropDownWithSearch(
-            label: 'اختيار الزبون',
+            label: 'الزبون',
             initialValue: formDataNotifier.data['name'],
             onChangedFn: (customer) async {
-              // we reset form data because customer has been changed
-              formDataNotifier.reset();
-              // we also reset cart context
-              cartNotifier.reset();
+              if (cartNotifier.data.isNotEmpty) {
+                // if there is open transaction, the we need to get user confirmation reseting
+                bool userConfiramtion = await resetTransactonConfirmation(context, ref);
+                if (!userConfiramtion) {
+                  setState(() {}); // to reload screen which restore previous name
+                  return;
+                }
+              }
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);

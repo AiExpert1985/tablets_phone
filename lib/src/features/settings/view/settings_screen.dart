@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/loading_data.dart';
+import 'package:tablets/src/common/functions/reset_transaction_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/loading_spinner.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -49,29 +47,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       children: [
         IconButton(
           onPressed: () async {
-            // first reset both formData, and cart
-            final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-            final cartNotifier = ref.read(cartProvider.notifier);
+            bool userConfirmation = await resetTransactonConfirmation(context, ref);
+            if (!userConfirmation) {
+              return;
+            }
 
-            final formData = formDataNotifier.data;
-            // when back to home, all data is erased, user receives confirmation box
-            final confirmation = await showDeleteConfirmationDialog(
-              context: context,
-              messagePart1: "",
-              messagePart2: 'سوف يتم حذف قائمة ${formData['name']} عند العودة للواجهة الرئيسية',
-            );
-            if (confirmation != null) {
-              // then start loading data
-              _setLoading(true);
-              formDataNotifier.reset();
-              cartNotifier.reset();
-              // await setCustomersProvider(ref);
-              await setTranasctionsProvider(ref,
-                  loadFreshData: true); // load fresh copy of transations
-              _setLoading(false); // Set loading to false after data is loaded
-              if (mounted) {
-                successUserMessage(context, 'تمت المزامنة بنجاح');
-              }
+            // load fresh copy of transations & customers
+            await setCustomersProvider(ref, loadFreshData: true);
+            await setTranasctionsProvider(ref, loadFreshData: true);
+            _setLoading(false); // Set loading to false after data is loaded
+            if (mounted) {
+              successUserMessage(context, 'تمت المزامنة بنجاح');
             }
           },
           icon: const Icon(
@@ -85,6 +71,4 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ],
     );
   }
-
-  void resetTransactions(BuildContext context, WidgetRef ref) async {}
 }
