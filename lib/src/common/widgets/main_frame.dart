@@ -5,8 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
-import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 // these colors are taken from Omar caffee mobile web app, given by Mahmood
@@ -106,20 +104,4 @@ PreferredSizeWidget customAppBar(BuildContext context) {
       ),
     ],
   );
-}
-
-void resetTransactions(BuildContext context, WidgetRef ref) async {
-  final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-  final cartNotifier = ref.read(cartProvider.notifier);
-  final formData = formDataNotifier.data;
-  // when back to home, all data is erased, user receives confirmation box
-  final confirmation = await showDeleteConfirmationDialog(
-    context: context,
-    messagePart1: "",
-    messagePart2: 'سوف يتم حذف قائمة ${formData['name']} عند العودة للواجهة الرئيسية',
-  );
-  if (confirmation != null) {
-    formDataNotifier.reset();
-    cartNotifier.reset();
-  }
 }

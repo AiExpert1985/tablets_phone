@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/loading_data.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -31,12 +32,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
+    tempPrint('initiated');
     super.initState();
     final customerDbCache = ref.read(customerDbCacheProvider.notifier);
     if (customerDbCache.data.isEmpty) {
       _setLoading(true); // Set loading to true
       setCustomersProvider(ref);
       _setLoading(false); // Set loading to false after data is loaded
+    }
+    // in case we return to home after selecting a customer, then we want to display its debt info
+    final formData = ref.read(formDataContainerProvider);
+    final customerSelectedName = formData['name'];
+    if (customerSelectedName != null) {
+      final customer = customerDbCache.getItemByProperty('name', customerSelectedName);
+      _setCustomerDebtVariables(customer);
     }
   }
 
@@ -120,8 +129,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               formDataNotifier.reset();
               // we also reset cart context
               cartNotifier.reset();
-              // now process customer data, and debt data
-              num paymentDurationLimit = customer['paymentDurationLimit'];
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
@@ -129,15 +136,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _setLoading(true);
               await setTranasctionsProvider(ref);
               _setLoading(false);
-              // now calculating debt
-              final customerDebtInfo =
-                  getCustomerDebtInfo(ref, customer['dbRef'], paymentDurationLimit);
-              // set customer debt info
-              totalDebt = customerDebtInfo['totalDebt'];
-              dueDebt = customerDebtInfo['dueDebt'];
-              latestReceiptDate = customerDebtInfo['lastReceiptDate'] ?? 'لا يوجد';
-              latestInvoiceDate = customerDebtInfo['latestInvoiceDate'] ?? 'لا يوجد';
-              _validateCustomer(paymentDurationLimit, customer['creditLimit']);
+              _setCustomerDebtVariables(customer);
             },
             dbCache: salesmanCustomersDb,
           ),
@@ -146,6 +145,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         // _buildLoadCustomersButton(),
       ],
     );
+  }
+
+  void _setCustomerDebtVariables(Map<String, dynamic> customer) {
+    // now process customer data, and debt data
+    num paymentDurationLimit = customer['paymentDurationLimit'];
+    // now calculating debt
+    final customerDebtInfo = getCustomerDebtInfo(ref, customer['dbRef'], paymentDurationLimit);
+    // set customer debt info
+    totalDebt = customerDebtInfo['totalDebt'];
+    dueDebt = customerDebtInfo['dueDebt'];
+    latestReceiptDate = customerDebtInfo['lastReceiptDate'] ?? 'لا يوجد';
+    latestInvoiceDate = customerDebtInfo['latestInvoiceDate'] ?? 'لا يوجد';
+    _validateCustomer(paymentDurationLimit, customer['creditLimit']);
   }
 
 // customer is invalid, if he has debt, and exceeded max number of days (debt limit)

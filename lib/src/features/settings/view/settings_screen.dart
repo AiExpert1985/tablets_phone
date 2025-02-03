@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/loading_data.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -51,16 +52,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             // first reset both formData, and cart
             final formDataNotifier = ref.read(formDataContainerProvider.notifier);
             final cartNotifier = ref.read(cartProvider.notifier);
-            formDataNotifier.reset();
-            cartNotifier.reset();
-            // then start loading data
-            _setLoading(true); // Set loading to true
-            // await setCustomersProvider(ref);
-            await setTranasctionsProvider(ref,
-                loadFreshData: true); // load fresh copy of transations
-            _setLoading(false); // Set loading to false after data is loaded
-            if (mounted) {
-              successUserMessage(context, 'تمت المزامنة بنجاح');
+
+            final formData = formDataNotifier.data;
+            // when back to home, all data is erased, user receives confirmation box
+            final confirmation = await showDeleteConfirmationDialog(
+              context: context,
+              messagePart1: "",
+              messagePart2: 'سوف يتم حذف قائمة ${formData['name']} عند العودة للواجهة الرئيسية',
+            );
+            if (confirmation != null) {
+              // then start loading data
+              _setLoading(true);
+              formDataNotifier.reset();
+              cartNotifier.reset();
+              // await setCustomersProvider(ref);
+              await setTranasctionsProvider(ref,
+                  loadFreshData: true); // load fresh copy of transations
+              _setLoading(false); // Set loading to false after data is loaded
+              if (mounted) {
+                successUserMessage(context, 'تمت المزامنة بنجاح');
+              }
             }
           },
           icon: const Icon(
@@ -74,4 +85,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ],
     );
   }
+
+  void resetTransactions(BuildContext context, WidgetRef ref) async {}
 }
