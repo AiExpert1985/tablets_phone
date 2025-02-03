@@ -36,19 +36,16 @@ class _AddItemState extends ConsumerState<AddItem> {
   Widget build(BuildContext context) {
     return MainFrame(
       includeBottomNavigation: true,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            _buildTitle(),
-            _buildImageSlider(),
-            _buildPrice(),
-            _buildQuantity(),
-            _buildGift(),
-            _buildButtons(context, ref),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildTitle(),
+          _buildImageSlider(),
+          _buildPrice(),
+          _buildQuantity(),
+          _buildGift(),
+          _buildButtons(context, ref),
+        ],
       ),
     );
   }
@@ -203,6 +200,7 @@ class _AddItemState extends ConsumerState<AddItem> {
               Navigator.pop(context);
             },
           ),
+          IconButton(onPressed: () {}, icon: const CancelIcon())
         ],
       ),
     );
