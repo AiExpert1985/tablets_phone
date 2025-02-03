@@ -51,11 +51,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             if (!userConfirmation) {
               return;
             }
-
+            _setLoading(true);
             // load fresh copy of transations & customers
             await setCustomersProvider(ref, loadFreshData: true);
             await setTranasctionsProvider(ref, loadFreshData: true);
-            _setLoading(false); // Set loading to false after data is loaded
+            _setLoading(false);
             if (mounted) {
               successUserMessage(context, 'تمت المزامنة بنجاح');
             }

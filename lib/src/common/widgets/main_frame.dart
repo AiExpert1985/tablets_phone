@@ -54,7 +54,7 @@ class MainFrame extends ConsumerWidget {
             break;
 
           case 2:
-            GoRouter.of(context).pushNamed(AppRoute.settings.name);
+            GoRouter.of(context).goNamed(AppRoute.settings.name);
             break;
 
           default:

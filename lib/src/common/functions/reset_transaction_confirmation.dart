@@ -12,6 +12,11 @@ Future<bool> resetTransactonConfirmation(BuildContext context, WidgetRef ref) as
   final cartNotifier = ref.read(cartProvider.notifier);
 
   final formData = formDataNotifier.data;
+  if (formData['name'] == null) {
+    formDataNotifier.reset();
+    cartNotifier.reset();
+    return true;
+  }
   // when back to home, all data is erased, user receives confirmation box
   final confirmation = await showDeleteConfirmationDialog(
     context: context,
