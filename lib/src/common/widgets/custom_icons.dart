@@ -167,7 +167,7 @@ class DeleteIcon extends StatelessWidget {
           size: iconSize,
         ),
         VerticalGap.s,
-        Text(S.of(context).delete, style: TextStyle(fontSize: iconFontSize)),
+        Text('حذف القائمة', style: TextStyle(fontSize: iconFontSize, color: Colors.white)),
       ],
     );
   }

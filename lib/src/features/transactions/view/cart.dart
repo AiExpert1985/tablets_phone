@@ -96,7 +96,6 @@ class ShoppingCart extends ConsumerWidget {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final formData = formDataNotifier.data;
     return Container(
-      width: 300,
       padding: const EdgeInsets.all(5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -146,6 +145,12 @@ class ShoppingCart extends ConsumerWidget {
               },
               icon: const SaveInvoice(),
             ),
+          if (cartItems.isNotEmpty && formData.isNotEmpty)
+            IconButton(
+                onPressed: () {
+                  cartNotifier.reset();
+                },
+                icon: const DeleteIcon())
         ],
       ),
     );
