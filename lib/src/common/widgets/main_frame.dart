@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
+import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 // these colors are taken from Omar caffee mobile web app, given by Mahmood
@@ -24,7 +25,7 @@ class MainFrame extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: customAppBar(context),
+      appBar: customAppBar(context, ref),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -80,9 +81,28 @@ class MainFrame extends ConsumerWidget {
   }
 }
 
-PreferredSizeWidget customAppBar(BuildContext context) {
+PreferredSizeWidget customAppBar(BuildContext context, WidgetRef ref) {
+  // final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
+  // final salesmanName = salesmanInfoNotifier.name;
   return AppBar(
     backgroundColor: itemsColor,
+    // leading: Container(
+    //   width: 250, // Set your desired width here
+    //   padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10.0),
+    //   alignment: Alignment.center, // Center the text if needed
+    //   child: Row(
+    //     children: [
+    //       const Text(
+    //         ' مرحبا',
+    //         style: TextStyle(color: Colors.white, fontSize: 16),
+    //       ),
+    //       Text(
+    //         salesmanName ?? '',
+    //         style: const TextStyle(color: Colors.white, fontSize: 16),
+    //       ),
+    //     ],
+    //   ),
+    // ),
     actions: [
       TextButton.icon(
         onPressed: () async {
