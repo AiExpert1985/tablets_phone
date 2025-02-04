@@ -152,7 +152,7 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                     giftQuantity: 0,
                     stock: productStock,
                   );
-                  GoRouter.of(context).pushNamed(AppRoute.add.name, extra: item);
+                  GoRouter.of(context).goNamed(AppRoute.add.name, extra: item);
                 },
                 hoverColor: const Color.fromARGB(255, 173, 170, 170),
                 child: TitledImage(

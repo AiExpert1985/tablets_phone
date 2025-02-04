@@ -91,6 +91,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
         HorizontalGap.xl,
         Expanded(
           child: FormInputField(
+            initialValue: formDataNotifier.data['name'],
             onChangedFn: (value) {
               formDataNotifier.addProperty('subTotalAmount', value);
               final discount = formDataNotifier.data['discount'] ?? 0;
@@ -151,6 +152,13 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
               GoRouter.of(context).goNamed(AppRoute.home.name);
               successUserMessage(context, 'تم اضافة الوصل بنجاح');
             },
+          ),
+          HorizontalGap.xl,
+          IconButton(
+            onPressed: () {
+              GoRouter.of(context).goNamed(AppRoute.home.name);
+            },
+            icon: const CancelIcon(),
           ),
         ],
       ),

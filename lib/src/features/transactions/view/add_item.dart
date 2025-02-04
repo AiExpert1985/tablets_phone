@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
@@ -13,6 +14,7 @@ import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 
 class AddItem extends ConsumerStatefulWidget {
   const AddItem(this.item, {super.key});
@@ -179,7 +181,7 @@ class _AddItemState extends ConsumerState<AddItem> {
             icon: const ApproveIcon(),
             onPressed: () {
               if (_isInValidateQuantity()) {
-                failureUserMessage(context, 'المخزون اقل من العدد المطلوب');
+                // failureUserMessage(context, 'المخزون اقل من العدد المطلوب');
                 // return;
               }
               // all fields must be filled
@@ -197,10 +199,16 @@ class _AddItemState extends ConsumerState<AddItem> {
               cartItem.salesmanTotalCommission =
                   cartItem.salesmanCommission * cartItem.soldQuantity!;
               cartNotifier.addItem(cartItem);
-              Navigator.pop(context);
+              GoRouter.of(context).goNamed(AppRoute.items.name);
             },
           ),
-          IconButton(onPressed: () {}, icon: const CancelIcon())
+          HorizontalGap.xl,
+          IconButton(
+            onPressed: () {
+              GoRouter.of(context).goNamed(AppRoute.items.name);
+            },
+            icon: const CancelIcon(),
+          ),
         ],
       ),
     );
