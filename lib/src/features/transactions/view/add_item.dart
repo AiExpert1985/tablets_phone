@@ -202,13 +202,13 @@ class _AddItemState extends ConsumerState<AddItem> {
               GoRouter.of(context).goNamed(AppRoute.items.name);
             },
           ),
-          HorizontalGap.xl,
-          IconButton(
-            onPressed: () {
-              GoRouter.of(context).goNamed(AppRoute.items.name);
-            },
-            icon: const CancelIcon(),
-          ),
+          // HorizontalGap.xl,
+          // IconButton(
+          //   onPressed: () {
+          //     GoRouter.of(context).goNamed(AppRoute.items.name);
+          //   },
+          //   icon: const CancelIcon(),
+          // ),
         ],
       ),
     );

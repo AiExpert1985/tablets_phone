@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
-import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
+import 'package:tablets/src/common/providers/data_loading_provider.dart';
+import 'package:tablets/src/common/widgets/main_drawer.dart';
+import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 // these colors are taken from Omar caffee mobile web app, given by Mahmood
@@ -24,38 +26,43 @@ class MainFrame extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(loadingProvider);
     return Scaffold(
-      appBar: customAppBar(context, ref),
+      appBar: AppBar(backgroundColor: itemsColor),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
             child: Container(
-              padding: const EdgeInsets.all(25.0),
               color: bgColor,
-              child: child,
+              child: LoadingWrapper(
+                  child: Container(padding: const EdgeInsets.all(25.0), child: child)),
             ),
           ),
         ],
       ),
+      endDrawer: const MainDrawer(),
       bottomNavigationBar: includeBottomNavigation ? _buildBottomNavigation(context, ref) : null,
     );
   }
 
   Widget _buildBottomNavigation(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     return BottomNavigationBar(
       onTap: (index) async {
         switch (index) {
           case 0:
-            GoRouter.of(context).goNamed(AppRoute.home.name);
+            if (GoRouter.of(context).state.path != '/home') {
+              ref.read(loadingProvider.notifier).setCustomersProvider();
+              GoRouter.of(context).pushNamed(AppRoute.home.name);
+            }
             break;
 
           case 1:
-            GoRouter.of(context).goNamed(AppRoute.cart.name);
-            break;
-
-          case 2:
-            GoRouter.of(context).goNamed(AppRoute.settings.name);
+            if (GoRouter.of(context).state.path != '/cart' &&
+                formDataNotifier.data['name'] != null) {
+              GoRouter.of(context).pushNamed(AppRoute.cart.name);
+            }
             break;
 
           default:
@@ -69,7 +76,6 @@ class MainFrame extends ConsumerWidget {
           icon: Icon(Icons.shopping_cart),
           label: 'المشتريات',
         ), // Cart Icon
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'الاعدادات'),
       ],
       backgroundColor: itemsColor,
       selectedItemColor: mainFrameIconsColor,
@@ -82,27 +88,8 @@ class MainFrame extends ConsumerWidget {
 }
 
 PreferredSizeWidget customAppBar(BuildContext context, WidgetRef ref) {
-  // final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
-  // final salesmanName = salesmanInfoNotifier.name;
   return AppBar(
     backgroundColor: itemsColor,
-    // leading: Container(
-    //   width: 250, // Set your desired width here
-    //   padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10.0),
-    //   alignment: Alignment.center, // Center the text if needed
-    //   child: Row(
-    //     children: [
-    //       const Text(
-    //         ' مرحبا',
-    //         style: TextStyle(color: Colors.white, fontSize: 16),
-    //       ),
-    //       Text(
-    //         salesmanName ?? '',
-    //         style: const TextStyle(color: Colors.white, fontSize: 16),
-    //       ),
-    //     ],
-    //   ),
-    // ),
     actions: [
       TextButton.icon(
         onPressed: () async {

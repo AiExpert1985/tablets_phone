@@ -149,6 +149,8 @@ class ShoppingCart extends ConsumerWidget {
             IconButton(
                 onPressed: () {
                   cartNotifier.reset();
+                  failureUserMessage(context, 'تم حذف القائمة');
+                  GoRouter.of(context).goNamed(AppRoute.home.name);
                 },
                 icon: const DeleteIcon())
         ],

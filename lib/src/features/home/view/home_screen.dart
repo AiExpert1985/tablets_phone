@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/loading_data.dart';
 import 'package:tablets/src/common/functions/reset_transaction_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/common/widgets/loading_spinner.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
@@ -28,21 +27,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   dynamic latestReceiptDate;
   dynamic latestInvoiceDate;
   bool isValidUser = true;
-  bool _isLoading = false; // Loading state
 
   @override
   void initState() {
     super.initState();
-    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-    if (customerDbCache.data.isEmpty) {
-      _setLoading(true); // Set loading to true
-      setCustomersProvider(ref);
-      _setLoading(false); // Set loading to false after data is loaded
-    }
     // in case we return to home after selecting a customer, then we want to display its debt info
     final formData = ref.read(formDataContainerProvider);
     final customerSelectedName = formData['name'];
     if (customerSelectedName != null) {
+      final customerDbCache = ref.read(customerDbCacheProvider.notifier);
       final customer = customerDbCache.getItemByProperty('name', customerSelectedName);
       _setCustomerDebtVariables(customer);
     }
@@ -64,11 +57,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               if (customerDbCache.data.isNotEmpty) _buildNameSelection(context, formDataNotifier),
-              if (!_isLoading && formDataNotifier.data.containsKey('name')) _buildDebtInfo(),
-              if (!_isLoading && formDataNotifier.data.containsKey('name'))
+              if (formDataNotifier.data.containsKey('name')) ...[
+                _buildDebtInfo(),
                 _buildSelectionButtons(),
-              if (_isLoading || customerDbCache.data.isEmpty)
-                const LoadingSpinner('تحميل بيانات الزبائن')
+              ]
             ],
           ),
         ),
@@ -136,9 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
               // load transactions of selected customer, to be used for calculating debt
-              _setLoading(true);
-              await setTranasctionsProvider(ref);
-              _setLoading(false);
+              await ref.read(loadingProvider.notifier).setTranasctionsProvider();
               _setCustomerDebtVariables(customer);
             },
             dbCache: salesmanCustomersDb,
@@ -181,32 +171,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  // Widget _buildLoadCustomersButton() {
-  //   return IconButton(
-  //       onPressed: () async {
-  //         // first reset both formData, and cart
-  //         final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-  //         final cartNotifier = ref.read(cartProvider.notifier);
-  //         formDataNotifier.reset();
-  //         cartNotifier.reset();
-  //         // then start loading data
-  //         _setLoading(true); // Set loading to true
-  //         // await setCustomersProvider(ref);
-  //         await setTranasctionsProvider(ref, loadFreshData: true); // load fresh copy of transations
-  //         _setLoading(false); // Set loading to false after data is loaded
-  //       },
-  //       icon: const Icon(
-  //         Icons.refresh,
-  //         color: Colors.white,
-  //       ));
-  // }
-
-  void _setLoading(bool loading) {
-    setState(() {
-      _isLoading = loading; // Update loading state
-    });
-  }
-
   Widget _buildTransactionSelectionButton(BuildContext context, String label, String routeName) {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
 
@@ -215,7 +179,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         if (formDataNotifier.data.containsKey('name') &
             formDataNotifier.data.containsKey('nameDbRef')) {
           if (context.mounted) {
-            GoRouter.of(context).goNamed(routeName);
+            GoRouter.of(context).pushNamed(routeName);
           }
         } else if (context.mounted) {
           failureUserMessage(context, 'يرجى اختيار اسم الزبون');

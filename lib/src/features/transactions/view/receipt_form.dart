@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -134,8 +135,9 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
         children: [
           IconButton(
             icon: const ApproveIcon(),
-            onPressed: () {
+            onPressed: () async {
               final formData = formDataNotifier.data;
+              final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
               if (!(formData.containsKey('name') &&
                   // formData.containsKey('date') &&
                   formData.containsKey('number') &&
@@ -145,21 +147,26 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                 failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
                 return;
               }
+              if (salesmanInfoNotifier.name == null || salesmanInfoNotifier.dbRef == null) {
+                await ref.read(loadingProvider.notifier).setSalesmanInfo();
+              }
               _addRequiredProperties(ref, formDataNotifier);
               final transaction = Transaction.fromMap(formDataNotifier.data);
               addTransactionToDb(ref, transaction);
               formDataNotifier.reset();
-              GoRouter.of(context).goNamed(AppRoute.home.name);
-              successUserMessage(context, 'تم اضافة الوصل بنجاح');
+              if (context.mounted) {
+                GoRouter.of(context).goNamed(AppRoute.home.name);
+                successUserMessage(context, 'تم اضافة الوصل بنجاح');
+              }
             },
           ),
-          HorizontalGap.xl,
-          IconButton(
-            onPressed: () {
-              GoRouter.of(context).goNamed(AppRoute.home.name);
-            },
-            icon: const CancelIcon(),
-          ),
+          // HorizontalGap.xl,
+          // IconButton(
+          //   onPressed: () {
+          //     GoRouter.of(context).goNamed(AppRoute.home.name);
+          //   },
+          //   icon: const CancelIcon(),
+          // ),
         ],
       ),
     );

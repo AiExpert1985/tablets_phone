@@ -3,12 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
-import 'package:tablets/src/common/functions/loading_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
-import 'package:tablets/src/common/widgets/loading_spinner.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/products_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
@@ -36,7 +35,7 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
   @override
   void initState() {
     super.initState();
-    setProductsProvider(ref);
+    ref.read(loadingProvider.notifier).setProductsProvider();
   }
 
   @override
@@ -47,7 +46,7 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
 
     Widget childWidget = productDbCache.data.isEmpty
         ? const Center(
-            child: LoadingSpinner('تحميل بيانات المواد'),
+            child: LoadingSpinner(text: 'تحميل بيانات المواد'),
           )
         : _buildProductsGrid();
     return MainFrame(
@@ -152,7 +151,7 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
                     giftQuantity: 0,
                     stock: productStock,
                   );
-                  GoRouter.of(context).goNamed(AppRoute.add.name, extra: item);
+                  GoRouter.of(context).pushNamed(AppRoute.add.name, extra: item);
                 },
                 hoverColor: const Color.fromARGB(255, 173, 170, 170),
                 child: TitledImage(

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/features/login/repository/auth_repository.dart';
 import 'package:toastification/toastification.dart';
 
@@ -27,7 +28,11 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
     _loginForm.currentState!.save(); // runs onSave inside form
     final isSuccessful =
         await ref.watch(authRepositoryProvider).signUserIn(_userEmail, _userPassword);
-    if (!isSuccessful) {
+    if (isSuccessful) {
+      ref.read(loadingProvider.notifier).setSalesmanInfo();
+      // we initialize customers
+      ref.read(loadingProvider.notifier).setCustomersProvider();
+    } else {
       toastification.show(
         context: context, // optional if you use ToastificationWrapper
         title: Text(S.of(context).db_error_login),
