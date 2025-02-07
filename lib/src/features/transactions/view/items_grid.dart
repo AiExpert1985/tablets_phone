@@ -28,6 +28,7 @@ class _ItemsGridState extends ConsumerState<ItemsGrid> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(productsDbCacheProvider); // to show products after being loaded from database
     final productDbCache = ref.read(productsDbCacheProvider.notifier);
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final sellingPriceType = formDataNotifier.data['sellingPriceType'];
