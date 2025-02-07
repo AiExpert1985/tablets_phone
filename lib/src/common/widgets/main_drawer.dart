@@ -51,12 +51,8 @@ class MainDrawer extends ConsumerWidget {
                       leading: const Icon(Icons.refresh),
                       onTap: () async {
                         Navigator.pop(context);
-                        ref
-                            .read(loadingProvider.notifier)
-                            .setCustomersProvider(loadFreshData: true);
-                        ref
-                            .read(loadingProvider.notifier)
-                            .setTranasctionsProvider(loadFreshData: true);
+                        ref.read(loadingProvider.notifier).loadCustomers(loadFreshData: true);
+                        ref.read(loadingProvider.notifier).loadTransactions(loadFreshData: true);
                       },
                     ),
                     ListTile(

@@ -44,9 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     ref.watch(formDataContainerProvider);
-    ref.watch(customerDbCacheProvider);
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
 
     return MainFrame(
       child: Center(
@@ -56,7 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              if (customerDbCache.data.isNotEmpty) _buildNameSelection(context, formDataNotifier),
+              _buildNameSelection(context, formDataNotifier),
               if (formDataNotifier.data.containsKey('name')) ...[
                 _buildDebtInfo(),
                 _buildSelectionButtons(),
@@ -105,16 +103,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final salesmanCustomersDb = ref.read(customerDbCacheProvider.notifier);
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final cartNotifier = ref.read(cartProvider.notifier);
+    final dataLoader = ref.read(loadingProvider.notifier);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // const FormFieldLabel('الزبون'),
-        // HorizontalGap.l,
         Expanded(
           child: DropDownWithSearch(
             label: 'الزبون',
             initialValue: formDataNotifier.data['name'],
+            onOpenFn: (p0) async {
+              // I created opOpenFn for on purpose, which it to load customers when the are not previously loaded
+              if (salesmanCustomersDb.data.isEmpty) {
+                // we must await here, otherwise dropdown will open without items
+                await dataLoader.loadCustomers();
+              }
+              return true;
+            },
             onChangedFn: (customer) async {
               if (cartNotifier.data.isNotEmpty) {
                 // if there is open transaction, the we need to get user confirmation reseting
@@ -128,14 +133,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
               // load transactions of selected customer, to be used for calculating debt
-              await ref.read(loadingProvider.notifier).setTranasctionsProvider();
+              ref.read(loadingProvider.notifier).loadTransactions();
               _setCustomerDebtVariables(customer);
             },
             dbCache: salesmanCustomersDb,
           ),
         ),
-        // HorizontalGap.l,
-        // _buildLoadCustomersButton(),
       ],
     );
   }
@@ -182,7 +185,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             GoRouter.of(context).pushNamed(routeName);
             if (routeName == AppRoute.items.name) {
               // if we are preparing an invoice, load the items
-              ref.read(loadingProvider.notifier).setProductsProvider();
+              ref.read(loadingProvider.notifier).loadProducts();
             }
           }
         } else if (context.mounted) {

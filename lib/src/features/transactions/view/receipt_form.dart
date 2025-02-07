@@ -148,6 +148,8 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                 return;
               }
               if (salesmanInfoNotifier.name == null || salesmanInfoNotifier.dbRef == null) {
+                // this step is to ensure that the salesman name and dbRef will be exists
+                // I think it rarely being reached, but I added it as a protection ?? maybe I will remove it in future
                 await ref.read(loadingProvider.notifier).setSalesmanInfo();
               }
               _addRequiredProperties(ref, formDataNotifier);

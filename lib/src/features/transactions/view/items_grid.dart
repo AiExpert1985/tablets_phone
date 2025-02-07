@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
@@ -14,7 +13,6 @@ import 'package:tablets/src/features/transactions/controllers/form_data_containe
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/model/product.dart';
-import 'package:tablets/src/features/transactions/repository/transactions_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class ItemsGrid extends ConsumerStatefulWidget {
@@ -28,21 +26,8 @@ class ItemsGrid extends ConsumerStatefulWidget {
 class _ItemsGridState extends ConsumerState<ItemsGrid> {
   String _searchQuery = '';
 
-  // // the idea here to get transactions & products from firebase without waiting (because you can't use wait during init)
-  // // and to implement the waiting through a circle loading until all data is loaded, the data load finish will be
-  // // detect through watching the notifiers when they are both not empty
-  // // this is nice strategy for loading from database & wait & show loading for better user experience
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   ref.read(loadingProvider.notifier).setProductsProvider();
-  // }
-
   @override
   Widget build(BuildContext context) {
-    ref.watch(transactionRepositoryProvider);
-    ref.watch(productsDbCacheProvider);
-
     final productDbCache = ref.read(productsDbCacheProvider.notifier);
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     final sellingPriceType = formDataNotifier.data['sellingPriceType'];

@@ -30,8 +30,6 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
         await ref.watch(authRepositoryProvider).signUserIn(_userEmail, _userPassword);
     if (isSuccessful) {
       ref.read(loadingProvider.notifier).setSalesmanInfo();
-      // we initialize customers
-      ref.read(loadingProvider.notifier).setCustomersProvider();
     } else {
       toastification.show(
         context: context, // optional if you use ToastificationWrapper

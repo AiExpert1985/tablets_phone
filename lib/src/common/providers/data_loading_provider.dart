@@ -72,7 +72,7 @@ class LoadingNotifier extends StateNotifier<bool> {
 
   // we only set customers once a day, in case there is update, user can press refresh to synch data with
   // fire store (the loadFreshData = true in this case)
-  Future<void> setCustomersProvider({bool loadFreshData = false}) async {
+  Future<void> loadCustomers({bool loadFreshData = false}) async {
     startLoading();
     final oneDayPassed = _lastAccessNotifier.hasOneDayPassed();
     if (_customerDbCache.data.isEmpty || oneDayPassed || loadFreshData) {
@@ -101,7 +101,7 @@ class LoadingNotifier extends StateNotifier<bool> {
 // note that we don't store copy of products (unlike customers and transactions)
 // the reason is that customers are rarely changed, and transactions of customers for one saleman are
 // not changed during the day (because they are mostly changed by salesman visit)
-  Future<void> setProductsProvider() async {
+  Future<void> loadProducts() async {
     startLoading();
     final products = await _productsRepository.fetchItemListAsMaps();
     _productDbCache.set(products);
@@ -112,7 +112,7 @@ class LoadingNotifier extends StateNotifier<bool> {
 // which makes loading slow, and cost money in firebase, I update the cache once a day
 // loadingFreshData is used for refresh button, which salesman might need if the customer data where updated
 // during the day, because in our app, the data is only updated onces a day at the first app access
-  Future<void> setTranasctionsProvider({bool loadFreshData = false}) async {
+  Future<void> loadTransactions({bool loadFreshData = false}) async {
     startLoading();
     final oneDayPassed = _lastAccessNotifier.hasOneDayPassed();
     if (_transactionsDbCache.data.isEmpty || oneDayPassed || loadFreshData) {
