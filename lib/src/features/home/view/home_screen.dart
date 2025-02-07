@@ -29,15 +29,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(homeScreenStateController);
+    final homeScreenState = ref.watch(homeScreenStateController);
 
     return MainFrame(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildNameSelection(context),
-          if (state.latestReceiptDate != null) ...[
-            _buildDebtInfo(state),
+          if (homeScreenState.latestReceiptDate != null) ...[
+            _buildDebtInfo(homeScreenState),
             _buildSelectionButtons(context),
           ]
         ],
