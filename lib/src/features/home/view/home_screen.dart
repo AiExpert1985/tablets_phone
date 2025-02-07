@@ -180,6 +180,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             formDataNotifier.data.containsKey('nameDbRef')) {
           if (context.mounted) {
             GoRouter.of(context).pushNamed(routeName);
+            if (routeName == AppRoute.items.name) {
+              // if we are preparing an invoice, load the items
+              ref.read(loadingProvider.notifier).setProductsProvider();
+            }
           }
         } else if (context.mounted) {
           failureUserMessage(context, 'يرجى اختيار اسم الزبون');
