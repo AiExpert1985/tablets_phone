@@ -31,6 +31,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    // load salesman Info
+    ref.read(loadingProvider.notifier).setSalesmanInfo();
     // in case we return to home after selecting a customer, then we want to display its debt info
     final formData = ref.read(formDataContainerProvider);
     final customerSelectedName = formData['name'];

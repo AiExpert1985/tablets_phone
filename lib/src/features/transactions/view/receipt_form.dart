@@ -41,7 +41,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                VerticalGap.l,
+                VerticalGap.s,
                 buildScreenTitle(context, 'وصل قبض'),
                 VerticalGap.xl,
                 _buildName(context, formDataNotifier),
@@ -53,7 +53,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                 buildTotalAmount(context, total, 'المجموع'),
                 VerticalGap.xl,
                 _buildButtons(context, formDataNotifier),
-                VerticalGap.l,
+                VerticalGap.s,
               ],
             ),
           ),

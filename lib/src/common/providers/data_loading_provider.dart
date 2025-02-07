@@ -85,7 +85,6 @@ class LoadingNotifier extends StateNotifier<bool> {
   }
 
   Future<void> setSalesmanInfo() async {
-    startLoading();
     final email = FirebaseAuth.instance.currentUser!.email;
     final accounts = await _accountsRepository.fetchItemListAsMaps();
     var matchingAccounts = accounts.where((account) => account['email'] == email);
@@ -95,7 +94,6 @@ class LoadingNotifier extends StateNotifier<bool> {
       final name = matchingAccounts.first['name'];
       _salesmanInfoNotifier.setName(name);
     }
-    stopLoading();
   }
 
 // note that we don't store copy of products (unlike customers and transactions)

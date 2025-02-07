@@ -125,7 +125,8 @@ class MainDrawerHeader extends ConsumerWidget {
                 Text(salesmanInfoNotifier.name ?? '',
                     style: const TextStyle(fontSize: 16, color: Colors.white)),
               ],
-            )
+            ),
+            VerticalGap.m,
           ],
         ),
       ),
