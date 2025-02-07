@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circle.dart';
@@ -14,6 +15,7 @@ import 'package:tablets/src/features/transactions/common/common_functions.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/controllers/products_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
@@ -41,42 +43,35 @@ class ShoppingCart extends ConsumerWidget {
     }
     return MainFrame(
       includeBottomNavigation: true,
-      child: Center(
-        child: Container(
-            padding: const EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: cartItems.isEmpty
-                  ? [
-                      VerticalGap.xl,
-                      _buildTransactionInfo(context, formData),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 250,
-                        child: Image.asset('assets/images/empty.png', fit: BoxFit.scaleDown),
-                      ),
-                      VerticalGap.xl,
-                      _buildButtons(
-                          context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
-                    ]
-                  : [
-                      VerticalGap.xl,
-                      _buildTransactionInfo(context, formData),
-                      VerticalGap.l,
-                      Expanded(
-                        child: ListView(
-                          shrinkWrap:
-                              true, // This allows the ListView to take only the space it needs
-                          children: _buildItemList(context, ref, cartItems),
-                        ),
-                      ),
-                      VerticalGap.l,
-                      buildTotalAmount(context, totalAmount, 'المجموع'),
-                      VerticalGap.l,
-                      _buildButtons(
-                          context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
-                    ],
-            )),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: cartItems.isEmpty
+            ? [
+                VerticalGap.xl,
+                _buildTransactionInfo(context, formData),
+                SizedBox(
+                  width: double.infinity,
+                  height: 250,
+                  child: Image.asset('assets/images/empty.png', fit: BoxFit.scaleDown),
+                ),
+                VerticalGap.xl,
+                _buildButtons(context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
+              ]
+            : [
+                VerticalGap.xl,
+                _buildTransactionInfo(context, formData),
+                VerticalGap.l,
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true, // This allows the ListView to take only the space it needs
+                    children: _buildItemList(context, ref, cartItems),
+                  ),
+                ),
+                VerticalGap.l,
+                buildTotalAmount(context, totalAmount, 'المجموع'),
+                VerticalGap.l,
+                _buildButtons(context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
+              ],
       ),
     );
   }
@@ -105,10 +100,14 @@ class ShoppingCart extends ConsumerWidget {
               icon: const AddItem(),
               onPressed: () {
                 final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+                final productDbCache = ref.read(productsDbCacheProvider.notifier);
                 if (formDataNotifier.data.isEmpty) {
                   GoRouter.of(context).goNamed(AppRoute.home.name);
                 } else {
                   GoRouter.of(context).goNamed(AppRoute.items.name);
+                }
+                if (productDbCache.data.isEmpty) {
+                  ref.read(loadingProvider.notifier).loadProducts();
                 }
               }),
           if (cartItems.isNotEmpty && formData.isNotEmpty)

@@ -49,21 +49,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
 
     return MainFrame(
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          width: 400,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNameSelection(context, formDataNotifier),
-              if (formDataNotifier.data.containsKey('name')) ...[
-                _buildDebtInfo(),
-                _buildSelectionButtons(),
-              ]
-            ],
-          ),
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNameSelection(context, formDataNotifier),
+          if (formDataNotifier.data.containsKey('name')) ...[
+            _buildDebtInfo(),
+            _buildSelectionButtons(),
+          ]
+        ],
       ),
     );
   }

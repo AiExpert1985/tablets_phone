@@ -36,7 +36,7 @@ class MainFrame extends ConsumerWidget {
             child: Container(
               color: bgColor,
               child: LoadingWrapper(
-                  child: Container(padding: const EdgeInsets.all(25.0), child: child)),
+                  child: Container(padding: const EdgeInsets.all(30.0), child: child)),
             ),
           ),
         ],

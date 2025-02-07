@@ -37,17 +37,22 @@ class _AddItemState extends ConsumerState<AddItem> {
   @override
   Widget build(BuildContext context) {
     return MainFrame(
-      includeBottomNavigation: true,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildTitle(),
-          _buildImageSlider(),
-          _buildPrice(),
-          _buildQuantity(),
-          _buildGift(),
-          _buildButtons(context, ref),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildTitle(),
+            VerticalGap.xxl,
+            _buildImageSlider(),
+            VerticalGap.xl,
+            _buildPrice(),
+            VerticalGap.l,
+            _buildQuantity(),
+            VerticalGap.l,
+            _buildGift(),
+            VerticalGap.xl,
+            _buildButtons(context, ref),
+          ],
+        ),
       ),
     );
   }
@@ -102,10 +107,11 @@ class _AddItemState extends ConsumerState<AddItem> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const FormFieldLabel('السعر'),
-        HorizontalGap.xl,
+        // const FormFieldLabel('السعر'),
+        // HorizontalGap.xl,
         Expanded(
           child: FormInputField(
+            label: 'السعر',
             initialValue: doubleToStringWithComma(cartItem.sellingPrice),
             onChangedFn: (value) {
               setState(() {
@@ -126,10 +132,11 @@ class _AddItemState extends ConsumerState<AddItem> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const FormFieldLabel('العدد'),
-        HorizontalGap.xl,
+        // const FormFieldLabel('العدد'),
+        // HorizontalGap.xl,
         Expanded(
           child: FormInputField(
+            label: 'العدد',
             initialValue: cartItem.soldQuantity,
             onChangedFn: (value) {
               if (cartItem.stock < value) {
@@ -152,10 +159,11 @@ class _AddItemState extends ConsumerState<AddItem> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const FormFieldLabel('الهدية'),
-        HorizontalGap.xl,
+        // const FormFieldLabel('الهدية'),
+        // HorizontalGap.xl,
         Expanded(
           child: FormInputField(
+            label: 'الهدية',
             initialValue: cartItem.giftQuantity,
             onChangedFn: (value) {
               setState(() {

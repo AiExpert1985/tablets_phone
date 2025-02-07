@@ -13,7 +13,6 @@ import 'package:tablets/src/features/home/controller/salesman_info_provider.dart
 import 'package:tablets/src/features/transactions/common/common_functions.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class ReceiptForm extends ConsumerStatefulWidget {
@@ -32,31 +31,19 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     ref.watch(formDataContainerProvider);
 
     return MainFrame(
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          width: 400,
-          child: SingleChildScrollView(
-            // Wrap the Column with SingleChildScrollView
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                VerticalGap.s,
-                buildScreenTitle(context, 'وصل قبض'),
-                VerticalGap.xl,
-                _buildName(context, formDataNotifier),
-                VerticalGap.xl,
-                _buildReceiptNumber(context, formDataNotifier),
-                VerticalGap.xl,
-                _buildReceivedAmount(context, formDataNotifier),
-                VerticalGap.xxxl,
-                buildTotalAmount(context, total, 'المجموع'),
-                VerticalGap.xl,
-                _buildButtons(context, formDataNotifier),
-                VerticalGap.s,
-              ],
-            ),
-          ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            buildScreenTitle(context, 'وصل قبض'),
+            VerticalGap.xxl,
+            _buildName(context, formDataNotifier),
+            VerticalGap.xl,
+            _buildReceiptNumber(context, formDataNotifier),
+            VerticalGap.xl,
+            _buildReceivedAmount(context, formDataNotifier),
+            VerticalGap.xxl,
+            _buildButtons(context, formDataNotifier),
+          ],
         ),
       ),
     );
@@ -66,10 +53,11 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const FormFieldLabel('الزبون'),
-        HorizontalGap.m,
+        // const FormFieldLabel('الزبون'),
+        // HorizontalGap.m,
         Expanded(
           child: FormInputField(
+            label: 'الزبون',
             initialValue: formDataNotifier.data['name'],
             useThousandSeparator: false,
             onChangedFn: (value) {
@@ -88,11 +76,12 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const FormFieldLabel('التسديد'),
-        HorizontalGap.m,
+        // const FormFieldLabel('التسديد'),
+        // HorizontalGap.m,
         Expanded(
           child: FormInputField(
-            initialValue: formDataNotifier.data['name'],
+            label: 'التسديد',
+            initialValue: formDataNotifier.data['subTotalAmount'],
             onChangedFn: (value) {
               formDataNotifier.addProperty('subTotalAmount', value);
               final discount = formDataNotifier.data['discount'] ?? 0;
@@ -111,10 +100,12 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const FormFieldLabel('رقم الوصل'),
-        HorizontalGap.m,
+        // const FormFieldLabel('رقم الوصل'),
+        // HorizontalGap.m,
         Expanded(
           child: FormInputField(
+            initialValue: formDataNotifier.data['number'],
+            label: 'رقم الوصل',
             useThousandSeparator: false,
             onChangedFn: (value) {
               formDataNotifier.addProperty('number', value);
