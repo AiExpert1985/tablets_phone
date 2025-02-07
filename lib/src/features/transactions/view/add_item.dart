@@ -11,7 +11,6 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
@@ -57,16 +56,6 @@ class _AddItemState extends ConsumerState<AddItem> {
     );
   }
 
-  // Widget _buildImage() {
-  //   return CachedNetworkImage(
-  //     fit: BoxFit.cover,
-  //     height: 150,
-  //     width: 200,
-  //     imageUrl: cartItem.coverImageUrl,
-  //     progressIndicatorBuilder: (context, url, downloadProgress) => Image.memory(kTransparentImage),
-  //     errorWidget: (context, url, error) => const Icon(Icons.error),
-  //   );
-  // }
   Widget _buildImageSlider() {
     final imageUrls = cartItem.imageUrls;
     // int displayedUrlIndex = imageUrls.isNotEmpty ? imageUrls.length - 1 : 0;
@@ -179,7 +168,6 @@ class _AddItemState extends ConsumerState<AddItem> {
   }
 
   Widget _buildButtons(BuildContext context, WidgetRef ref) {
-    final cartNotifier = ref.read(cartProvider.notifier);
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -206,7 +194,7 @@ class _AddItemState extends ConsumerState<AddItem> {
               cartItem.itemTotalProfit = sellingProfit - giftLoss;
               cartItem.salesmanTotalCommission =
                   cartItem.salesmanCommission * cartItem.soldQuantity!;
-              cartNotifier.addItem(cartItem);
+              ref.read(cartProvider.notifier).addItem(cartItem);
               GoRouter.of(context).goNamed(AppRoute.items.name);
             },
           ),

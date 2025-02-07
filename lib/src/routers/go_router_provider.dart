@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/features/login/view/login_screen.dart';
-import 'package:tablets/src/features/settings/view/settings_screen.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/view/add_item.dart';
 import 'package:tablets/src/features/transactions/view/cart.dart';
@@ -14,7 +13,7 @@ import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 
 import 'package:tablets/src/routers/not_found_screen.dart';
 
-enum AppRoute { home, login, receipt, items, add, cart, settings }
+enum AppRoute { home, login, receipt, items, add, cart }
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
 
@@ -74,11 +73,6 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/cart',
           name: AppRoute.cart.name,
           builder: (BuildContext context, GoRouterState state) => const ShoppingCart(),
-        ),
-        GoRoute(
-          path: '/settings',
-          name: AppRoute.settings.name,
-          builder: (BuildContext context, GoRouterState state) => const SettingsScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

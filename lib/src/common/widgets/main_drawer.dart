@@ -51,8 +51,10 @@ class MainDrawer extends ConsumerWidget {
                       leading: const Icon(Icons.refresh),
                       onTap: () async {
                         Navigator.pop(context);
-                        ref.read(loadingProvider.notifier).loadCustomers(loadFreshData: true);
-                        ref.read(loadingProvider.notifier).loadTransactions(loadFreshData: true);
+                        ref.read(dataLoadingController.notifier).loadCustomers(loadFreshData: true);
+                        ref
+                            .read(dataLoadingController.notifier)
+                            .loadTransactions(loadFreshData: true);
                       },
                     ),
                     ListTile(
@@ -93,7 +95,7 @@ class MainDrawerHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
+    final salesmanInfo = ref.watch(salesmanInfoProvider);
 
     return SizedBox(
       height: 250,
@@ -122,7 +124,7 @@ class MainDrawerHeader extends ConsumerWidget {
               children: [
                 const Text('المندوب', style: TextStyle(fontSize: 16, color: Colors.white)),
                 HorizontalGap.s,
-                Text(salesmanInfoNotifier.name ?? '',
+                Text(salesmanInfo?.name ?? '',
                     style: const TextStyle(fontSize: 16, color: Colors.white)),
               ],
             ),

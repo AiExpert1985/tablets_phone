@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -27,10 +28,8 @@ class ShoppingCart extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(cartProvider);
     ref.watch(formDataContainerProvider);
-    final cartNotifier = ref.read(cartProvider.notifier);
-    final cartItems = cartNotifier.data;
-    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-    final formData = formDataNotifier.data;
+    final cartItems = ref.watch(cartProvider);
+    final formData = ref.watch(formDataContainerProvider);
     double totalAmount = 0;
     double totalCommission = 0;
     double totalProfit = 0;
@@ -76,21 +75,44 @@ class ShoppingCart extends ConsumerWidget {
     );
   }
 
+  Widget _buildNotes(BuildContext context, MapStateNotifier formDataNotifier) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // const FormFieldLabel('رقم الوصل'),
+        // HorizontalGap.m,
+        Expanded(
+          child: FormInputField(
+            initialValue: formDataNotifier.data['notes'],
+            label: 'الملاحظات',
+            useThousandSeparator: false,
+            onChangedFn: (value) {
+              formDataNotifier.addProperty('notes', value);
+            },
+            dataType: FieldDataType.text,
+            name: 'notes',
+          ),
+        ),
+      ],
+    );
+  }
+
   List<Widget> _buildItemList(BuildContext context, WidgetRef ref, List<CartItem> cartItems) {
+    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     List<Widget> items = [];
     for (int i = 0; i < cartItems.length; i++) {
       items.add(_buildItemCard(context, ref, i, cartItems[i]));
     }
+    items.add(VerticalGap.m);
+    items.add(_buildNotes(context, formDataNotifier));
     return items;
   }
 
   Widget _buildButtons(BuildContext context, WidgetRef ref, double totalAmount, double totalProfit,
       double totalCommission, double totalWeight) {
-    final cartNotifier = ref.read(cartProvider.notifier);
-    final cartItems = cartNotifier.data;
-    final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
-    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
-    final formData = formDataNotifier.data;
+    final cartItems = ref.watch(cartProvider);
+    final formData = ref.watch(formDataContainerProvider);
+    final salesmanInfo = ref.watch(salesmanInfoProvider);
     return Container(
       padding: const EdgeInsets.all(5),
       child: Row(
@@ -99,18 +121,17 @@ class ShoppingCart extends ConsumerWidget {
           IconButton(
               icon: const AddItem(),
               onPressed: () {
-                final formDataNotifier = ref.read(formDataContainerProvider.notifier);
                 final productDbCache = ref.read(productsDbCacheProvider.notifier);
-                if (formDataNotifier.data.isEmpty) {
+                if (formData.isEmpty) {
                   GoRouter.of(context).goNamed(AppRoute.home.name);
                 } else {
                   GoRouter.of(context).goNamed(AppRoute.items.name);
                 }
                 if (productDbCache.data.isEmpty) {
-                  ref.read(loadingProvider.notifier).loadProducts();
+                  ref.read(dataLoadingController.notifier).loadProducts();
                 }
               }),
-          if (cartItems.isNotEmpty && formData.isNotEmpty)
+          if (cartItems.isNotEmpty && formData.isNotEmpty && salesmanInfo != null)
             IconButton(
               onPressed: () {
                 final transaction = Transaction(
@@ -131,15 +152,16 @@ class ShoppingCart extends ConsumerWidget {
                   paymentType: 'اجل',
                   totalWeight: totalWeight,
                   nameDbRef: formData['nameDbRef'],
-                  salesman: salesmanInfoNotifier.name,
-                  salesmanDbRef: salesmanInfoNotifier.dbRef,
+                  salesman: salesmanInfo.name,
+                  salesmanDbRef: salesmanInfo.dbRef,
                   sellingPriceType: formData['sellingPriceType'],
                   isPrinted: false,
+                  notes: formData['notes'] ?? '',
                 );
                 addTransactionToDb(ref, transaction);
                 // after adding the transaction, we reset data and go to main menu
-                formDataNotifier.reset();
-                cartNotifier.reset();
+                ref.read(formDataContainerProvider.notifier).reset();
+                ref.read(cartProvider.notifier).reset();
                 successUserMessage(context, 'تم اضافة القائمة بنجاح');
                 GoRouter.of(context).goNamed(AppRoute.home.name);
               },
@@ -154,7 +176,7 @@ class ShoppingCart extends ConsumerWidget {
                     // user didn't confirm
                     return;
                   }
-                  cartNotifier.reset();
+                  ref.read(cartProvider.notifier).reset();
                   if (context.mounted) {
                     failureUserMessage(context, 'تم حذف القائمة');
                     GoRouter.of(context).goNamed(AppRoute.home.name);

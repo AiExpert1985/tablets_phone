@@ -26,7 +26,7 @@ class MainFrame extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(loadingProvider);
+    ref.watch(dataLoadingController);
     return Scaffold(
       appBar: AppBar(backgroundColor: itemsColor),
       body: Column(
@@ -47,20 +47,19 @@ class MainFrame extends ConsumerWidget {
   }
 
   Widget _buildBottomNavigation(BuildContext context, WidgetRef ref) {
-    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+    final formData = ref.watch(formDataContainerProvider);
     return BottomNavigationBar(
       onTap: (index) async {
         switch (index) {
           case 0:
             if (GoRouter.of(context).state.path != '/home') {
-              ref.read(loadingProvider.notifier).loadCustomers();
+              ref.read(dataLoadingController.notifier).loadCustomers();
               GoRouter.of(context).pushNamed(AppRoute.home.name);
             }
             break;
 
           case 1:
-            if (GoRouter.of(context).state.path != '/cart' &&
-                formDataNotifier.data['name'] != null) {
+            if (GoRouter.of(context).state.path != '/cart' && formData['name'] != null) {
               GoRouter.of(context).pushNamed(AppRoute.cart.name);
             }
             break;

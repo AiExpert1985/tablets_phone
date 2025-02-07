@@ -41,6 +41,8 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
             _buildReceiptNumber(context, formDataNotifier),
             VerticalGap.xl,
             _buildReceivedAmount(context, formDataNotifier),
+            VerticalGap.xl,
+            _buildNotes(context, formDataNotifier),
             VerticalGap.xxl,
             _buildButtons(context, formDataNotifier),
           ],
@@ -118,6 +120,28 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     );
   }
 
+  Widget _buildNotes(BuildContext context, MapStateNotifier formDataNotifier) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // const FormFieldLabel('رقم الوصل'),
+        // HorizontalGap.m,
+        Expanded(
+          child: FormInputField(
+            initialValue: formDataNotifier.data['notes'],
+            label: 'الملاحظات',
+            useThousandSeparator: false,
+            onChangedFn: (value) {
+              formDataNotifier.addProperty('notes', value);
+            },
+            dataType: FieldDataType.text,
+            name: 'notes',
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildButtons(BuildContext context, MapStateNotifier formDataNotifier) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -128,7 +152,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
             icon: const ApproveIcon(),
             onPressed: () async {
               final formData = formDataNotifier.data;
-              final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
+              final salesmanInfo = ref.watch(salesmanInfoProvider);
               if (!(formData.containsKey('name') &&
                   // formData.containsKey('date') &&
                   formData.containsKey('number') &&
@@ -138,12 +162,12 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                 failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
                 return;
               }
-              if (salesmanInfoNotifier.name == null || salesmanInfoNotifier.dbRef == null) {
+              if (salesmanInfo == null) {
                 // this step is to ensure that the salesman name and dbRef will be exists
                 // I think it rarely being reached, but I added it as a protection ?? maybe I will remove it in future
-                await ref.read(loadingProvider.notifier).setSalesmanInfo();
+                await ref.read(dataLoadingController.notifier).setSalesmanInfo();
               }
-              _addRequiredProperties(ref, formDataNotifier);
+              _addRequiredProperties(ref);
               final transaction = Transaction.fromMap(formDataNotifier.data);
               addTransactionToDb(ref, transaction);
               formDataNotifier.reset();
@@ -165,15 +189,14 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     );
   }
 
-  void _addRequiredProperties(WidgetRef ref, MapStateNotifier formDataNotifier) {
-    final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
-    final salesmanDbRef = salesmanInfoNotifier.dbRef;
-    final salesmanName = salesmanInfoNotifier.name;
+  void _addRequiredProperties(WidgetRef ref) {
+    final salesmanInfo = ref.watch(salesmanInfoProvider);
+    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     formDataNotifier.addProperty('dbRef', generateRandomString(len: 8));
     formDataNotifier.addProperty('discount', 0);
     formDataNotifier.addProperty('date', DateTime.now());
-    formDataNotifier.addProperty('salesmanDbRef', salesmanDbRef);
-    formDataNotifier.addProperty('salesman', salesmanName);
+    formDataNotifier.addProperty('salesmanDbRef', salesmanInfo!.dbRef);
+    formDataNotifier.addProperty('salesman', salesmanInfo.name);
     formDataNotifier.addProperty('imageUrls', [defaultImageUrl]);
     formDataNotifier.addProperty('items', []);
     formDataNotifier.addProperty('paymentType', 'نقدي');
@@ -184,5 +207,8 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     formDataNotifier.addProperty('itemsTotalProfit', 0);
     formDataNotifier.addProperty('salesmanTransactionComssion', 0);
     formDataNotifier.addProperty('transactionType', TransactionType.customerReceipt.name);
+    if (formDataNotifier.data['notes'] == null) {
+      formDataNotifier.addProperty('notes', '');
+    }
   }
 }

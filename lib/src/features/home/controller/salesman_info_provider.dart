@@ -1,31 +1,49 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SalesmanInfo extends StateNotifier<Map<String, dynamic>> {
-  SalesmanInfo() : super({}); // Initialize with an empty map
+class SalesmanInfoNotifier extends StateNotifier<SalesmanInfo?> {
+  SalesmanInfoNotifier() : super(null); // Initialize with null or a default SalesmanInfo instance
 
-  void setDbRef(dynamic value) {
-    const key = 'dbRef';
-    state = {
-      ...state, // Spread the current state
-      key: value, // Add the new key-value pair
-    };
+  void setDbRef(String value) {
+    if (state != null) {
+      state = SalesmanInfo(state!.name, value, state!.email, state!.privilage);
+    }
   }
 
-  void setName(dynamic value) {
-    const key = 'name';
-    state = {
-      ...state, // Spread the current state
-      key: value, // Add the new key-value pair
-    };
+  void setName(String value) {
+    if (state != null) {
+      state = SalesmanInfo(value, state!.dbRef, state!.email, state!.privilage);
+    }
   }
 
-  String? get name => state['name'];
-  String? get dbRef => state['dbRef'];
+  void setEmail(String value) {
+    if (state != null) {
+      state = SalesmanInfo(state!.name, state!.dbRef, value, state!.privilage);
+    }
+  }
 
-  void reset() => state = {};
+  void setPrivilage(String value) {
+    if (state != null) {
+      state = SalesmanInfo(state!.name, state!.dbRef, state!.email, value);
+    }
+  }
+
+  SalesmanInfo? get salesmanInfo => state;
+
+  void reset() => state = null; // Reset to null or a default SalesmanInfo instance
+
+  SalesmanInfo? get data => state;
 }
 
-// Create a provider for the MapStateNotifier
-final salesmanInfoProvider = StateNotifierProvider<SalesmanInfo, Map<String, dynamic>>((ref) {
-  return SalesmanInfo();
+// Create a provider for the SalesmanInfoNotifier
+final salesmanInfoProvider = StateNotifierProvider<SalesmanInfoNotifier, SalesmanInfo?>((ref) {
+  return SalesmanInfoNotifier();
 });
+
+class SalesmanInfo {
+  SalesmanInfo(this.name, this.dbRef, this.email, this.privilage);
+
+  String name;
+  String dbRef;
+  String email;
+  String privilage;
+}

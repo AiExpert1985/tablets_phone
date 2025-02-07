@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/classes/db_cache.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tablets/src/features/home/controller/last_access_provider.dart';
@@ -16,51 +14,14 @@ import 'package:tablets/src/features/transactions/repository/transactions_reposi
 
 // Create a provider for the LoadingNotifier
 
-final loadingProvider = StateNotifierProvider<LoadingNotifier, bool>((ref) {
-  final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-  final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
-  final productDbCache = ref.read(productsDbCacheProvider.notifier);
-  final productsRepository = ref.read(productsRepositoryProvider);
-  final customersRepository = ref.read(customerRepositoryProvider);
-  final accountsRepository = ref.read(accountsRepositoryProvider);
-  final transactionRepository = ref.read(transactionRepositoryProvider);
-  final lastAccessNotifier = ref.read(lastAccessProvider.notifier);
-  final salesmanInfoNotifier = ref.read(salesmanInfoProvider.notifier);
-  return LoadingNotifier(
-    customerDbCache,
-    transactionsDbCache,
-    productDbCache,
-    productsRepository,
-    customersRepository,
-    accountsRepository,
-    transactionRepository,
-    lastAccessNotifier,
-    salesmanInfoNotifier,
-  ); // Pass the ref to the LoadingNotifier
+final dataLoadingController = StateNotifierProvider<LoadingNotifier, bool>((ref) {
+  return LoadingNotifier(ref); // Pass the ref to the LoadingNotifier
 });
 
 class LoadingNotifier extends StateNotifier<bool> {
-  LoadingNotifier(
-      this._customerDbCache,
-      this._transactionsDbCache,
-      this._productDbCache,
-      this._productsRepository,
-      this._customersRepository,
-      this._accountsRepository,
-      this._transactionRepository,
-      this._lastAccessNotifier,
-      this._salesmanInfoNotifier)
-      : super(false); // Initial state is not loading
+  LoadingNotifier(this._ref) : super(false); // Initial state is not loading
 
-  final DbCache _customerDbCache;
-  final DbCache _transactionsDbCache;
-  final DbCache _productDbCache;
-  final DbRepository _productsRepository;
-  final DbRepository _customersRepository;
-  final DbRepository _accountsRepository;
-  final DbRepository _transactionRepository;
-  final LastAccessNotifier _lastAccessNotifier;
-  final SalesmanInfo _salesmanInfoNotifier;
+  final Ref _ref;
 
   void startLoading() {
     state = true; // Set loading to true
@@ -73,26 +34,32 @@ class LoadingNotifier extends StateNotifier<bool> {
   // we only set customers once a day, in case there is update, user can press refresh to synch data with
   // fire store (the loadFreshData = true in this case)
   Future<void> loadCustomers({bool loadFreshData = false}) async {
+    final lastAccessNotifier = _ref.read(lastAccessProvider.notifier);
+    final salesmanInfoNotifier = _ref.read(salesmanInfoProvider.notifier);
+    final customersRepository = _ref.read(customerRepositoryProvider);
+    final customerDbCache = _ref.read(customerDbCacheProvider.notifier);
     startLoading();
-    final oneDayPassed = _lastAccessNotifier.hasOneDayPassed();
-    if (_customerDbCache.data.isEmpty || oneDayPassed || loadFreshData) {
-      String? salesmanDbRef = _salesmanInfoNotifier.dbRef;
-      final customers = await _customersRepository.fetchItemListAsMaps(
+    String? salesmanDbRef = salesmanInfoNotifier.data?.dbRef;
+    if (customerDbCache.data.isEmpty || lastAccessNotifier.hasOneDayPassed() || loadFreshData) {
+      final customers = await customersRepository.fetchItemListAsMaps(
           filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
-      _customerDbCache.set(customers);
+      customerDbCache.set(customers);
     }
     stopLoading();
   }
 
   Future<void> setSalesmanInfo() async {
+    final accountsRepository = _ref.read(accountsRepositoryProvider);
+
+    final salesmanInfoNotifier = _ref.read(salesmanInfoProvider.notifier);
     final email = FirebaseAuth.instance.currentUser!.email;
-    final accounts = await _accountsRepository.fetchItemListAsMaps();
+    final accounts = await accountsRepository.fetchItemListAsMaps();
     var matchingAccounts = accounts.where((account) => account['email'] == email);
     if (matchingAccounts.isNotEmpty) {
       final dbRef = matchingAccounts.first['dbRef'];
-      _salesmanInfoNotifier.setDbRef(dbRef);
+      salesmanInfoNotifier.setDbRef(dbRef);
       final name = matchingAccounts.first['name'];
-      _salesmanInfoNotifier.setName(name);
+      salesmanInfoNotifier.setName(name);
     }
   }
 
@@ -100,9 +67,11 @@ class LoadingNotifier extends StateNotifier<bool> {
 // the reason is that customers are rarely changed, and transactions of customers for one saleman are
 // not changed during the day (because they are mostly changed by salesman visit)
   Future<void> loadProducts() async {
+    final productsRepository = _ref.read(productsRepositoryProvider);
+    final productDbCache = _ref.read(productsDbCacheProvider.notifier);
     startLoading();
-    final products = await _productsRepository.fetchItemListAsMaps();
-    _productDbCache.set(products);
+    final products = await productsRepository.fetchItemListAsMaps();
+    productDbCache.set(products);
     stopLoading();
   }
 
@@ -111,12 +80,15 @@ class LoadingNotifier extends StateNotifier<bool> {
 // loadingFreshData is used for refresh button, which salesman might need if the customer data where updated
 // during the day, because in our app, the data is only updated onces a day at the first app access
   Future<void> loadTransactions({bool loadFreshData = false}) async {
+    final transactionsDbCache = _ref.read(transactionDbCacheProvider.notifier);
+    final transactionRepository = _ref.read(transactionRepositoryProvider);
+    final lastAccessNotifier = _ref.read(lastAccessProvider.notifier);
     startLoading();
-    final oneDayPassed = _lastAccessNotifier.hasOneDayPassed();
-    if (_transactionsDbCache.data.isEmpty || oneDayPassed || loadFreshData) {
-      final transactions = await _transactionRepository.fetchItemListAsMaps();
-      _transactionsDbCache.set(transactions);
-      _lastAccessNotifier.setLastAccessDate();
+    final oneDayPassed = lastAccessNotifier.hasOneDayPassed();
+    if (transactionsDbCache.data.isEmpty || oneDayPassed || loadFreshData) {
+      final transactions = await transactionRepository.fetchItemListAsMaps();
+      transactionsDbCache.set(transactions);
+      lastAccessNotifier.setLastAccessDate();
     }
     stopLoading();
   }
@@ -130,7 +102,7 @@ class LoadingWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLoading = ref.watch(loadingProvider);
+    final isLoading = ref.watch(dataLoadingController);
 
     return Stack(
       children: [
