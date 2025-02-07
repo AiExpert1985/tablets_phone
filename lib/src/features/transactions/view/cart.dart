@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -147,10 +148,18 @@ class ShoppingCart extends ConsumerWidget {
             ),
           if (cartItems.isNotEmpty && formData.isNotEmpty)
             IconButton(
-                onPressed: () {
+                onPressed: () async {
+                  final userConfiramtion = await showDeleteConfirmationDialog(
+                      context: context, messagePart1: '', messagePart2: 'هل ترغب بحذف القائمة');
+                  if (userConfiramtion == null) {
+                    // user didn't confirm
+                    return;
+                  }
                   cartNotifier.reset();
-                  failureUserMessage(context, 'تم حذف القائمة');
-                  GoRouter.of(context).goNamed(AppRoute.home.name);
+                  if (context.mounted) {
+                    failureUserMessage(context, 'تم حذف القائمة');
+                    GoRouter.of(context).goNamed(AppRoute.home.name);
+                  }
                 },
                 icon: const DeleteIcon())
         ],

@@ -66,8 +66,8 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const FormFieldLabel('اسم الزبون'),
-        HorizontalGap.xl,
+        const FormFieldLabel('الزبون'),
+        HorizontalGap.m,
         Expanded(
           child: FormInputField(
             initialValue: formDataNotifier.data['name'],
@@ -89,7 +89,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const FormFieldLabel('التسديد'),
-        HorizontalGap.xl,
+        HorizontalGap.m,
         Expanded(
           child: FormInputField(
             initialValue: formDataNotifier.data['name'],
@@ -112,7 +112,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const FormFieldLabel('رقم الوصل'),
-        HorizontalGap.xl,
+        HorizontalGap.m,
         Expanded(
           child: FormInputField(
             useThousandSeparator: false,
