@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/reset_transaction_confirmation.dart';
+import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -119,17 +119,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // we must await here, otherwise dropdown will open without items
                 await dataLoader.loadCustomers();
               }
+              if (cartNotifier.data.isNotEmpty && context.mounted) {
+                // if there is open transaction, the we need to get user confirmation reseting
+                return await resetTransactonConfirmation(context, ref);
+              }
               return true;
             },
             onChangedFn: (customer) async {
-              if (cartNotifier.data.isNotEmpty) {
-                // if there is open transaction, the we need to get user confirmation reseting
-                bool userConfiramtion = await resetTransactonConfirmation(context, ref);
-                if (!userConfiramtion) {
-                  setState(() {}); // to reload screen which restore previous name
-                  return;
-                }
-              }
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
@@ -142,6 +138,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ],
     );
+  }
+
+  // show confirmation box to user, if he selects yes, then formData and cart will be both cleared
+// and true is returned, if no selected, no action taken, and returns false
+  Future<bool> resetTransactonConfirmation(BuildContext context, WidgetRef ref) async {
+    // first reset both formData, and cart
+    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+    final cartNotifier = ref.read(cartProvider.notifier);
+
+    final formData = formDataNotifier.data;
+    if (formData['name'] == null) {
+      formDataNotifier.reset();
+      cartNotifier.reset();
+      return true;
+    }
+    // when back to home, all data is erased, user receives confirmation box
+    final confirmation = await showDeleteConfirmationDialog(
+      context: context,
+      messagePart1: "",
+      messagePart2: 'سوف يتم حذف قائمة ${formData['name']} ؟',
+    );
+    if (confirmation != null) {
+      formDataNotifier.reset();
+      cartNotifier.reset();
+      return true;
+    }
+    return false;
   }
 
   void _setCustomerDebtVariables(Map<String, dynamic> customer) {
