@@ -13,7 +13,7 @@ class StyledTotalText extends StatelessWidget {
       text,
       style: TextStyle(
         color: fontColor,
-        fontSize: 20,
+        fontSize: 18,
       ),
     );
   }
@@ -40,8 +40,8 @@ class FormFieldLabel extends StatelessWidget {
 Widget buildTotalAmount(BuildContext context, dynamic amount, String label,
     {Color bgColor = itemsColor, Color fontColor = Colors.yellow}) {
   return Container(
-    height: 50,
-    width: 350,
+    height: 45,
+    // width: 350,
     padding: const EdgeInsets.all(5),
     decoration:
         BoxDecoration(color: bgColor, borderRadius: const BorderRadius.all(Radius.circular(6))),

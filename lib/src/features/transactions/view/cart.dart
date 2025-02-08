@@ -57,7 +57,6 @@ class ShoppingCart extends ConsumerWidget {
                 _buildButtons(context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
               ]
             : [
-                VerticalGap.xl,
                 _buildTransactionInfo(context, formData),
                 VerticalGap.l,
                 Expanded(
@@ -225,8 +224,11 @@ class ShoppingCart extends ConsumerWidget {
             if (formData['name'] != null)
               Text(
                 formData['name'],
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                style: const TextStyle(
+                  fontSize: 20,
+                  // fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
           ],
         ),
@@ -256,7 +258,6 @@ class ShoppingCart extends ConsumerWidget {
           child: Card(
             color: itemsColor,
             child: Container(
-              width: 350,
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

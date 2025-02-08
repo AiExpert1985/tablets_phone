@@ -40,7 +40,7 @@ class _AddItemState extends ConsumerState<AddItem> {
         child: Column(
           children: [
             _buildTitle(),
-            VerticalGap.xxl,
+            VerticalGap.xl,
             _buildImageSlider(),
             VerticalGap.xl,
             _buildPrice(),
@@ -48,7 +48,7 @@ class _AddItemState extends ConsumerState<AddItem> {
             _buildQuantity(),
             VerticalGap.l,
             _buildGift(),
-            VerticalGap.xl,
+            VerticalGap.l,
             _buildButtons(context, ref),
           ],
         ),
@@ -88,7 +88,11 @@ class _AddItemState extends ConsumerState<AddItem> {
     return Text(
       cartItem.name,
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+      style: const TextStyle(
+        fontSize: 20,
+        // fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
     );
   }
 
@@ -195,7 +199,10 @@ class _AddItemState extends ConsumerState<AddItem> {
               cartItem.salesmanTotalCommission =
                   cartItem.salesmanCommission * cartItem.soldQuantity!;
               ref.read(cartProvider.notifier).addItem(cartItem);
-              GoRouter.of(context).goNamed(AppRoute.items.name);
+              // we pop because we need to return to the previous screen caller, whethe it is the ItemGrid
+              // or Cart
+              Navigator.of(context).pop();
+              // GoRouter.of(context).goNamed(AppRoute.items.name);
             },
           ),
           // HorizontalGap.xl,
