@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
@@ -13,7 +12,6 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
-import 'package:tablets/src/routers/go_router_provider.dart';
 
 class AddItem extends ConsumerStatefulWidget {
   const AddItem(this.item, {super.key});
@@ -202,16 +200,8 @@ class _AddItemState extends ConsumerState<AddItem> {
               // we pop because we need to return to the previous screen caller, whethe it is the ItemGrid
               // or Cart
               Navigator.of(context).pop();
-              // GoRouter.of(context).goNamed(AppRoute.items.name);
             },
           ),
-          // HorizontalGap.xl,
-          // IconButton(
-          //   onPressed: () {
-          //     GoRouter.of(context).goNamed(AppRoute.items.name);
-          //   },
-          //   icon: const CancelIcon(),
-          // ),
         ],
       ),
     );
