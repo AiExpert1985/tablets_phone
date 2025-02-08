@@ -178,6 +178,8 @@ class ShoppingCart extends ConsumerWidget {
                     // user didn't confirm
                     return;
                   }
+                  // after deleting the transaction, we reset data and go to main menu
+                  ref.read(formDataContainerProvider.notifier).reset();
                   ref.read(cartProvider.notifier).reset();
                   if (context.mounted) {
                     failureUserMessage(context, 'تم حذف القائمة');
