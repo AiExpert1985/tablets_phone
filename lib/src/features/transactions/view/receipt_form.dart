@@ -10,7 +10,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
-import 'package:tablets/src/features/transactions/common/common_functions.dart';
+import 'package:tablets/src/common/functions/add_transaction_to_db.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
