@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends ConsumerWidget {
   const MainDrawer({super.key});
@@ -62,6 +64,7 @@ class MainDrawer extends ConsumerWidget {
                       leading: const Icon(Icons.info_outline),
                       onTap: () {
                         Navigator.pop(context);
+                        GoRouter.of(context).pushNamed(AppRoute.about.name);
                       },
                     ),
                     const Spacer(),
@@ -132,47 +135,6 @@ class MainDrawerHeader extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DrawerItems extends StatelessWidget {
-  const DrawerItems({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          leading: const Icon(Icons.home),
-          title: const Text('Home'),
-          onTap: () {
-            Navigator.pop(context); // Close the drawer
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.settings),
-          title: const Text('Settings'),
-          onTap: () {
-            Navigator.pop(context); // Close the drawer
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.info),
-          title: const Text('About'),
-          onTap: () {
-            Navigator.pop(context); // Close the drawer
-          },
-        ),
-        const Spacer(), // This will push the next widget to the bottom
-        ListTile(
-          leading: const Icon(Icons.logout),
-          title: const Text('Logout'),
-          onTap: () {
-            Navigator.pop(context); // Close the drawer
-          },
-        ),
-      ],
     );
   }
 }
