@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
+import 'package:tablets/src/common/providers/salesman_info_provider.dart';
 
 class MainDrawer extends ConsumerWidget {
   const MainDrawer({super.key});
@@ -124,7 +124,7 @@ class MainDrawerHeader extends ConsumerWidget {
               children: [
                 const Text('المندوب', style: TextStyle(fontSize: 16, color: Colors.white)),
                 HorizontalGap.s,
-                Text(salesmanInfo?.name ?? '',
+                Text(salesmanInfo.name ?? '',
                     style: const TextStyle(fontSize: 16, color: Colors.white)),
               ],
             ),

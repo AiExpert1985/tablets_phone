@@ -17,7 +17,7 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
 
   void initialize() {
     // Load salesman info
-    _ref.read(dataLoadingController.notifier).setSalesmanInfo();
+    _ref.read(dataLoadingController.notifier).loadSalesmanInfo();
 
     // Load customer debt info if a customer is selected
     final formData = _ref.read(formDataContainerProvider);

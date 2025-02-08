@@ -11,7 +11,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circle.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
+import 'package:tablets/src/common/providers/salesman_info_provider.dart';
 import 'package:tablets/src/features/transactions/common/common_functions.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
@@ -131,7 +131,10 @@ class ShoppingCart extends ConsumerWidget {
                   ref.read(dataLoadingController.notifier).loadProducts();
                 }
               }),
-          if (cartItems.isNotEmpty && formData.isNotEmpty && salesmanInfo != null)
+          if (cartItems.isNotEmpty &&
+              formData.isNotEmpty &&
+              salesmanInfo.name != null &&
+              salesmanInfo.dbRef != null)
             IconButton(
               onPressed: () {
                 final transaction = Transaction(

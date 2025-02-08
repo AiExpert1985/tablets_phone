@@ -9,7 +9,7 @@ import 'package:tablets/src/common/forms/edit_box.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
+import 'package:tablets/src/common/providers/salesman_info_provider.dart';
 import 'package:tablets/src/features/transactions/common/common_functions.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -162,10 +162,10 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                 failureUserMessage(context, 'يرجى ملئ جميع الحقول بصورة صحيحة');
                 return;
               }
-              if (salesmanInfo == null) {
+              if (salesmanInfo.dbRef == null || salesmanInfo.name == null) {
                 // this step is to ensure that the salesman name and dbRef will be exists
                 // I think it rarely being reached, but I added it as a protection ?? maybe I will remove it in future
-                await ref.read(dataLoadingController.notifier).setSalesmanInfo();
+                await ref.read(dataLoadingController.notifier).loadSalesmanInfo();
               }
               _addRequiredProperties(ref);
               final transaction = Transaction.fromMap(formDataNotifier.data);
@@ -195,7 +195,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
     formDataNotifier.addProperty('dbRef', generateRandomString(len: 8));
     formDataNotifier.addProperty('discount', 0);
     formDataNotifier.addProperty('date', DateTime.now());
-    formDataNotifier.addProperty('salesmanDbRef', salesmanInfo!.dbRef);
+    formDataNotifier.addProperty('salesmanDbRef', salesmanInfo.dbRef);
     formDataNotifier.addProperty('salesman', salesmanInfo.name);
     formDataNotifier.addProperty('imageUrls', [defaultImageUrl]);
     formDataNotifier.addProperty('items', []);
