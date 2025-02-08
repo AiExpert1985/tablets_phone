@@ -36,7 +36,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildNameSelection(context),
-          if (homeScreenState.latestReceiptDate != null) ...[
+          if (ref.read(homeScreenStateController.notifier).customerIsSelected()) ...[
             _buildDebtInfo(homeScreenState),
             _buildSelectionButtons(context),
           ]

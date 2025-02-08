@@ -40,6 +40,10 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     _setCustomerDebtVariables(customer);
   }
 
+  bool customerIsSelected() {
+    return _ref.read(formDataContainerProvider).containsKey('name');
+  }
+
   Future<bool> resetTransactionConfirmation(BuildContext context) async {
     final formDataNotifier = _ref.read(formDataContainerProvider.notifier);
     final cartNotifier = _ref.read(cartProvider.notifier);
