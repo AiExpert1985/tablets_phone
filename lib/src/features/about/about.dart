@@ -10,6 +10,7 @@ class AboutScreen extends StatelessWidget {
     return MainFrame(
       child: Container(
         padding: const EdgeInsets.all(30),
+        width: double.infinity, // because the width wasn't filling the whole space
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

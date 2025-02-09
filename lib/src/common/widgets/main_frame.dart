@@ -17,6 +17,22 @@ const itemsColor = Color(0xFF9C551F);
 const mainFrameIconsColor = Color.fromARGB(255, 233, 219, 90);
 const double mainIconSize = 25;
 const double iconNameFontSize = 18;
+const bgColorGradient = LinearGradient(
+  begin: Alignment.topRight,
+  end: Alignment.bottomLeft,
+  colors: [
+    Color(0xFF573419),
+    Color.fromARGB(255, 116, 74, 42),
+  ],
+);
+const itemColorGradient = LinearGradient(
+  begin: Alignment.topRight,
+  end: Alignment.bottomLeft,
+  colors: [
+    Color(0xFF9C551F),
+    Color.fromARGB(255, 161, 90, 36),
+  ],
+);
 // const mainFrameIconsColor = Color.fromARGB(103, 255, 235, 59);
 
 class MainFrame extends ConsumerWidget {
@@ -29,13 +45,17 @@ class MainFrame extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(dataLoadingController);
     return Scaffold(
-      appBar: AppBar(backgroundColor: itemsColor),
+      appBar: AppBar(
+        backgroundColor: itemsColor,
+        // change color of drawer and back Icons
+        foregroundColor: mainFrameIconsColor,
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
             child: Container(
-              color: bgColor,
+              decoration: const BoxDecoration(gradient: bgColorGradient),
               child: LoadingWrapper(
                   child: Container(padding: const EdgeInsets.all(30.0), child: child)),
             ),

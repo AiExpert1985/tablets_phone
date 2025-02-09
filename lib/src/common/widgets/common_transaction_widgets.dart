@@ -43,8 +43,8 @@ Widget buildTotalAmount(BuildContext context, dynamic amount, String label,
     height: 45,
     // width: 350,
     padding: const EdgeInsets.all(5),
-    decoration:
-        BoxDecoration(color: bgColor, borderRadius: const BorderRadius.all(Radius.circular(6))),
+    decoration: const BoxDecoration(
+        gradient: itemColorGradient, borderRadius: BorderRadius.all(Radius.circular(6))),
     child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       StyledTotalText(label, fontColor),
       amount is DateTime

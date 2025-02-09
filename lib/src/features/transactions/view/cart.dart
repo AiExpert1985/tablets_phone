@@ -68,7 +68,7 @@ class ShoppingCart extends ConsumerWidget {
                 VerticalGap.l,
                 buildTotalAmount(context, totalAmount, 'المجموع'),
                 VerticalGap.l,
-                _buildButtons(context, ref, totalAmount, totalProfit, totalCommission, totalWeight)
+                _buildButtons(context, ref, totalAmount, totalProfit, totalCommission, totalWeight),
               ],
       ),
     );
@@ -257,39 +257,38 @@ class ShoppingCart extends ConsumerWidget {
           onTap: () {
             GoRouter.of(context).pushNamed(AppRoute.add.name, extra: cartItem);
           },
-          child: Card(
-            color: itemsColor,
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      CircledContainer(child: Text((sequence + 1).toString())),
-                      Expanded(
-                        child: Text(
-                          cartItem.name,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 17, color: Colors.yellow),
-                          overflow: TextOverflow.visible, // Optional: Control overflow behavior
-                        ),
+          child: Container(
+            padding: const EdgeInsets.all(10.0),
+            decoration: const BoxDecoration(
+                gradient: itemColorGradient, borderRadius: BorderRadius.all(Radius.circular(6))),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CircledContainer(child: Text((sequence + 1).toString())),
+                    Expanded(
+                      child: Text(
+                        cartItem.name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 17, color: Colors.yellow),
+                        overflow: TextOverflow.visible, // Optional: Control overflow behavior
                       ),
-                    ],
-                  ),
-                  VerticalGap.s,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildCell('السعر', cartItem.sellingPrice!),
-                      _buildCell('العدد', cartItem.soldQuantity!),
-                      _buildCell('الهدية', cartItem.giftQuantity!),
-                      _buildCell('المبلغ الكلي', cartItem.totalAmount!),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                VerticalGap.s,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildCell('السعر', cartItem.sellingPrice!),
+                    _buildCell('العدد', cartItem.soldQuantity!),
+                    _buildCell('الهدية', cartItem.giftQuantity!),
+                    _buildCell('المبلغ الكلي', cartItem.totalAmount!),
+                  ],
+                ),
+              ],
             ),
           ),
         ),

@@ -14,7 +14,7 @@ class MainDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
-      width: 250,
+      width: MediaQuery.of(context).size.width * 0.65,
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -22,7 +22,7 @@ class MainDrawer extends ConsumerWidget {
             end: Alignment.bottomRight,
             colors: [
               Color(0xFFB76A45),
-              Colors.white,
+              Color.fromARGB(255, 248, 231, 223),
             ],
           ),
         ),
@@ -101,7 +101,7 @@ class MainDrawerHeader extends ConsumerWidget {
     final salesmanInfo = ref.watch(salesmanInfoProvider);
 
     return SizedBox(
-      height: 250,
+      height: MediaQuery.of(context).size.height * 0.35,
       child: DrawerHeader(
         padding: const EdgeInsets.all(5),
         decoration: const BoxDecoration(
@@ -125,7 +125,7 @@ class MainDrawerHeader extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('المندوب', style: TextStyle(fontSize: 16, color: Colors.white)),
+                const Text('المندوب', style: TextStyle(fontSize: 18, color: Colors.white)),
                 HorizontalGap.s,
                 Text(salesmanInfo.name ?? '',
                     style: const TextStyle(fontSize: 16, color: Colors.white)),
