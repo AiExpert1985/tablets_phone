@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
+import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends ConsumerWidget {
@@ -37,8 +39,18 @@ class MainDrawer extends ConsumerWidget {
                     ListTile(
                       title: const Text('القوائم'),
                       leading: const Icon(Icons.view_list_outlined),
-                      onTap: () {
+                      onTap: () async {
                         Navigator.pop(context);
+                        final pendingTransactionsRepo =
+                            ref.read(pendingTransactionRepositoryProvider);
+                        final pendingTransactions =
+                            await pendingTransactionsRepo.fetchItemListAsMaps();
+                        final pendingInvoices = pendingTransactions.where((trans) =>
+                            trans['transactionType'] == TransactionType.customerInvoice.name);
+                        if (context.mounted) {
+                          GoRouter.of(context)
+                              .goNamed(AppRoute.pendingInvoices.name, extra: pendingInvoices);
+                        }
                       },
                     ),
                     ListTile(
