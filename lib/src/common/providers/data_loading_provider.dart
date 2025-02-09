@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tablets/src/common/providers/last_access_provider.dart';
@@ -58,16 +57,13 @@ class LoadingNotifier extends StateNotifier<bool> {
     if (matchingAccounts.isNotEmpty) {
       final dbRef = matchingAccounts.first['dbRef'];
       salesmanInfoNotifier.setDbRef(dbRef);
-      tempPrint(dbRef);
       final name = matchingAccounts.first['name'];
       salesmanInfoNotifier.setName(name);
       final email = matchingAccounts.first['email'];
       salesmanInfoNotifier.setEmail(email);
       final privilage = matchingAccounts.first['privilage'];
       salesmanInfoNotifier.setPrivilage(privilage);
-      tempPrint(name);
     }
-    tempPrint(_ref.read(salesmanInfoProvider));
   }
 
 // note that we don't store copy of products (unlike customers and transactions)

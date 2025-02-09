@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -41,16 +41,22 @@ class MainDrawer extends ConsumerWidget {
                       title: const Text('القوائم'),
                       leading: const Icon(Icons.view_list_outlined),
                       onTap: () async {
-                        Navigator.pop(context);
+                        final salesmanInfo = ref.read(salesmanInfoProvider);
                         final pendingTransactionsRepo =
                             ref.read(pendingTransactionRepositoryProvider);
                         final pendingTransactions =
                             await pendingTransactionsRepo.fetchItemListAsMaps();
-                        final pendingInvoices = pendingTransactions.where((trans) =>
-                            trans['transactionType'] == TransactionType.customerInvoice.name);
+                        // here we want transaction of type invoice, for the current salesman for this day only
+                        final pendingInvoices = pendingTransactions
+                            .where((trans) =>
+                                trans['transactionType'] == TransactionType.customerInvoice.name &&
+                                trans['salesmanDbRef'] == salesmanInfo.dbRef &&
+                                isSameDay(trans['date'].toDate(), DateTime.now()))
+                            .toList();
                         if (context.mounted) {
                           GoRouter.of(context)
                               .goNamed(AppRoute.pendingInvoices.name, extra: pendingInvoices);
+                          Navigator.pop(context);
                         }
                       },
                     ),

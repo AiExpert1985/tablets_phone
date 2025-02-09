@@ -30,7 +30,7 @@ const itemColorGradient = LinearGradient(
   end: Alignment.bottomLeft,
   colors: [
     Color(0xFF9C551F),
-    Color.fromARGB(255, 161, 90, 36),
+    Color.fromARGB(255, 163, 94, 41),
   ],
 );
 // const mainFrameIconsColor = Color.fromARGB(103, 255, 235, 59);

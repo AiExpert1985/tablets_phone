@@ -85,8 +85,9 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/pendingInvoices',
           name: AppRoute.pendingInvoices.name,
           builder: (BuildContext context, GoRouterState state) {
-            final List<Map<String, dynamic>> invoices = state.extra as List<Map<String, dynamic>>;
-            return PreviousInvoices(invoices);
+            final List<Map<String, dynamic>> pendingInvoices =
+                state.extra as List<Map<String, dynamic>>;
+            return PreviousInvoices(pendingInvoices);
           },
         ),
       ],
