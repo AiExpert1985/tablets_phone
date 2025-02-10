@@ -34,6 +34,7 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     formDataNotifier.addProperty('name', customer['name']);
     formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
     formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
+    formDataNotifier.addProperty('isEditable', true);
 
     // Load transactions of selected customer
     _ref.read(dataLoadingController.notifier).loadTransactions();

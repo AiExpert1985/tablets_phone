@@ -69,8 +69,11 @@ class ShoppingCart extends ConsumerWidget {
                 ),
                 VerticalGap.l,
                 buildTotalAmount(context, totalAmount, 'المجموع'),
-                VerticalGap.l,
-                _buildButtons(context, ref, totalAmount, totalProfit, totalCommission, totalWeight),
+                if (formData['isEditable']) ...[
+                  VerticalGap.l,
+                  _buildButtons(
+                      context, ref, totalAmount, totalProfit, totalCommission, totalWeight),
+                ]
               ],
       ),
     );

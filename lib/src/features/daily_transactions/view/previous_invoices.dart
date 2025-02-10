@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/calculate_product_stock.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -38,7 +37,7 @@ class PreviousInvoices extends ConsumerWidget {
                 ),
               ],
               VerticalGap.xl,
-              ..._buildItemList(context, ref),
+              ..._buildPendingTransactions(context, ref),
             ],
           ),
         ),
@@ -46,23 +45,23 @@ class PreviousInvoices extends ConsumerWidget {
     );
   }
 
-  List<Widget> _buildItemList(BuildContext context, WidgetRef ref) {
+  List<Widget> _buildPendingTransactions(BuildContext context, WidgetRef ref) {
     List<Widget> invoiceWidgets = [];
     for (int i = 0; i < pendingInvoices.length; i++) {
       final invoice = Transaction.fromMap(pendingInvoices[i]);
-      invoiceWidgets.add(_buildTransactionCard(context, ref, i, invoice));
+      invoiceWidgets.add(_buildTransactionCard(context, ref, i, invoice, true));
       invoiceWidgets.add(VerticalGap.m);
     }
     return invoiceWidgets;
   }
 
   Widget _buildTransactionCard(
-      BuildContext context, WidgetRef ref, int sequence, Transaction invoice) {
+      BuildContext context, WidgetRef ref, int sequence, Transaction invoice, bool isEditable) {
     return Center(
       child: InkWell(
         onTap: () async {
           await ref.read(dataLoadingController.notifier).loadProducts();
-          _loadCart(ref, invoice);
+          _loadCart(ref, invoice, isEditable);
           if (context.mounted) {
             GoRouter.of(context).pushNamed(AppRoute.cart.name);
           }
@@ -93,18 +92,18 @@ class PreviousInvoices extends ConsumerWidget {
     );
   }
 
-  void _loadCart(WidgetRef ref, Transaction transaction) {
-    _loadFormData(ref, transaction);
+  void _loadCart(WidgetRef ref, Transaction transaction, bool isEditable) {
+    _loadFormData(ref, transaction, isEditable);
     _loadItems(ref, transaction);
   }
 
-  void _loadFormData(WidgetRef ref, Transaction transaction) {
+  void _loadFormData(WidgetRef ref, Transaction transaction, bool isEditable) {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     formDataNotifier.addProperty('name', transaction.name);
     formDataNotifier.addProperty('nameDbRef', transaction.nameDbRef);
     formDataNotifier.addProperty('sellingPriceType', transaction.sellingPriceType);
     formDataNotifier.addProperty('dbRef', transaction.dbRef);
-    tempPrint(ref.read(formDataContainerProvider));
+    formDataNotifier.addProperty('isEditable', isEditable);
   }
 
   void _loadItems(WidgetRef ref, Transaction transaction) {
@@ -132,10 +131,7 @@ class PreviousInvoices extends ConsumerWidget {
         sellingPrice: itemData['sellingPrice'],
         soldQuantity: itemData['soldQuantity'],
         weight: itemData['weight'],
-        stock: calculateProductStock(
-            ref,
-            itemData[
-                'dbRef']), // I added zero because it doesn't effect, and no need to calculate it
+        stock: calculateProductStock(ref, itemData['dbRef']),
       );
       ref.read(cartProvider.notifier).addItem(item);
     }
