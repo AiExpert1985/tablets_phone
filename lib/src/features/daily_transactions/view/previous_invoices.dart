@@ -104,6 +104,7 @@ class PreviousInvoices extends ConsumerWidget {
     formDataNotifier.addProperty('sellingPriceType', transaction.sellingPriceType);
     formDataNotifier.addProperty('dbRef', transaction.dbRef);
     formDataNotifier.addProperty('isEditable', isEditable);
+    formDataNotifier.addProperty('notes', transaction.notes);
   }
 
   void _loadItems(WidgetRef ref, Transaction transaction) {

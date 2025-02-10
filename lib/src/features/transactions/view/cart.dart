@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -174,27 +173,28 @@ class ShoppingCart extends ConsumerWidget {
             ),
           if (cartItems.isNotEmpty && formData.isNotEmpty)
             IconButton(
-                onPressed: () async {
-                  final transaction = _createTransaction(
-                      ref, totalAmount, totalCommission, totalProfit, totalWeight);
-                  final userConfiramtion = await showDeleteConfirmationDialog(
-                      context: context, messagePart1: '', messagePart2: 'هل ترغب بحذف القائمة');
-                  if (userConfiramtion == null) {
-                    // user didn't confirm
-                    return;
-                  }
-                  if (formData['dbRef'] != null) {
-                    ref.read(pendingTransactionRepositoryProvider).deleteItem(transaction);
-                  }
-                  if (context.mounted) {
-                    failureUserMessage(context, 'تم حذف القائمة');
-                    GoRouter.of(context).goNamed(AppRoute.home.name);
-                  }
-                  // after deleting the transaction, we reset data and go to main menu
-                  ref.read(formDataContainerProvider.notifier).reset();
-                  ref.read(cartProvider.notifier).reset();
-                },
-                icon: const DeleteIcon())
+              onPressed: () async {
+                final transaction =
+                    _createTransaction(ref, totalAmount, totalCommission, totalProfit, totalWeight);
+                final userConfiramtion = await showDeleteConfirmationDialog(
+                    context: context, messagePart1: '', messagePart2: 'هل ترغب بحذف القائمة');
+                if (userConfiramtion == null) {
+                  // user didn't confirm
+                  return;
+                }
+                if (formData['dbRef'] != null) {
+                  ref.read(pendingTransactionRepositoryProvider).deleteItem(transaction);
+                }
+                if (context.mounted) {
+                  failureUserMessage(context, 'تم حذف القائمة');
+                  GoRouter.of(context).goNamed(AppRoute.home.name);
+                }
+                // after deleting the transaction, we reset data and go to main menu
+                ref.read(formDataContainerProvider.notifier).reset();
+                ref.read(cartProvider.notifier).reset();
+              },
+              icon: const DeleteIcon(),
+            )
         ],
       ),
     );
@@ -322,7 +322,6 @@ class ShoppingCart extends ConsumerWidget {
     final cartItems = ref.watch(cartProvider);
     final salesmanInfo = ref.watch(salesmanInfoProvider);
     final formData = ref.read(formDataContainerProvider);
-    tempPrint(formData);
     final dbRef = formData['dbRef'] ?? generateRandomString(len: 8);
     return Transaction(
       dbRef: dbRef,

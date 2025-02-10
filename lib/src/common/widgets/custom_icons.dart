@@ -175,6 +175,25 @@ class DeleteIcon extends StatelessWidget {
   }
 }
 
+class DeleteIconReceipt extends StatelessWidget {
+  const DeleteIconReceipt({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(
+          Icons.delete,
+          color: Colors.red,
+          size: iconSize,
+        ),
+        VerticalGap.s,
+        Text('حذف ', style: TextStyle(fontSize: iconFontSize, color: Colors.white)),
+      ],
+    );
+  }
+}
+
 class AddIcon extends StatelessWidget {
   const AddIcon({super.key});
 

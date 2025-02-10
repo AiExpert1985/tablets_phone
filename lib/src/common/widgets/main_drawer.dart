@@ -41,9 +41,11 @@ class MainDrawer extends ConsumerWidget {
                       title: const Text('القوائم'),
                       leading: const Icon(Icons.view_list_outlined),
                       onTap: () async {
+                        ref.read(dataLoadingController.notifier).startLoading();
                         final salesmanInfo = ref.read(salesmanInfoProvider);
                         final pendingTransactionsRepo =
                             ref.read(pendingTransactionRepositoryProvider);
+                        Navigator.pop(context);
                         final pendingTransactions =
                             await pendingTransactionsRepo.fetchItemListAsMaps();
                         // here we want transaction of type invoice, for the current salesman for this day only
@@ -53,18 +55,36 @@ class MainDrawer extends ConsumerWidget {
                                 trans['salesmanDbRef'] == salesmanInfo.dbRef &&
                                 isSameDay(trans['date'].toDate(), DateTime.now()))
                             .toList();
+                        ref.read(dataLoadingController.notifier).stopLoading();
                         if (context.mounted) {
                           GoRouter.of(context)
                               .goNamed(AppRoute.pendingInvoices.name, extra: pendingInvoices);
-                          Navigator.pop(context);
                         }
                       },
                     ),
                     ListTile(
                       title: const Text('الوصولات'),
                       leading: const Icon(Icons.view_list),
-                      onTap: () {
+                      onTap: () async {
+                        ref.read(dataLoadingController.notifier).startLoading();
+                        final salesmanInfo = ref.read(salesmanInfoProvider);
+                        final pendingTransactionsRepo =
+                            ref.read(pendingTransactionRepositoryProvider);
                         Navigator.pop(context);
+                        final pendingTransactions =
+                            await pendingTransactionsRepo.fetchItemListAsMaps();
+                        // here we want transaction of type invoice, for the current salesman for this day only
+                        final pendingIReceipts = pendingTransactions
+                            .where((trans) =>
+                                trans['transactionType'] == TransactionType.customerReceipt.name &&
+                                trans['salesmanDbRef'] == salesmanInfo.dbRef &&
+                                isSameDay(trans['date'].toDate(), DateTime.now()))
+                            .toList();
+                        ref.read(dataLoadingController.notifier).stopLoading();
+                        if (context.mounted) {
+                          GoRouter.of(context)
+                              .goNamed(AppRoute.pendingReceipts.name, extra: pendingIReceipts);
+                        }
                       },
                     ),
                     ListTile(
