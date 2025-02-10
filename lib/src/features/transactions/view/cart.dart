@@ -145,17 +145,19 @@ class ShoppingCart extends ConsumerWidget {
                     await ref.read(pendingTransactionRepositoryProvider).fetchItemListAsMaps();
                 ref.read(pendingTransactionsDbCache.notifier).set(pendingTransactions);
                 // if pending exists update it, otherwise add new
-                final pendingTransaction =
-                    ref.read(pendingTransactionsDbCache.notifier).getItemByDbRef(formData['dbRef']);
-                if (pendingTransaction.isEmpty) {
-                  ref.read(pendingTransactionRepositoryProvider).addItem(transaction);
-                  if (context.mounted) {
-                    successUserMessage(context, 'تم اضافة القائمة بنجاح');
-                  }
-                } else {
+                if (formData['dbRef'] != null &&
+                    ref
+                        .read(pendingTransactionsDbCache.notifier)
+                        .getItemByDbRef(formData['dbRef'])
+                        .isNotEmpty) {
                   ref.read(pendingTransactionRepositoryProvider).updateItem(transaction);
                   if (context.mounted) {
                     successUserMessage(context, 'تم تعديل القائمة بنجاح');
+                  }
+                } else {
+                  ref.read(pendingTransactionRepositoryProvider).addItem(transaction);
+                  if (context.mounted) {
+                    successUserMessage(context, 'تم اضافة القائمة بنجاح');
                   }
                 }
                 // after adding the transaction, we reset data and go to main menu
