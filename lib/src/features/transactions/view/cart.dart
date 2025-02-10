@@ -101,6 +101,7 @@ class ShoppingCart extends ConsumerWidget {
     List<Widget> items = [];
     for (int i = 0; i < cartItems.length; i++) {
       items.add(_buildItemCard(context, ref, i, cartItems[i]));
+      items.add(VerticalGap.m);
     }
     items.add(VerticalGap.m);
     items.add(_buildNotes(context, formDataNotifier));
@@ -200,6 +201,7 @@ class ShoppingCart extends ConsumerWidget {
         'code': cartItems[i].code,
         'dbRef': cartItems[i].productDbRef,
         'giftQuantity': cartItems[i].giftQuantity,
+        'imageUrls': cartItems[i].imageUrls,
         'itemTotalAmount': cartItems[i].totalAmount,
         'itemTotalProfit': cartItems[i].itemTotalProfit,
         'itemTotalWeight': cartItems[i].totalWeight,

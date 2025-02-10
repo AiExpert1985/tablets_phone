@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/functions/calculate_product_stock.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circle.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/controllers/products_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class PreviousInvoices extends ConsumerWidget {
@@ -47,8 +51,12 @@ class PreviousInvoices extends ConsumerWidget {
       BuildContext context, WidgetRef ref, int sequence, Transaction invoice) {
     return Center(
       child: InkWell(
-        onTap: () {
-          // GoRouter.of(context).pushNamed(AppRoute.cart.name);
+        onTap: () async {
+          await ref.read(dataLoadingController.notifier).loadProducts();
+          _loadCart(ref, invoice);
+          if (context.mounted) {
+            GoRouter.of(context).pushNamed(AppRoute.cart.name);
+          }
         },
         child: Container(
           height: 70,
@@ -65,7 +73,7 @@ class PreviousInvoices extends ConsumerWidget {
                   child: Text(invoice.name, style: const TextStyle(color: Colors.white))),
               const Spacer(),
               SizedBox(
-                width: 80,
+                width: 100,
                 child: Text(doubleToStringWithComma(invoice.totalAmount),
                     textAlign: TextAlign.end, style: const TextStyle(color: Colors.white)),
               ),
@@ -74,5 +82,51 @@ class PreviousInvoices extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _loadCart(WidgetRef ref, Transaction transaction) {
+    _loadFormData(ref, transaction);
+    _loadItems(ref, transaction);
+  }
+
+  void _loadFormData(WidgetRef ref, Transaction transaction) {
+    final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+    formDataNotifier.addProperty('name', transaction.name);
+    formDataNotifier.addProperty('nameDbRef', transaction.dbRef);
+    formDataNotifier.addProperty('sellingPriceType', transaction.sellingPriceType);
+  }
+
+  void _loadItems(WidgetRef ref, Transaction transaction) {
+    if (transaction.items == null) {
+      return;
+    }
+    final productDbCache = ref.watch(productsDbCacheProvider.notifier);
+
+    for (var itemData in transaction.items!) {
+      final product = productDbCache.getItemByDbRef(itemData['dbRef']);
+      List<String> productImageUrls = List<String>.from(product['imageUrls']);
+      final item = CartItem(
+        buyingPrice: itemData['buyingPrice'],
+        imageUrls: productImageUrls,
+        code: itemData['code'],
+        dbRef: itemData['dbRef'],
+        productDbRef: itemData['dbRef'],
+        giftQuantity: itemData['giftQuantity'],
+        totalAmount: itemData['itemTotalAmount'],
+        itemTotalProfit: itemData['itemTotalProfit'],
+        totalWeight: itemData['itemTotalWeight'],
+        name: itemData['name'],
+        salesmanCommission: itemData['salesmanCommission'],
+        salesmanTotalCommission: itemData['salesmanTotalCommission'],
+        sellingPrice: itemData['sellingPrice'],
+        soldQuantity: itemData['soldQuantity'],
+        weight: itemData['weight'],
+        stock: calculateProductStock(
+            ref,
+            itemData[
+                'dbRef']), // I added zero because it doesn't effect, and no need to calculate it
+      );
+      ref.read(cartProvider.notifier).addItem(item);
+    }
   }
 }
