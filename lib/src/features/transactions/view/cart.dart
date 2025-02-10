@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/edit_box.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -12,13 +13,14 @@ import 'package:tablets/src/common/widgets/circle.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
-import 'package:tablets/src/common/functions/add_transaction_to_db.dart';
 import 'package:tablets/src/common/widgets/common_transaction_widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/controllers/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/products_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
+import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class ShoppingCart extends ConsumerWidget {
@@ -136,56 +138,56 @@ class ShoppingCart extends ConsumerWidget {
               salesmanInfo.name != null &&
               salesmanInfo.dbRef != null)
             IconButton(
-              onPressed: () {
-                final transaction = Transaction(
-                  dbRef: generateRandomString(len: 8),
-                  name: formData['name'],
-                  imageUrls: [defaultImageUrl],
-                  number: 0,
-                  date: DateTime.now(),
-                  currency: 'دينار',
-                  transactionType: TransactionType.customerInvoice.name,
-                  subTotalAmount: totalAmount,
-                  totalAmount: totalAmount,
-                  itemsTotalProfit: totalProfit,
-                  transactionTotalProfit: totalProfit,
-                  salesmanTransactionComssion: totalCommission,
-                  discount: 0,
-                  items: _getItemsList(cartItems),
-                  paymentType: 'اجل',
-                  totalWeight: totalWeight,
-                  nameDbRef: formData['nameDbRef'],
-                  salesman: salesmanInfo.name,
-                  salesmanDbRef: salesmanInfo.dbRef,
-                  sellingPriceType: formData['sellingPriceType'],
-                  isPrinted: false,
-                  notes: formData['notes'] ?? '',
-                );
-                addTransactionToDb(ref, transaction);
+              onPressed: () async {
+                final transaction =
+                    _createTransaction(ref, totalAmount, totalCommission, totalProfit, totalWeight);
+                final pendingTransactions =
+                    await ref.read(pendingTransactionRepositoryProvider).fetchItemListAsMaps();
+                ref.read(pendingTransactionsDbCache.notifier).set(pendingTransactions);
+                // if pending exists update it, otherwise add new
+                final pendingTransaction =
+                    ref.read(pendingTransactionsDbCache.notifier).getItemByDbRef(formData['dbRef']);
+                if (pendingTransaction.isEmpty) {
+                  ref.read(pendingTransactionRepositoryProvider).addItem(transaction);
+                  if (context.mounted) {
+                    successUserMessage(context, 'تم اضافة القائمة بنجاح');
+                  }
+                } else {
+                  ref.read(pendingTransactionRepositoryProvider).updateItem(transaction);
+                  if (context.mounted) {
+                    successUserMessage(context, 'تم تعديل القائمة بنجاح');
+                  }
+                }
                 // after adding the transaction, we reset data and go to main menu
                 ref.read(formDataContainerProvider.notifier).reset();
                 ref.read(cartProvider.notifier).reset();
-                successUserMessage(context, 'تم اضافة القائمة بنجاح');
-                GoRouter.of(context).goNamed(AppRoute.home.name);
+                if (context.mounted) {
+                  GoRouter.of(context).goNamed(AppRoute.home.name);
+                }
               },
               icon: const SaveInvoice(),
             ),
           if (cartItems.isNotEmpty && formData.isNotEmpty)
             IconButton(
                 onPressed: () async {
+                  final transaction = _createTransaction(
+                      ref, totalAmount, totalCommission, totalProfit, totalWeight);
                   final userConfiramtion = await showDeleteConfirmationDialog(
                       context: context, messagePart1: '', messagePart2: 'هل ترغب بحذف القائمة');
                   if (userConfiramtion == null) {
                     // user didn't confirm
                     return;
                   }
-                  // after deleting the transaction, we reset data and go to main menu
-                  ref.read(formDataContainerProvider.notifier).reset();
-                  ref.read(cartProvider.notifier).reset();
+                  if (formData['dbRef'] != null) {
+                    ref.read(pendingTransactionRepositoryProvider).deleteItem(transaction);
+                  }
                   if (context.mounted) {
                     failureUserMessage(context, 'تم حذف القائمة');
                     GoRouter.of(context).goNamed(AppRoute.home.name);
                   }
+                  // after deleting the transaction, we reset data and go to main menu
+                  ref.read(formDataContainerProvider.notifier).reset();
+                  ref.read(cartProvider.notifier).reset();
                 },
                 icon: const DeleteIcon())
         ],
@@ -307,6 +309,39 @@ class ShoppingCart extends ConsumerWidget {
         Text(doubleToStringWithComma(columnValue),
             style: const TextStyle(color: Colors.white, fontSize: 15))
       ],
+    );
+  }
+
+  Transaction _createTransaction(WidgetRef ref, double totalAmount, double totalCommission,
+      double totalProfit, double totalWeight) {
+    final cartItems = ref.watch(cartProvider);
+    final salesmanInfo = ref.watch(salesmanInfoProvider);
+    final formData = ref.read(formDataContainerProvider);
+    tempPrint(formData);
+    final dbRef = formData['dbRef'] ?? generateRandomString(len: 8);
+    return Transaction(
+      dbRef: dbRef,
+      name: formData['name'],
+      imageUrls: [defaultImageUrl],
+      number: 0,
+      date: DateTime.now(),
+      currency: 'دينار',
+      transactionType: TransactionType.customerInvoice.name,
+      subTotalAmount: totalAmount,
+      totalAmount: totalAmount,
+      itemsTotalProfit: totalProfit,
+      transactionTotalProfit: totalProfit,
+      salesmanTransactionComssion: totalCommission,
+      discount: 0,
+      items: _getItemsList(cartItems),
+      paymentType: 'اجل',
+      totalWeight: totalWeight,
+      nameDbRef: formData['nameDbRef'],
+      salesman: salesmanInfo.name,
+      salesmanDbRef: salesmanInfo.dbRef,
+      sellingPriceType: formData['sellingPriceType'],
+      isPrinted: false,
+      notes: formData['notes'] ?? '',
     );
   }
 }

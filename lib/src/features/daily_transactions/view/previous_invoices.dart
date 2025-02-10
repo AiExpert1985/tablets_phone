@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/calculate_product_stock.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -28,6 +29,14 @@ class PreviousInvoices extends ConsumerWidget {
           child: Column(
             children: [
               const Text('القوائم اليومية', style: TextStyle(color: Colors.white, fontSize: 20)),
+              if (pendingInvoices.isEmpty) ...[
+                const SizedBox(height: 150),
+                SizedBox(
+                  width: double.infinity,
+                  height: 250,
+                  child: Image.asset('assets/images/empty.png', fit: BoxFit.scaleDown),
+                ),
+              ],
               VerticalGap.xl,
               ..._buildItemList(context, ref),
             ],
@@ -92,8 +101,10 @@ class PreviousInvoices extends ConsumerWidget {
   void _loadFormData(WidgetRef ref, Transaction transaction) {
     final formDataNotifier = ref.read(formDataContainerProvider.notifier);
     formDataNotifier.addProperty('name', transaction.name);
-    formDataNotifier.addProperty('nameDbRef', transaction.dbRef);
+    formDataNotifier.addProperty('nameDbRef', transaction.nameDbRef);
     formDataNotifier.addProperty('sellingPriceType', transaction.sellingPriceType);
+    formDataNotifier.addProperty('dbRef', transaction.dbRef);
+    tempPrint(ref.read(formDataContainerProvider));
   }
 
   void _loadItems(WidgetRef ref, Transaction transaction) {
