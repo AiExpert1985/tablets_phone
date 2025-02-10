@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 
 class LastAccessNotifier extends StateNotifier<DateTime?> {
   LastAccessNotifier() : super(null);
@@ -10,13 +12,7 @@ class LastAccessNotifier extends StateNotifier<DateTime?> {
 
   // Method to check if a day has passed
   bool hasOneDayPassed() {
-    if (state == null) {
-      return true; // If there's no last access date, consider it as a day passed
-    }
-    final now = DateTime.now();
-    final lastAccessDate =
-        DateTime(state!.year, state!.month, state!.day); // Normalize to date only
-    return now.isAfter(lastAccessDate.add(const Duration(days: 1)));
+    return state == null || !isSameDay(state!, DateTime.now());
   }
 }
 

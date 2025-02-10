@@ -23,7 +23,7 @@ class PreviousInvoices extends ConsumerWidget {
           width: double.infinity,
           child: Column(
             children: [
-              const Text('القوائم اليومية', style: TextStyle(color: Colors.white, fontSize: 18)),
+              const Text('القوائم اليومية', style: TextStyle(color: Colors.white, fontSize: 20)),
               VerticalGap.xl,
               ..._buildItemList(context, ref),
             ],
@@ -45,7 +45,6 @@ class PreviousInvoices extends ConsumerWidget {
 
   Widget _buildTransactionCard(
       BuildContext context, WidgetRef ref, int sequence, Transaction invoice) {
-    final pendingTransactionsRepo = ref.read(pendingTransactionRepositoryProvider);
     return Center(
       child: InkWell(
         onTap: () {
@@ -62,11 +61,11 @@ class PreviousInvoices extends ConsumerWidget {
               CircledContainer(child: Text((sequence + 1).toString())),
               HorizontalGap.l,
               SizedBox(
-                  width: 130,
+                  width: 140,
                   child: Text(invoice.name, style: const TextStyle(color: Colors.white))),
               const Spacer(),
               SizedBox(
-                width: 70,
+                width: 80,
                 child: Text(doubleToStringWithComma(invoice.totalAmount),
                     textAlign: TextAlign.end, style: const TextStyle(color: Colors.white)),
               ),

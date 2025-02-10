@@ -44,6 +44,7 @@ class LoadingNotifier extends StateNotifier<bool> {
       final customers = await customersRepository.fetchItemListAsMaps(
           filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
       customerDbCache.set(customers);
+      lastAccessNotifier.setLastAccessDate();
     }
     stopLoading();
   }
@@ -87,8 +88,7 @@ class LoadingNotifier extends StateNotifier<bool> {
     final transactionRepository = _ref.read(transactionRepositoryProvider);
     final lastAccessNotifier = _ref.read(lastAccessProvider.notifier);
     startLoading();
-    final oneDayPassed = lastAccessNotifier.hasOneDayPassed();
-    if (transactionsDbCache.data.isEmpty || oneDayPassed || loadFreshData) {
+    if (transactionsDbCache.data.isEmpty || lastAccessNotifier.hasOneDayPassed() || loadFreshData) {
       final transactions = await transactionRepository.fetchItemListAsMaps();
       transactionsDbCache.set(transactions);
       lastAccessNotifier.setLastAccessDate();
