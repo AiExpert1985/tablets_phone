@@ -10,6 +10,7 @@ import 'package:tablets/src/features/home/controller/home_screen_controller.dart
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:tablets/src/common/widgets/common_transaction_widgets.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
@@ -31,6 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final homeScreenState = ref.watch(homeScreenStateController);
+    ref.watch(transactionDbCacheProvider);
 
     return MainFrame(
       child: Column(
