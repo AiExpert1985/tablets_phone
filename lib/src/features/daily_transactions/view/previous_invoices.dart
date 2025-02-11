@@ -4,23 +4,32 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/calculate_product_stock.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
+import 'package:tablets/src/common/providers/salesman_info_provider.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circle.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
+import 'package:tablets/src/features/transactions/controllers/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/products_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/item.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class PreviousInvoices extends ConsumerWidget {
-  const PreviousInvoices(this.pendingInvoices, {super.key});
-
-  final List<Map<String, dynamic>> pendingInvoices;
+  const PreviousInvoices({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final salesmanInfo = ref.watch(salesmanInfoProvider);
+    final pendingTransactions = ref.watch(pendingTransactionsDbCache);
+    final pendingInvoices = pendingTransactions
+        .where((trans) =>
+            trans['transactionType'] == TransactionType.customerInvoice.name &&
+            trans['salesmanDbRef'] == salesmanInfo.dbRef &&
+            isSameDay(trans['date'].toDate(), DateTime.now()))
+        .toList();
     return MainFrame(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -37,7 +46,7 @@ class PreviousInvoices extends ConsumerWidget {
                 ),
               ],
               VerticalGap.xl,
-              ..._buildPendingTransactions(context, ref),
+              ..._buildPendingTransactions(context, ref, pendingInvoices),
             ],
           ),
         ),
@@ -45,7 +54,8 @@ class PreviousInvoices extends ConsumerWidget {
     );
   }
 
-  List<Widget> _buildPendingTransactions(BuildContext context, WidgetRef ref) {
+  List<Widget> _buildPendingTransactions(
+      BuildContext context, WidgetRef ref, List<Map<String, dynamic>> pendingInvoices) {
     List<Widget> invoiceWidgets = [];
     for (int i = 0; i < pendingInvoices.length; i++) {
       final invoice = Transaction.fromMap(pendingInvoices[i]);

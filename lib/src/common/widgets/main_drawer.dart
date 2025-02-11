@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
-import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
-import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
@@ -42,23 +41,15 @@ class MainDrawer extends ConsumerWidget {
                       leading: const Icon(Icons.view_list_outlined),
                       onTap: () async {
                         ref.read(dataLoadingController.notifier).startLoading();
-                        final salesmanInfo = ref.read(salesmanInfoProvider);
                         final pendingTransactionsRepo =
                             ref.read(pendingTransactionRepositoryProvider);
-                        Navigator.pop(context);
                         final pendingTransactions =
                             await pendingTransactionsRepo.fetchItemListAsMaps();
-                        // here we want transaction of type invoice, for the current salesman for this day only
-                        final pendingInvoices = pendingTransactions
-                            .where((trans) =>
-                                trans['transactionType'] == TransactionType.customerInvoice.name &&
-                                trans['salesmanDbRef'] == salesmanInfo.dbRef &&
-                                isSameDay(trans['date'].toDate(), DateTime.now()))
-                            .toList();
-                        ref.read(dataLoadingController.notifier).stopLoading();
+                        ref.read(pendingTransactionsDbCache.notifier).set(pendingTransactions);
                         if (context.mounted) {
-                          GoRouter.of(context)
-                              .goNamed(AppRoute.pendingInvoices.name, extra: pendingInvoices);
+                          ref.read(dataLoadingController.notifier).stopLoading();
+                          GoRouter.of(context).goNamed(AppRoute.pendingInvoices.name);
+                          Navigator.pop(context);
                         }
                       },
                     ),
@@ -67,23 +58,15 @@ class MainDrawer extends ConsumerWidget {
                       leading: const Icon(Icons.view_list),
                       onTap: () async {
                         ref.read(dataLoadingController.notifier).startLoading();
-                        final salesmanInfo = ref.read(salesmanInfoProvider);
                         final pendingTransactionsRepo =
                             ref.read(pendingTransactionRepositoryProvider);
-                        Navigator.pop(context);
                         final pendingTransactions =
                             await pendingTransactionsRepo.fetchItemListAsMaps();
-                        // here we want transaction of type invoice, for the current salesman for this day only
-                        final pendingIReceipts = pendingTransactions
-                            .where((trans) =>
-                                trans['transactionType'] == TransactionType.customerReceipt.name &&
-                                trans['salesmanDbRef'] == salesmanInfo.dbRef &&
-                                isSameDay(trans['date'].toDate(), DateTime.now()))
-                            .toList();
-                        ref.read(dataLoadingController.notifier).stopLoading();
+                        ref.read(pendingTransactionsDbCache.notifier).set(pendingTransactions);
                         if (context.mounted) {
-                          GoRouter.of(context)
-                              .goNamed(AppRoute.pendingReceipts.name, extra: pendingIReceipts);
+                          ref.read(dataLoadingController.notifier).stopLoading();
+                          GoRouter.of(context).goNamed(AppRoute.pendingReceipts.name);
+                          Navigator.pop(context);
                         }
                       },
                     ),
