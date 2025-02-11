@@ -118,6 +118,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return InkWell(
       onTap: () async {
         if (formData.containsKey('name') && formData.containsKey('nameDbRef')) {
+          // before going to new receipt or new invoice we must reset the form and cart
+          // maybe we were in home screen after loading previou transaction
+          final formDataNotifier = ref.read(formDataContainerProvider.notifier);
+          final name = formData['name'];
+          final nameDbRef = formData['nameDbRef'];
+          final sellingPriceType = formData['sellingPriceType'];
+          formDataNotifier.reset();
+          ref.read(cartProvider.notifier).reset();
+          formDataNotifier.addProperty('name', name);
+          formDataNotifier.addProperty('nameDbRef', nameDbRef);
+          formDataNotifier.addProperty('sellingPriceType', sellingPriceType);
+          formDataNotifier.addProperty('isEditable', true);
           if (context.mounted) {
             GoRouter.of(context).pushNamed(routeName);
             if (routeName == AppRoute.items.name) {

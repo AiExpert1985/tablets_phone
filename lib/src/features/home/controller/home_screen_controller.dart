@@ -31,6 +31,8 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
 
   void selectCustomer(Map<String, dynamic> customer) {
     final formDataNotifier = _ref.read(formDataContainerProvider.notifier);
+    formDataNotifier.reset();
+    _ref.read(cartProvider.notifier).reset();
     formDataNotifier.addProperty('name', customer['name']);
     formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
     formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
