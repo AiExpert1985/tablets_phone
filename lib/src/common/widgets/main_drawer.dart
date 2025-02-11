@@ -6,8 +6,6 @@ import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/pending_transaction_db_cache_provider.dart';
-import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends ConsumerWidget {
@@ -40,40 +38,24 @@ class MainDrawer extends ConsumerWidget {
                       title: const Text('القوائم'),
                       leading: const Icon(Icons.view_list_outlined),
                       onTap: () async {
-                        ref.read(dataLoadingController.notifier).startLoading();
-                        final pendingTransactionsRepo =
-                            ref.read(pendingTransactionRepositoryProvider);
-                        final pendingTransactions =
-                            await pendingTransactionsRepo.fetchItemListAsMaps();
-                        ref.read(pendingTransactionsDbCache.notifier).set(pendingTransactions);
-                        if (context.mounted) {
-                          ref.read(dataLoadingController.notifier).stopLoading();
-                          GoRouter.of(context).goNamed(AppRoute.pendingInvoices.name);
-                          Navigator.pop(context);
-                        }
+                        Navigator.pop(context);
+                        ref.read(dataLoadingController.notifier).loadPendingTransactions();
+                        GoRouter.of(context).goNamed(AppRoute.pendingInvoices.name);
                       },
                     ),
                     ListTile(
                       title: const Text('الوصولات'),
                       leading: const Icon(Icons.view_list),
-                      onTap: () async {
-                        ref.read(dataLoadingController.notifier).startLoading();
-                        final pendingTransactionsRepo =
-                            ref.read(pendingTransactionRepositoryProvider);
-                        final pendingTransactions =
-                            await pendingTransactionsRepo.fetchItemListAsMaps();
-                        ref.read(pendingTransactionsDbCache.notifier).set(pendingTransactions);
-                        if (context.mounted) {
-                          ref.read(dataLoadingController.notifier).stopLoading();
-                          GoRouter.of(context).goNamed(AppRoute.pendingReceipts.name);
-                          Navigator.pop(context);
-                        }
+                      onTap: () {
+                        Navigator.pop(context);
+                        ref.read(dataLoadingController.notifier).loadPendingTransactions();
+                        GoRouter.of(context).goNamed(AppRoute.pendingReceipts.name);
                       },
                     ),
                     ListTile(
                       title: const Text('مزامنة البيانات'),
                       leading: const Icon(Icons.refresh),
-                      onTap: () async {
+                      onTap: () {
                         Navigator.pop(context);
                         ref.read(dataLoadingController.notifier).loadCustomers(loadFreshData: true);
                         ref

@@ -6,9 +6,11 @@ import 'package:tablets/src/common/providers/last_access_provider.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
 import 'package:tablets/src/features/login/repository/accounts_repository.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/products_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/repository/products_repository_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transactions_repository_provider.dart';
 
@@ -47,6 +49,14 @@ class LoadingNotifier extends StateNotifier<bool> {
       lastAccessNotifier.setLastAccessDate();
     }
     stopLoading();
+  }
+
+  Future<void> loadPendingTransactions() async {
+    _ref.read(dataLoadingController.notifier).startLoading();
+    final pendingTransactions =
+        await _ref.read(pendingTransactionRepositoryProvider).fetchItemListAsMaps();
+    _ref.read(pendingTransactionsDbCache.notifier).set(pendingTransactions);
+    _ref.read(dataLoadingController.notifier).stopLoading();
   }
 
   Future<void> loadSalesmanInfo() async {
