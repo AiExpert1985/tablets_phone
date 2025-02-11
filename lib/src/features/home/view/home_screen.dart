@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -46,24 +47,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildDebtInfo(HomeScreenState state) {
-    Color infoBgColor = state.isValidUser ? itemsColor : Colors.red;
+    LinearGradient infoBgColorGradient = state.isValidUser
+        ? itemColorGradient
+        : const LinearGradient(
+            colors: [Color.fromARGB(255, 243, 80, 68), Color.fromARGB(255, 238, 83, 72)]);
+    tempPrint(infoBgColorGradient);
     return Column(
       children: [
         if (state.totalDebt != null)
           buildTotalAmount(context, state.dueDebt, 'الدين المستحق',
-              bgColor: infoBgColor, fontColor: Colors.white),
+              bgColorGradient: infoBgColorGradient, fontColor: Colors.white),
         VerticalGap.l,
         if (state.totalDebt != null)
           buildTotalAmount(context, state.totalDebt, 'الدين الكلي',
-              bgColor: infoBgColor, fontColor: Colors.white),
+              bgColorGradient: infoBgColorGradient, fontColor: Colors.white),
         VerticalGap.l,
         if (state.latestReceiptDate != null)
           buildTotalAmount(context, state.latestInvoiceDate, 'اخر قائمة',
-              bgColor: infoBgColor, fontColor: Colors.white),
+              bgColorGradient: infoBgColorGradient, fontColor: Colors.white),
         VerticalGap.l,
         if (state.latestInvoiceDate != null)
           buildTotalAmount(context, state.latestReceiptDate, 'اخر تسديد',
-              bgColor: infoBgColor, fontColor: Colors.white),
+              bgColorGradient: infoBgColorGradient, fontColor: Colors.white),
       ],
     );
   }
@@ -72,9 +77,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildTransactionSelectionButton(context, 'وصل قبض', AppRoute.receipt.name),
+        _buildTransactionSelectionButton(context, 'وصل جديد', AppRoute.receipt.name),
         HorizontalGap.xxl,
-        _buildTransactionSelectionButton(context, 'قائمة بيع', AppRoute.items.name),
+        _buildTransactionSelectionButton(context, 'قائمة جديدة', AppRoute.items.name),
       ],
     );
   }

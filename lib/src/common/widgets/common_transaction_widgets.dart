@@ -38,13 +38,13 @@ class FormFieldLabel extends StatelessWidget {
 }
 
 Widget buildTotalAmount(BuildContext context, dynamic amount, String label,
-    {Color bgColor = itemsColor, Color fontColor = Colors.yellow}) {
+    {LinearGradient bgColorGradient = itemColorGradient, Color fontColor = Colors.yellow}) {
   return Container(
     height: 45,
     // width: 350,
     padding: const EdgeInsets.all(5),
-    decoration: const BoxDecoration(
-        gradient: itemColorGradient, borderRadius: BorderRadius.all(Radius.circular(6))),
+    decoration: BoxDecoration(
+        gradient: bgColorGradient, borderRadius: const BorderRadius.all(Radius.circular(6))),
     child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       StyledTotalText(label, fontColor),
       amount is DateTime
