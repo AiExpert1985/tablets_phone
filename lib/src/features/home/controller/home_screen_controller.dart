@@ -92,6 +92,9 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
 
   Map<String, dynamic> getCustomerDebtInfo(String customerDbRef, num paymentDurationLimit) {
     final transactionsDbCache = _ref.read(transactionDbCacheProvider.notifier);
+    if (transactionsDbCache.data.isEmpty) {
+      _ref.read(dataLoadingController.notifier).loadTransactions();
+    }
     final transactions = transactionsDbCache.data;
     final customerDbCache = _ref.read(customerDbCacheProvider.notifier);
 
