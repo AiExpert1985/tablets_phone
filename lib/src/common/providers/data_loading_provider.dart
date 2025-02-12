@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tablets/src/common/providers/last_access_provider.dart';
@@ -94,14 +95,13 @@ class LoadingNotifier extends StateNotifier<bool> {
 // loadingFreshData is used for refresh button, which salesman might need if the customer data where updated
 // during the day, because in our app, the data is only updated onces a day at the first app access
   Future<void> loadTransactions({bool loadFreshData = false}) async {
-    final transactionsDbCache = _ref.read(transactionDbCacheProvider.notifier);
-    final transactionRepository = _ref.read(transactionRepositoryProvider);
-    final lastAccessNotifier = _ref.read(lastAccessProvider.notifier);
-    startLoading();
-    if (transactionsDbCache.data.isEmpty || lastAccessNotifier.hasOneDayPassed() || loadFreshData) {
-      final transactions = await transactionRepository.fetchItemListAsMaps();
-      transactionsDbCache.set(transactions);
-      lastAccessNotifier.setLastAccessDate();
+    if (_ref.read(transactionDbCacheProvider).isEmpty ||
+        _ref.read(lastAccessProvider.notifier).hasOneDayPassed() ||
+        loadFreshData) {
+      final transactions = await _ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
+      tempPrint('transactions loaded length = ${transactions.length}');
+      _ref.read(transactionDbCacheProvider.notifier).set(transactions);
+      _ref.read(lastAccessProvider.notifier).setLastAccessDate();
     }
     stopLoading();
   }

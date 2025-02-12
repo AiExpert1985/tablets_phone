@@ -37,9 +37,6 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
     formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
     formDataNotifier.addProperty('isEditable', true);
-
-    // Load transactions of selected customer
-    _ref.read(dataLoadingController.notifier).loadTransactions();
     _setCustomerDebtVariables(customer);
   }
 
@@ -72,9 +69,9 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     return false;
   }
 
-  void _setCustomerDebtVariables(Map<String, dynamic> customer) {
+  void _setCustomerDebtVariables(Map<String, dynamic> customer) async {
     num paymentDurationLimit = customer['paymentDurationLimit'];
-    final customerDebtInfo = getCustomerDebtInfo(customer['dbRef'], paymentDurationLimit);
+    final customerDebtInfo = await getCustomerDebtInfo(customer['dbRef'], paymentDurationLimit);
 
     state.totalDebt = customerDebtInfo['totalDebt'];
     state.dueDebt = customerDebtInfo['dueDebt'];
@@ -90,24 +87,20 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
         state.totalDebt! <= 0 || (state.totalDebt! < creditLimit && state.dueDebt! <= 0);
   }
 
-  Map<String, dynamic> getCustomerDebtInfo(String customerDbRef, num paymentDurationLimit) {
-    final transactionsDbCache = _ref.read(transactionDbCacheProvider.notifier);
-    if (transactionsDbCache.data.isEmpty) {
-      _ref.read(dataLoadingController.notifier).loadTransactions();
-    }
-    final transactions = transactionsDbCache.data;
-    final customerDbCache = _ref.read(customerDbCacheProvider.notifier);
-
-    final customerData = customerDbCache.getItemByDbRef(customerDbRef);
+  Future<Map<String, dynamic>> getCustomerDebtInfo(
+      String customerDbRef, num paymentDurationLimit) async {
+    await _ref.read(dataLoadingController.notifier).loadTransactions();
+    final transactionsDbCache = _ref.read(transactionDbCacheProvider);
+    final customerData = _ref.read(customerDbCacheProvider.notifier).getItemByDbRef(customerDbRef);
     final double initialDebt = customerData['initialCredit'] ?? 0.0;
-
     double totalDebt = initialDebt;
     List<Transaction> customerInvoices = [];
     List<Transaction> customerReceipts = [];
-
-    transactions
+    final customerTransactions = transactionsDbCache
         .where((transaction) => transaction['nameDbRef'] == customerDbRef)
-        .forEach((transaction) {
+        .toList();
+
+    for (var transaction in customerTransactions) {
       final transactionType = transaction['transactionType'];
       final totalAmount = transaction['totalAmount'] ?? 0.0;
 
@@ -120,7 +113,7 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
       } else if (transactionType == TransactionType.customerReturn.name) {
         totalDebt -= totalAmount ?? 0;
       }
-    });
+    }
 
     customerInvoices.sort((a, b) => b.date.compareTo(a.date));
     customerReceipts.sort((a, b) => b.date.compareTo(a.date));

@@ -33,6 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final homeScreenState = ref.watch(homeScreenStateController);
     ref.watch(transactionDbCacheProvider);
+    tempPrint('home is built');
 
     return MainFrame(
       child: Column(
@@ -53,7 +54,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ? itemColorGradient
         : const LinearGradient(
             colors: [Color.fromARGB(255, 243, 80, 68), Color.fromARGB(255, 238, 83, 72)]);
-    tempPrint(infoBgColorGradient);
     return Column(
       children: [
         if (state.totalDebt != null)
