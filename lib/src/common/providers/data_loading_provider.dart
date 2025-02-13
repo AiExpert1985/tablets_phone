@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tablets/src/common/providers/last_access_provider.dart';
@@ -99,7 +98,6 @@ class LoadingNotifier extends StateNotifier<bool> {
         _ref.read(lastAccessProvider.notifier).hasOneDayPassed() ||
         loadFreshData) {
       final transactions = await _ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
-      tempPrint('transactions loaded length = ${transactions.length}');
       _ref.read(transactionDbCacheProvider.notifier).set(transactions);
       _ref.read(lastAccessProvider.notifier).setLastAccessDate();
     }
