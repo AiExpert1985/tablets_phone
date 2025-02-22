@@ -1,23 +1,10 @@
 import 'dart:async';
-import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 
-// track the location of mobile periodically every x minutes
-Future<void> trackLoaction({int updateMinutes = 5}) async {
-  await AndroidAlarmManager.initialize();
-  // Schedule the periodic task
-  await AndroidAlarmManager.periodic(
-    Duration(minutes: updateMinutes), // Change this to your desired interval
-    0, // Unique ID for the alarm
-    sendLocationToFirebase,
-  );
-}
-
-Future<void> sendLocationToFirebase(WidgetRef ref) async {
+Future<void> sendLocationToFirebase() async {
   Position position = await Geolocator.getCurrentPosition();
   Map<String, dynamic> locationMap = {
     'latitude': position.latitude,

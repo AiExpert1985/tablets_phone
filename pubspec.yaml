@@ -55,10 +55,7 @@ dependencies:
   transparent_image: ^2.0.1
   flutter_launcher_icons: ^0.14.3
   geolocator: ^13.0.2
-  permission_handler: ^11.4.0
-  async: ^2.11.0
-  flutter_background_geolocation: ^4.16.9
-  android_alarm_manager: ^2.0.2
+  workmanager: ^0.5.2
 
 dev_dependencies:
   flutter_test:
