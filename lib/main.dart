@@ -25,6 +25,9 @@ void main() async {
   // FirebaseFirestore.instance.settings = const Settings();
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
 
+  // Request location permissions
+  await requestLocationPermissions();
+
   Workmanager().initialize(
     callbackDispatcher,
     isInDebugMode: true, // Set to false in production
