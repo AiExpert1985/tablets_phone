@@ -2,8 +2,6 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/app.dart';
-import 'package:tablets/src/features/gps/gps_tracker.dart';
-import 'package:workmanager/workmanager.dart';
 
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -24,19 +22,6 @@ void main() async {
 // Enable offline persistence (make firebase work offline)
   // FirebaseFirestore.instance.settings = const Settings();
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
-
-  // Request location permissions
-  await requestLocationPermissions();
-
-  Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: true, // Set to false in production
-  );
-  Workmanager().registerPeriodicTask(
-    "1",
-    "locationTask",
-    frequency: const Duration(minutes: 1), // Adjust the frequency as needed
-  );
 
   runApp(const ProviderScope(
     child: MyApp(),
@@ -65,12 +50,4 @@ void registerErrorHandlers() {
       body: Center(child: Text(details.toString())),
     );
   };
-}
-
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    // Your background task code here
-    await sendLocationToFirebase();
-    return true;
-  });
 }
