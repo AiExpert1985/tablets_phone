@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/app.dart';
+import 'package:tablets/src/common/functions/gps_background_service.dart';
 
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,11 @@ void main() async {
   registerErrorHandlers();
 
 // Enable offline persistence (make firebase work offline)
-  // FirebaseFirestore.instance.settings = const Settings();
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+
+// for gps tracking
+  await requestLocationPermission(); // Request location permission first
+  await initializeService(); // Start the background service
 
   runApp(const ProviderScope(
     child: MyApp(),
