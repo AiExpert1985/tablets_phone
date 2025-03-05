@@ -21,7 +21,8 @@ void onStart(ServiceInstance service) async {
       // Create a timestamp
       String timestamp = DateTime.now().toIso8601String();
 
-      await Firebase.initializeApp();
+      await Firebase
+          .initializeApp(); //TODO to remove this line because firebase is initialized in main
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       final docRef = firestore.collection('salesman_location').doc();
 
