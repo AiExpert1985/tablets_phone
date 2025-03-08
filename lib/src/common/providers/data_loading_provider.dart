@@ -38,7 +38,7 @@ class LoadingNotifier extends StateNotifier<bool> {
   Future<void> loadCustomers({bool loadFreshData = false}) async {
     final salesmanInfoNotifier = _ref.read(salesmanInfoProvider.notifier);
     String? salesmanDbRef = salesmanInfoNotifier.data.dbRef;
-    // don't load unless the salesman info is loaded, because it will load all customers not his customers only
+    // don't load customers unless salesman info is loaded, because it will load all customers not his customers only
     if (salesmanDbRef == null) return;
     final lastAccessNotifier = _ref.read(lastAccessProvider.notifier);
     final customersRepository = _ref.read(customerRepositoryProvider);
