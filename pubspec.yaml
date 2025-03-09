@@ -54,6 +54,8 @@ dependencies:
   flutter_multi_formatter: ^2.13.0
   transparent_image: ^2.0.1
   flutter_launcher_icons: ^0.14.3
+  flutter_background_service: ^5.1.0
+  geolocator: ^13.0.2
 
 dev_dependencies:
   flutter_test:

@@ -21,7 +21,6 @@ void main() async {
   registerErrorHandlers();
 
 // Enable offline persistence (make firebase work offline)
-  // FirebaseFirestore.instance.settings = const Settings();
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
 
   runApp(const ProviderScope(
