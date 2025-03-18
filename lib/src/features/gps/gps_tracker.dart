@@ -5,14 +5,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-Future<void> sendLocationToFirebase() async {
+Future<void> updateTasks() async {
   Position position = await Geolocator.getCurrentPosition();
   Map<String, dynamic> locationMap = {
     'latitude': position.latitude,
     'longitude': position.longitude,
     'timestamp': DateTime.now().toIso8601String(),
   };
-  addToFirebase(locationMap);
+  tempPrint('Current location: $locationMap');
+  // addToFirebase(locationMap);
 }
 
 void requestLocationPermission() async {

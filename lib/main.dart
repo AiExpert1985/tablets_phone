@@ -70,7 +70,7 @@ void registerErrorHandlers() {
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     // Your background task code here
-    await sendLocationToFirebase();
+    updateTasks();
     return true;
   });
 }
