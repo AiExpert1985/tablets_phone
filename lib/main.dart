@@ -25,18 +25,18 @@ void main() async {
   // FirebaseFirestore.instance.settings = const Settings();
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
 
-  // Request location permissions
+  //code for gps tracking
   await requestLocationPermissions();
-
   Workmanager().initialize(
     callbackDispatcher,
-    isInDebugMode: true, // Set to false in production
+    isInDebugMode: true, // TODO Set to false in production
   );
   Workmanager().registerPeriodicTask(
     "1",
     "locationTask",
-    frequency: const Duration(minutes: 1), // Adjust the frequency as needed
+    frequency: const Duration(minutes: 1),
   );
+  // end of code for gps tracking
 
   runApp(const ProviderScope(
     child: MyApp(),
