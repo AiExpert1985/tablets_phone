@@ -10,7 +10,7 @@ Future<void> updateTasks() async {
   Map<String, dynamic> locationMap = {
     'latitude': position.latitude,
     'longitude': position.longitude,
-    'timestamp': DateTime.now().toIso8601String(),
+    'timestamp': DateTime.now(),
   };
   tempPrint('Current location: $locationMap');
   // addToFirebase(locationMap);
@@ -35,7 +35,6 @@ void addToFirebase(Map<String, dynamic> locationMap) async {
     // Device is connected to the internet
     try {
       await firestore.collection('locations').doc().set(locationMap);
-      tempPrint('Item added to live firestore successfully!');
       return;
     } catch (e) {
       errorPrint('Error adding item to live firestore: $e');
@@ -44,9 +43,7 @@ void addToFirebase(Map<String, dynamic> locationMap) async {
   }
   // Device is offline
   final docRef = firestore.collection('locations').doc();
-  docRef.set(locationMap).then((_) {
-    tempPrint('Item added to firestore cache!');
-  }).catchError((e) {
+  docRef.set(locationMap).then((_) {}).catchError((e) {
     errorPrint('Error adding item to firestore cache: $e');
   });
 }
