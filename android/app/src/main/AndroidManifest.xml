@@ -2,7 +2,6 @@
     <!-- added by hamandi for location tracking -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <!-- added by hamandi for location tracking -->
     <application
         android:label="الواح"

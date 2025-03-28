@@ -5,6 +5,7 @@ import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/gps_location/presentation/location_button.dart';
 import 'package:tablets/src/features/home/controller/home_screen_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
@@ -80,6 +81,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _buildTransactionSelectionButton(context, 'وصل جديد', AppRoute.receipt.name),
         HorizontalGap.xxl,
         _buildTransactionSelectionButton(context, 'قائمة جديدة', AppRoute.items.name),
+        HorizontalGap.xxl,
+        const LocationButton(),
       ],
     );
   }
