@@ -78,10 +78,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildTransactionSelectionButton(context, 'وصل جديد', AppRoute.receipt.name),
-        HorizontalGap.xxl,
-        _buildTransactionSelectionButton(context, 'قائمة جديدة', AppRoute.items.name),
-        HorizontalGap.xxl,
+        _buildTransactionSelectionButton(context, 'وصل', AppRoute.receipt.name),
+        HorizontalGap.xl,
+        _buildTransactionSelectionButton(context, 'قائمة', AppRoute.items.name),
+        HorizontalGap.xl,
         const LocationButton(),
       ],
     );
@@ -149,8 +149,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         }
       },
       child: Container(
-        width: 115,
-        height: 100,
+        width: 75,
+        height: 80,
         decoration: BoxDecoration(
           border: Border.all(),
           borderRadius: const BorderRadius.all(Radius.circular(6)),

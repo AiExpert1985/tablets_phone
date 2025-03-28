@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/widgets/main_frame.dart';
 
 Future<void> requestLocationPermission() async {
   LocationPermission permission = await Geolocator.checkPermission();
@@ -20,8 +21,8 @@ class LocationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
+    return InkWell(
+      onTap: () async {
         await requestLocationPermission();
         Position position = await Geolocator.getCurrentPosition();
 
@@ -34,7 +35,22 @@ class LocationButton extends StatelessWidget {
           failureUserMessage(context, 'انت خارج نطاق الزبون');
         }
       },
-      child: const Text('تثبيت زيارة'),
+      child: Container(
+        width: 75,
+        height: 80,
+        decoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: const BorderRadius.all(Radius.circular(6)),
+          gradient: itemColorGradient,
+        ),
+        padding: const EdgeInsets.all(12),
+        child: const Center(
+          child: Text(
+            'زيارة',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ),
+      ),
     );
   }
 }
