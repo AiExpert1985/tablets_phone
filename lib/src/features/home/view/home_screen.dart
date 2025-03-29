@@ -7,6 +7,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/gps_location/presentation/location_button.dart';
 import 'package:tablets/src/features/home/controller/home_screen_controller.dart';
+import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
@@ -75,6 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildSelectionButtons(BuildContext context) {
+    final formDataNotifier = ref.read(formDataContainerProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -82,7 +84,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         HorizontalGap.xl,
         _buildTransactionSelectionButton(context, 'قائمة', AppRoute.items.name),
         HorizontalGap.xl,
-        const LocationButton(),
+        LocationButton(formDataNotifier['nameDbRef']),
       ],
     );
   }
@@ -125,6 +127,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return InkWell(
       onTap: () async {
+        // if salesman outside customer zone, no transaction is allowed
+        bool isTransactionAllowed = await isInsideCustomerZone();
+        if (!isTransactionAllowed && context.mounted) {
+          failureUserMessage(context, 'انت خارج منطقةالزبون');
+        }
         if (formData.containsKey('name') && formData.containsKey('nameDbRef')) {
           // before going to new receipt or new invoice we must reset the form and cart
           // maybe we were in home screen after loading previou transaction
@@ -161,6 +168,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Text(
             label,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LocationButton extends ConsumerWidget {
+  const LocationButton(this.customerDbRef, {super.key});
+  final String customerDbRef;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final salesmanInfo = ref.watch(salesmanInfoProvider);
+    return InkWell(
+      onTap: () async {
+        bool isTransactionAllowed = await isInsideCustomerZone();
+        if (!isTransactionAllowed && context.mounted) {
+          failureUserMessage(context, 'انت خارج منطقةالزبون');
+        }
+        registerVisit(ref, salesmanInfo['name'], customerDbRef);
+      },
+      child: Container(
+        width: 75,
+        height: 80,
+        decoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: const BorderRadius.all(Radius.circular(6)),
+          gradient: itemColorGradient,
+        ),
+        padding: const EdgeInsets.all(12),
+        child: const Center(
+          child: Text(
+            'زيارة',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
       ),
