@@ -13,6 +13,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
 import 'package:tablets/src/common/widgets/common_transaction_widgets.dart';
+import 'package:tablets/src/features/gps_location/controllers/location_functions.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/controllers/pending_transaction_db_cache_provider.dart';
@@ -162,6 +163,7 @@ class ShoppingCart extends ConsumerWidget {
                     successUserMessage(context, 'تم اضافة القائمة بنجاح');
                   }
                 }
+                registerTransaction(ref, salesmanInfo.dbRef!, formData['nameDbRef']);
                 // after adding the transaction, we reset data and go to main menu
                 ref.read(formDataContainerProvider.notifier).reset();
                 ref.read(cartProvider.notifier).reset();

@@ -127,10 +127,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return InkWell(
       onTap: () async {
-        // if salesman outside customer zone, no transaction is allowed
         bool isTransactionAllowed = await isInsideCustomerZone();
         if (!isTransactionAllowed && context.mounted) {
-          failureUserMessage(context, 'انت خارج منطقةالزبون');
+          // if salesman outside customer zone, no transaction is allowed
+          failureUserMessage(context, 'انت خارج نطاق الزبون');
+          return;
         }
         if (formData.containsKey('name') && formData.containsKey('nameDbRef')) {
           // before going to new receipt or new invoice we must reset the form and cart

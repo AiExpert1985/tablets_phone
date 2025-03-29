@@ -52,4 +52,23 @@ Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerD
   return true;
 }
 
-void registerTransaction(WidgetRef ref, String salesmanDbRef, String customerDbRef) {}
+// TODO to find a way to unfiy parts of register visit and resister transaction functions
+Future<bool> registerTransaction(WidgetRef ref, String salesmanDbRef, String customerDbRef) async {
+  final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
+  final tasks = await taskRepositoryProvider.fetchItemListAsMaps(
+      filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
+  if (tasks.isEmpty) {
+    errorPrint('no matching customer found in tasks');
+    return false;
+  }
+  final today = DateTime.now();
+  final task = tasks
+      .where((item) =>
+          item['customerDbRef'] == customerDbRef && isSameDay(item['date'].toDate(), today))
+      .toList()
+      .first;
+  task['hasTransaction'] = true;
+  final point = SalesPoint.fromMap(task);
+  await taskRepositoryProvider.updateItem(point);
+  return true;
+}

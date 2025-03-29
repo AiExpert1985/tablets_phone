@@ -12,6 +12,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/providers/salesman_info_provider.dart';
 import 'package:tablets/src/common/widgets/screen_title.dart';
+import 'package:tablets/src/features/gps_location/controllers/location_functions.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/controllers/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -189,6 +190,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                   successUserMessage(context, 'تم اضافة الوصل بنجاح');
                 }
               }
+              registerTransaction(ref, salesmanInfo.dbRef!, formData['nameDbRef']);
               formDataNotifier.reset();
               if (context.mounted) {
                 GoRouter.of(context).goNamed(AppRoute.home.name);
