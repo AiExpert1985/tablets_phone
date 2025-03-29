@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
+import 'package:tablets/src/common/providers/salesman_info_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/gps_location/presentation/location_button.dart';
 import 'package:tablets/src/features/home/controller/home_screen_controller.dart';
-import 'package:tablets/src/features/home/controller/salesman_info_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
@@ -181,14 +181,25 @@ class LocationButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final salesmanInfo = ref.watch(salesmanInfoProvider);
     return InkWell(
       onTap: () async {
+        String? salesmanDbRef = ref.read(salesmanInfoProvider.notifier).data.dbRef;
+        if (salesmanDbRef == null) {
+          await ref.read(dataLoadingController.notifier).loadSalesmanInfo();
+        }
         bool isTransactionAllowed = await isInsideCustomerZone();
         if (!isTransactionAllowed && context.mounted) {
-          failureUserMessage(context, 'انت خارج منطقةالزبون');
+          // if out of customer zone, visit is not registered
+          failureUserMessage(context, 'انت خارج نطاق الزبون');
+          return;
         }
-        registerVisit(ref, salesmanInfo['name'], customerDbRef);
+
+        bool success = await registerVisit(ref, salesmanDbRef!, customerDbRef);
+        if (success && context.mounted) {
+          successUserMessage(context, 'تم تسجيل الزيارة بنجاح');
+        } else if (!success && context.mounted) {
+          failureUserMessage(context, 'لم يتم تسجيل الزيارة');
+        }
       },
       child: Container(
         width: 75,
