@@ -42,7 +42,8 @@ Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerD
   }
   final today = DateTime.now();
   final task = tasks
-      .where((item) => item['customerDbRef'] == customerDbRef && isSameDay(item['date'], today))
+      .where((item) =>
+          item['customerDbRef'] == customerDbRef && isSameDay(item['date'].toDate(), today))
       .toList()
       .first;
   task['isVisited'] = true;
