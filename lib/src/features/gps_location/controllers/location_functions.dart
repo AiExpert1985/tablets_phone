@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -70,23 +71,33 @@ Future<Location?> getCustomerLocation(Customer customer) async {
   return Location(x: customer.x!, y: customer.y!);
 }
 
-Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerDbRef,
-    {bool hasTransaction = false}) async {
-  final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
+Future<SalesPoint?> getSalesPoint(
+    DbRepository taskRepositoryProvider, String salesmanDbRef, String customerDbRef) async {
   final salesPoints = await taskRepositoryProvider.fetchItemListAsMaps(
       filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
   if (salesPoints.isEmpty) {
-    errorPrint('no matching customer found in tasks');
-    return false;
+    return null;
   }
   final today = DateTime.now();
-  final salesPointMap = salesPoints
+  final todaySalesPoints = salesPoints
       .where((item) =>
           item['customerDbRef'] == customerDbRef && isSameDay(item['date'].toDate(), today))
-      .toList()
-      .first;
-  final salesPoint = SalesPoint.fromMap(salesPointMap);
-  if (salesPoint.x == null || salesPoint.y == null) {
+      .toList();
+  if (todaySalesPoints.isEmpty) {
+    return null;
+  }
+  return SalesPoint.fromMap(todaySalesPoints.first);
+}
+
+Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerDbRef,
+    {bool hasTransaction = false}) async {
+  final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
+  final salesPoint = await getSalesPoint(taskRepositoryProvider, salesmanDbRef, customerDbRef);
+  if (salesPoint == null) {
+    errorPrint('no task found');
+    return false;
+  }
+  if (salesPoint.x == null || salesPoint.x == 0 || salesPoint.y == null || salesPoint.y == 0) {
     final customer = await getCustomer(ref, customerDbRef);
     salesPoint.x = customer.x;
     salesPoint.y = customer.y;
@@ -98,25 +109,3 @@ Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerD
   await taskRepositoryProvider.updateItem(salesPoint);
   return true;
 }
-
-// // TODO to find a way to unfiy parts of register visit and resister transaction functions
-// Future<bool> registerTransaction(WidgetRef ref, String salesmanDbRef, String customerDbRef) async {
-//   await registerVisit(ref, salesmanDbRef, customerDbRef);
-//   final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
-//   final tasks = await taskRepositoryProvider.fetchItemListAsMaps(
-//       filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
-//   if (tasks.isEmpty) {
-//     errorPrint('no matching customer found in tasks');
-//     return false;
-//   }
-//   final today = DateTime.now();
-//   final task = tasks
-//       .where((item) =>
-//           item['customerDbRef'] == customerDbRef && isSameDay(item['date'].toDate(), today))
-//       .toList()
-//       .first;
-//   task['hasTransaction'] = true;
-//   final point = SalesPoint.fromMap(task);
-//   await taskRepositoryProvider.updateItem(point);
-//   return true;
-// }
