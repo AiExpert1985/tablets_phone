@@ -163,7 +163,8 @@ class ShoppingCart extends ConsumerWidget {
                     successUserMessage(context, 'تم اضافة القائمة بنجاح');
                   }
                 }
-                registerTransaction(ref, salesmanInfo.dbRef!, formData['nameDbRef']);
+                registerVisit(ref, salesmanInfo.dbRef!, formData['nameDbRef'],
+                    hasTransaction: true);
                 // after adding the transaction, we reset data and go to main menu
                 ref.read(formDataContainerProvider.notifier).reset();
                 ref.read(cartProvider.notifier).reset();

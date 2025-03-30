@@ -18,17 +18,13 @@ Future<void> requestLocationPermission() async {
 }
 
 Future<bool> isInsideCustomerZone(BuildContext context, WidgetRef ref, String customerDbRef) async {
-  // const double targetLatitude = 37.4219983; // Example target latitude
-  // const double targetLongitude = -122.084; // Example target longitude
-  // const double targetLatitude = 36.3397525; // Example target latitude
-  // const double targetLongitude = 43.2485551; // Example target longitude
   const double allowedDistance = 6; // meters allowed to be away form the gps point
   await requestLocationPermission();
   Position position = await Geolocator.getCurrentPosition();
 
   final customer = await getCustomer(ref, customerDbRef);
 
-  final customerLocation = await getCustomerLocation(customer);
+  Location? customerLocation = await getCustomerLocation(customer);
 
   if (customerLocation == null && context.mounted) {
     // if location is not register, return or register current location if salesman approves it
@@ -46,6 +42,9 @@ Future<bool> isInsideCustomerZone(BuildContext context, WidgetRef ref, String cu
     customer.y = position.longitude;
     final customerRepo = ref.read(customerRepositoryProvider);
     customerRepo.updateItem(customer);
+
+    // update customerLocation
+    customerLocation = Location(x: customer.x!, y: customer.y!);
   }
 
   double distance = Geolocator.distanceBetween(
@@ -71,7 +70,8 @@ Future<Location?> getCustomerLocation(Customer customer) async {
   return Location(x: customer.x!, y: customer.y!);
 }
 
-Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerDbRef) async {
+Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerDbRef,
+    {bool hasTransaction = false}) async {
   final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
   final salesPoints = await taskRepositoryProvider.fetchItemListAsMaps(
       filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
@@ -92,28 +92,31 @@ Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerD
     salesPoint.y = customer.y;
   }
   salesPoint.isVisited = true;
+  if (hasTransaction) {
+    salesPoint.hasTransaction = true;
+  }
   await taskRepositoryProvider.updateItem(salesPoint);
   return true;
 }
 
-// TODO to find a way to unfiy parts of register visit and resister transaction functions
-Future<bool> registerTransaction(WidgetRef ref, String salesmanDbRef, String customerDbRef) async {
-  await registerVisit(ref, salesmanDbRef, customerDbRef);
-  final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
-  final tasks = await taskRepositoryProvider.fetchItemListAsMaps(
-      filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
-  if (tasks.isEmpty) {
-    errorPrint('no matching customer found in tasks');
-    return false;
-  }
-  final today = DateTime.now();
-  final task = tasks
-      .where((item) =>
-          item['customerDbRef'] == customerDbRef && isSameDay(item['date'].toDate(), today))
-      .toList()
-      .first;
-  task['hasTransaction'] = true;
-  final point = SalesPoint.fromMap(task);
-  await taskRepositoryProvider.updateItem(point);
-  return true;
-}
+// // TODO to find a way to unfiy parts of register visit and resister transaction functions
+// Future<bool> registerTransaction(WidgetRef ref, String salesmanDbRef, String customerDbRef) async {
+//   await registerVisit(ref, salesmanDbRef, customerDbRef);
+//   final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
+//   final tasks = await taskRepositoryProvider.fetchItemListAsMaps(
+//       filterKey: 'salesmanDbRef', filterValue: salesmanDbRef);
+//   if (tasks.isEmpty) {
+//     errorPrint('no matching customer found in tasks');
+//     return false;
+//   }
+//   final today = DateTime.now();
+//   final task = tasks
+//       .where((item) =>
+//           item['customerDbRef'] == customerDbRef && isSameDay(item['date'].toDate(), today))
+//       .toList()
+//       .first;
+//   task['hasTransaction'] = true;
+//   final point = SalesPoint.fromMap(task);
+//   await taskRepositoryProvider.updateItem(point);
+//   return true;
+// }

@@ -190,7 +190,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                   successUserMessage(context, 'تم اضافة الوصل بنجاح');
                 }
               }
-              registerTransaction(ref, salesmanInfo.dbRef!, formData['nameDbRef']);
+              registerVisit(ref, salesmanInfo.dbRef!, formData['nameDbRef'], hasTransaction: true);
               formDataNotifier.reset();
               if (context.mounted) {
                 GoRouter.of(context).goNamed(AppRoute.home.name);
