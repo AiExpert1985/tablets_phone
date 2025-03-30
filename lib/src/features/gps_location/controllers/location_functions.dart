@@ -65,7 +65,7 @@ Future<Customer> getCustomer(WidgetRef ref, String customerDbRef) async {
 }
 
 Future<Location?> getCustomerLocation(Customer customer) async {
-  if (customer.x == null || customer.y == null) {
+  if (customer.x == null || customer.x == 0 || customer.y == null || customer.y == 0) {
     return null;
   }
   return Location(x: customer.x!, y: customer.y!);
