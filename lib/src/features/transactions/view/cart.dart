@@ -178,7 +178,7 @@ class ShoppingCart extends ConsumerWidget {
               onPressed: () async {
                 final transaction =
                     _createTransaction(ref, totalAmount, totalCommission, totalProfit, totalWeight);
-                final userConfiramtion = await showDeleteConfirmationDialog(
+                final userConfiramtion = await showUserConfirmationDialog(
                     context: context, messagePart1: '', messagePart2: 'هل ترغب بحذف القائمة');
                 if (userConfiramtion == null) {
                   // user didn't confirm

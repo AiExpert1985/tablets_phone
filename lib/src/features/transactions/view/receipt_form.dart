@@ -200,7 +200,7 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
           HorizontalGap.xl,
           IconButton(
             onPressed: () async {
-              final userConfiramtion = await showDeleteConfirmationDialog(
+              final userConfiramtion = await showUserConfirmationDialog(
                   context: context, messagePart1: '', messagePart2: 'هل ترغب بحذف القائمة');
               if (userConfiramtion == null) {
                 // user didn't confirm

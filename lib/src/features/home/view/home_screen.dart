@@ -76,7 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildSelectionButtons(BuildContext context) {
-    final formDataNotifier = ref.read(formDataContainerProvider);
+    final formData = ref.read(formDataContainerProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -84,7 +84,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         HorizontalGap.xl,
         _buildTransactionSelectionButton(context, 'قائمة', AppRoute.items.name),
         HorizontalGap.xl,
-        LocationButton(formDataNotifier['nameDbRef']),
+        LocationButton(formData['nameDbRef']),
       ],
     );
   }
@@ -127,12 +127,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return InkWell(
       onTap: () async {
-        bool isTransactionAllowed = await isInsideCustomerZone();
-        if (!isTransactionAllowed && context.mounted) {
-          // if salesman outside customer zone, no transaction is allowed
-          failureUserMessage(context, 'انت خارج نطاق الزبون');
-          return;
-        }
         if (formData.containsKey('name') && formData.containsKey('nameDbRef')) {
           // before going to new receipt or new invoice we must reset the form and cart
           // maybe we were in home screen after loading previou transaction
@@ -142,6 +136,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           final sellingPriceType = formData['sellingPriceType'];
           formDataNotifier.reset();
           ref.read(cartProvider.notifier).reset();
+
+          // if salesman outside customer zone, no transaction is allowed
+          bool isTransactionAllowed =
+              await isInsideCustomerZone(context, ref, formData['nameDbRef']);
+          if (!isTransactionAllowed && context.mounted) {
+            failureUserMessage(context, 'انت خارج نطاق الزبون');
+            return;
+          }
+
+          // now store customer data in the new transaction
           formDataNotifier.addProperty('name', name);
           formDataNotifier.addProperty('nameDbRef', nameDbRef);
           formDataNotifier.addProperty('sellingPriceType', sellingPriceType);
@@ -188,11 +192,13 @@ class LocationButton extends ConsumerWidget {
         if (salesmanDbRef == null) {
           await ref.read(dataLoadingController.notifier).loadSalesmanInfo();
         }
-        bool isTransactionAllowed = await isInsideCustomerZone();
-        if (!isTransactionAllowed && context.mounted) {
-          // if out of customer zone, visit is not registered
-          failureUserMessage(context, 'انت خارج نطاق الزبون');
-          return;
+        if (context.mounted) {
+          bool isTransactionAllowed = await isInsideCustomerZone(context, ref, customerDbRef);
+          if (!isTransactionAllowed && context.mounted) {
+            // if out of customer zone, visit is not registered
+            failureUserMessage(context, 'انت خارج نطاق الزبون');
+            return;
+          }
         }
 
         bool success = await registerVisit(ref, salesmanDbRef!, customerDbRef);
