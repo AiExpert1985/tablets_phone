@@ -164,12 +164,6 @@ class ShoppingCart extends ConsumerWidget {
                   }
                 }
 
-                // after adding the transaction, we reset data and go to main menu
-                ref.read(formDataContainerProvider.notifier).reset();
-                ref.read(cartProvider.notifier).reset();
-                if (context.mounted) {
-                  GoRouter.of(context).goNamed(AppRoute.home.name);
-                }
                 if (context.mounted) {
                   // if salesman outside customer zone, register transaction
                   bool isTransactionAllowed =
@@ -177,6 +171,12 @@ class ShoppingCart extends ConsumerWidget {
                   if (isTransactionAllowed) {
                     registerVisit(ref, salesmanInfo.dbRef!, formData['nameDbRef'],
                         hasTransaction: true);
+                  }
+                  // after adding the transaction, we reset data and go to main menu
+                  ref.read(formDataContainerProvider.notifier).reset();
+                  ref.read(cartProvider.notifier).reset();
+                  if (context.mounted) {
+                    GoRouter.of(context).goNamed(AppRoute.home.name);
                   }
                 }
               },

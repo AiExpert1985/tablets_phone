@@ -190,10 +190,6 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                   successUserMessage(context, 'تم اضافة الوصل بنجاح');
                 }
               }
-              formDataNotifier.reset();
-              if (context.mounted) {
-                GoRouter.of(context).goNamed(AppRoute.home.name);
-              }
               if (context.mounted) {
                 // if salesman outside customer zone, register transaction
                 bool isTransactionAllowed =
@@ -202,6 +198,10 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                   registerVisit(ref, salesmanInfo.dbRef!, formData['nameDbRef'],
                       hasTransaction: true);
                 }
+              }
+              formDataNotifier.reset();
+              if (context.mounted) {
+                GoRouter.of(context).goNamed(AppRoute.home.name);
               }
             },
           ),
