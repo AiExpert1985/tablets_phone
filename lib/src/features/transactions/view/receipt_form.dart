@@ -190,9 +190,9 @@ class _ReceiptFormState extends ConsumerState<ReceiptForm> {
                   successUserMessage(context, 'تم اضافة الوصل بنجاح');
                 }
               }
-
-              registerVisit(ref, salesmanInfo.dbRef!, formData['nameDbRef'],
-                  registerTransaction: true);
+// currently, only registering invoices (not receipts based on Mahmood request)
+              // registerVisit(ref, salesmanInfo.dbRef!, formData['nameDbRef'],
+              //     registerTransaction: true);
 
               formDataNotifier.reset();
               if (context.mounted) {
