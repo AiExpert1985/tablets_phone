@@ -205,7 +205,7 @@ class _LocationButtonState extends ConsumerState<LocationButton> {
     // Cancel any existing timer before starting a new one
     _cooldownTimer?.cancel();
 
-    _cooldownTimer = Timer(const Duration(seconds: 15), () {
+    _cooldownTimer = Timer(const Duration(seconds: 10), () {
       // When the timer finishes, reset the cooldown state
       // Check if the widget is still mounted before calling setState
       if (mounted) {
