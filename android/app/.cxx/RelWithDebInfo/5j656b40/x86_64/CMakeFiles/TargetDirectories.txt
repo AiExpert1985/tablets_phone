@@ -1,2 +1,0 @@
-E:/tablets_ph/tablets/android/app/.cxx/RelWithDebInfo/5j656b40/x86_64/CMakeFiles/edit_cache.dir
-E:/tablets_ph/tablets/android/app/.cxx/RelWithDebInfo/5j656b40/x86_64/CMakeFiles/rebuild_cache.dir
