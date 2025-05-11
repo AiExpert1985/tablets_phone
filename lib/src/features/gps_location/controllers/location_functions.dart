@@ -18,7 +18,7 @@ Future<void> requestLocationPermission() async {
 }
 
 Future<bool> isInsideCustomerZone(BuildContext context, WidgetRef ref, String customerDbRef) async {
-  const double allowedDistance = 30; // meters allowed to be away form the gps point
+  const double allowedDistance = 40; // meters allowed to be away form the gps point
   await requestLocationPermission();
   //! it is important to add desiredAccuracy (althought it is noted as depricated by IDE)
   //! without it, the distance to customer location was wrongly calculated, and caused issues with salesmen
@@ -108,8 +108,28 @@ Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerD
     salesPoint.y = customer.y;
   }
   final time = DateTime.now();
+  await updateTask(ref, salesPoint, isInvoice, time, insideCustomerZone);
+
+  // This code will execute after 2 minutes.
+  // It runs independently of the registerVisit function's return value.
+  // this function is to register the visit again, as a temp fix for the reported problem of
+  // visits not registered even after receiving confirmation user message
+  // it is a bad solution, but I wanted a quick fix since I am incapable for finding the root cause of the issue
+  Future.delayed(const Duration(seconds: 120), () async {
+    try {
+      await updateTask(ref, salesPoint, isInvoice, time, insideCustomerZone);
+    } catch (e) {
+      errorPrint('can not verify registerVisit');
+    }
+  });
+  return true;
+}
+
+Future<void> updateTask(WidgetRef ref, SalesPoint salesPoint, bool isInvoice, DateTime time,
+    bool insideCustomerZone) async {
+  final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
   if (isInvoice) {
-    salesPoint.hasTransaction = insideCustomerZone;
+    salesPoint.hasTransaction = salesPoint.isVisited || insideCustomerZone;
     salesPoint.transactionDate = time;
   } else {
     salesPoint.isVisited = true;
@@ -117,32 +137,4 @@ Future<bool> registerVisit(WidgetRef ref, String salesmanDbRef, String customerD
   }
 
   await taskRepositoryProvider.updateItem(salesPoint);
-
-  // This code will execute after 30 seconds.
-  // It runs independently of the registerVisit function's return value.
-  Future.delayed(const Duration(seconds: 30), () async {
-    try {
-      await verifyRegisteredVisit(ref, salesPoint, isInvoice, time, insideCustomerZone);
-    } catch (e) {
-      errorPrint('not verified');
-    }
-  });
-  return true;
-}
-
-// this function is to register the visit again, as a temp fix for the reported problem of
-// visits not registered even after receiving confirmation user message
-// it is a bad solution, but I wanted a quick fix since I am incapable for finding the root cause of the issue
-Future<void> verifyRegisteredVisit(WidgetRef ref, SalesPoint salesPoint, bool isInvoice,
-    DateTime time, bool insideCustomerZone) async {
-  final taskRepositoryProvider = ref.read(tasksRepositoryProvider);
-  if (isInvoice) {
-    salesPoint.hasTransaction = insideCustomerZone;
-    salesPoint.transactionDate = time;
-  } else {
-    salesPoint.isVisited = true;
-    salesPoint.visitDate = time;
-  }
-
-  taskRepositoryProvider.updateItem(salesPoint);
 }
