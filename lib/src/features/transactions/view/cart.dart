@@ -145,6 +145,7 @@ class ShoppingCart extends ConsumerWidget {
 
             CooldownWrapperIconButton(
               icon: const SaveInvoice(), // Your existing icon widget
+              cooldownDuration: const Duration(seconds: 15),
               onPressed: () async {
                 // Your existing onPressed async function
                 final transaction =
@@ -175,8 +176,15 @@ class ShoppingCart extends ConsumerWidget {
                       await isInsideCustomerZone(context, ref, formData['nameDbRef']);
                 }
 
-                registerVisit(ref, salesmanInfo.dbRef!, formData['nameDbRef'],
+                bool successfulTaskUpdate = await registerVisit(
+                    ref, salesmanInfo.dbRef!, formData['nameDbRef'],
                     isInvoice: true, insideCustomerZone: insideCustomerZone);
+                // if pending exists update it, otherwise add new
+                if (successfulTaskUpdate && context.mounted) {
+                  successUserMessage(context, 'تم تحديث الزيارة');
+                } else if (!successfulTaskUpdate && context.mounted) {
+                  successUserMessage(context, 'لم يتم تحديث الزيارة');
+                }
 
                 // after adding the transaction, we reset data and go to main menu
                 ref.read(formDataContainerProvider.notifier).reset();
