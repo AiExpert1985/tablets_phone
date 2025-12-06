@@ -1,12 +1,21 @@
 // lib/src/features/home/controller/home_screen_controller.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/data_loading_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_screen_data_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/common/functions/dialog_delete_confirmation.dart';
+
+String _formatTimestamp(dynamic value) {
+  if (value == null) return 'لا يوجد';
+  if (value is Timestamp) return formatDate(value.toDate());
+  if (value is DateTime) return formatDate(value);
+  return value.toString();
+}
 
 class HomeScreenState {
   final num? totalDebt;
@@ -83,8 +92,6 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
 
     final totalDebt = screenData['totalDebt'] as num? ?? 0;
     final dueDebt = screenData['dueDebt'] as num? ?? 0;
-    final lastReceiptDate = screenData['lastReceiptDate'];
-    final lastInvoiceDate = screenData['lastInvoiceDate'];
 
     // Get customer data for validation
     final customerDbCache = _ref.read(customerDbCacheProvider.notifier);
@@ -95,8 +102,8 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
       state = HomeScreenState(
         totalDebt: totalDebt,
         dueDebt: dueDebt,
-        latestReceiptDate: lastReceiptDate ?? 'لا يوجد',
-        latestInvoiceDate: lastInvoiceDate ?? 'لا يوجد',
+        latestReceiptDate: _formatTimestamp(screenData['lastReceiptDate']),
+        latestInvoiceDate: _formatTimestamp(screenData['lastInvoiceDate']),
         isValidUser: _isValidCustomer(totalDebt, dueDebt, creditLimit),
       );
     }

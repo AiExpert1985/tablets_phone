@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/forms/drop_down_with_search.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
@@ -13,6 +15,13 @@ import 'package:tablets/src/features/transactions/controllers/customer_screen_da
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
+
+String _formatTimestamp(dynamic value) {
+  if (value == null) return 'لا يوجد';
+  if (value is Timestamp) return formatDate(value.toDate());
+  if (value is DateTime) return formatDate(value);
+  return value.toString();
+}
 
 class InvoiceForm extends ConsumerStatefulWidget {
   const InvoiceForm({super.key});
@@ -93,8 +102,8 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
               final screenData = screenDataCache.getItemByDbRef(customer['dbRef']);
               totalDebt = screenData['totalDebt'] as num? ?? 0;
               dueDebt = screenData['dueDebt'] as num? ?? 0;
-              latestReceiptDate = screenData['lastReceiptDate'] ?? 'لا يوجد';
-              latestInvoiceDate = screenData['lastInvoiceDate'] ?? 'لا يوجد';
+              latestReceiptDate = _formatTimestamp(screenData['lastReceiptDate']);
+              latestInvoiceDate = _formatTimestamp(screenData['lastInvoiceDate']);
               _validateCustomer(customer['paymentDurationLimit'], customer['creditLimit']);
             },
             dbCache: salesmanCustomersDb,
