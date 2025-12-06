@@ -55,11 +55,17 @@ class HomeScreenState {
 
 class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
   HomeScreenNotifier(this._ref) : super(HomeScreenState()) {
-    _ref.read(dataLoadingController.notifier).loadSalesmanInfo();
+    _initializeData();
     // Listen for screen data changes and retry debt lookup when data arrives
     _ref.listen<List<Map<String, dynamic>>>(customerScreenDataCacheProvider, (_, __) {
       _retryDebtLookupIfNeeded();
     });
+  }
+
+  Future<void> _initializeData() async {
+    final loader = _ref.read(dataLoadingController.notifier);
+    await loader.loadSalesmanInfo();
+    await loader.loadCustomers();
   }
 
   final Ref _ref;
