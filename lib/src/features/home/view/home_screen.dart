@@ -41,7 +41,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           _buildNameSelection(context),
           if (ref.read(homeScreenStateController.notifier).customerIsSelected()) ...[
-            _buildDebtInfo(homeScreenState),
+            if (homeScreenState.isLoading)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 50.0),
+                child: CircularProgressIndicator(color: Colors.white),
+              )
+            else
+              _buildDebtInfo(homeScreenState),
             _buildSelectionButtons(context),
           ]
         ],

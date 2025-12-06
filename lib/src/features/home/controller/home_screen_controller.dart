@@ -23,6 +23,7 @@ class HomeScreenState {
   final dynamic latestReceiptDate;
   final dynamic latestInvoiceDate;
   final bool isValidUser;
+  final bool isLoading;
 
   HomeScreenState({
     this.totalDebt,
@@ -30,6 +31,7 @@ class HomeScreenState {
     this.latestReceiptDate,
     this.latestInvoiceDate,
     this.isValidUser = true,
+    this.isLoading = false,
   });
 
   HomeScreenState copyWith({
@@ -38,6 +40,7 @@ class HomeScreenState {
     dynamic latestReceiptDate,
     dynamic latestInvoiceDate,
     bool? isValidUser,
+    bool? isLoading,
   }) {
     return HomeScreenState(
       totalDebt: totalDebt ?? this.totalDebt,
@@ -45,6 +48,7 @@ class HomeScreenState {
       latestReceiptDate: latestReceiptDate ?? this.latestReceiptDate,
       latestInvoiceDate: latestInvoiceDate ?? this.latestInvoiceDate,
       isValidUser: isValidUser ?? this.isValidUser,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }
@@ -52,9 +56,22 @@ class HomeScreenState {
 class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
   HomeScreenNotifier(this._ref) : super(HomeScreenState()) {
     _ref.read(dataLoadingController.notifier).loadSalesmanInfo();
+    // Listen for screen data changes and retry debt lookup when data arrives
+    _ref.listen<List<Map<String, dynamic>>>(customerScreenDataCacheProvider, (_, __) {
+      _retryDebtLookupIfNeeded();
+    });
   }
 
   final Ref _ref;
+
+  void _retryDebtLookupIfNeeded() {
+    if (!state.isLoading) return;
+    final formData = _ref.read(formDataContainerProvider);
+    final customerDbRef = formData['nameDbRef'] as String?;
+    if (customerDbRef != null && customerDbRef.isNotEmpty) {
+      _loadDebtFromCache(customerDbRef);
+    }
+  }
 
   void selectCustomer(WidgetRef ref, Map<String, dynamic> customer) {
     final formDataNotifier = _ref.read(formDataContainerProvider.notifier);
@@ -78,14 +95,9 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
     final screenData = screenDataCache.getItemByDbRef(customerDbRef);
 
     if (screenData.isEmpty) {
+      // Data not loaded yet, show loading state
       if (mounted) {
-        state = HomeScreenState(
-          totalDebt: 0,
-          dueDebt: 0,
-          latestReceiptDate: 'لا يوجد',
-          latestInvoiceDate: 'لا يوجد',
-          isValidUser: true,
-        );
+        state = HomeScreenState(isLoading: true);
       }
       return;
     }
@@ -105,6 +117,7 @@ class HomeScreenNotifier extends StateNotifier<HomeScreenState> {
         latestReceiptDate: _formatTimestamp(screenData['lastReceiptDate']),
         latestInvoiceDate: _formatTimestamp(screenData['lastInvoiceDate']),
         isValidUser: _isValidCustomer(totalDebt, dueDebt, creditLimit),
+        isLoading: false,
       );
     }
   }
