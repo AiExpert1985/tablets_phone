@@ -7,9 +7,9 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/transactions/common/common_functions.dart';
-import 'package:tablets/src/features/transactions/common/customer_debt_info.dart';
 import 'package:tablets/src/features/transactions/controllers/cart_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/customer_screen_data_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_data_container.dart';
 import 'package:tablets/src/features/transactions/common/common_widgets.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
@@ -85,18 +85,17 @@ class _ReceiptFormState extends ConsumerState<InvoiceForm> {
           child: DropDownWithSearch(
             initialValue: formDataNotifier.data['name'],
             onChangedFn: (customer) {
-              num paymentDurationLimit = customer['paymentDurationLimit'];
               formDataNotifier.addProperty('name', customer['name']);
               formDataNotifier.addProperty('nameDbRef', customer['dbRef']);
               formDataNotifier.addProperty('sellingPriceType', customer['sellingPriceType']);
-              final customerDebtInfo =
-                  getCustomerDebtInfo(ref, customer['dbRef'], paymentDurationLimit);
-              // set customer debt info
-              totalDebt = customerDebtInfo['totalDebt'];
-              dueDebt = customerDebtInfo['dueDebt'];
-              latestReceiptDate = customerDebtInfo['lastReceiptDate'] ?? 'لا يوجد';
-              latestInvoiceDate = customerDebtInfo['latestInvoiceDate'] ?? 'لا يوجد';
-              _validateCustomer(paymentDurationLimit, customer['creditLimit']);
+              // Get debt info from customer_screen_data cache
+              final screenDataCache = ref.read(customerScreenDataCacheProvider.notifier);
+              final screenData = screenDataCache.getItemByDbRef(customer['dbRef']);
+              totalDebt = screenData['totalDebt'] as num? ?? 0;
+              dueDebt = screenData['dueDebt'] as num? ?? 0;
+              latestReceiptDate = screenData['lastReceiptDate'] ?? 'لا يوجد';
+              latestInvoiceDate = screenData['lastInvoiceDate'] ?? 'لا يوجد';
+              _validateCustomer(customer['paymentDurationLimit'], customer['creditLimit']);
             },
             dbCache: salesmanCustomersDb,
           ),
