@@ -118,4 +118,7 @@ flutter_intl:
 # for changing app icon
 flutter_icons:
   android: true
-  image_path: "assets/icons/app_icon/logo.png"
+  ios: true
+  remove_alpha_ios: true
+  background_color_ios: "#FFFFFF"
+  image_path: "assets/images/logo.png"
